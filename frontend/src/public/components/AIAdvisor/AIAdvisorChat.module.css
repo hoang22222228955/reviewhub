@@ -222,3 +222,72 @@
     padding: 14px;
   }
 }
+
+/* MOBILE CLEAN V2 - AI chat box */
+@media (max-width: 700px) {
+  .chatBox {
+    max-width: none !important;
+    margin: 24px 10px !important;
+    border-radius: 20px !important;
+  }
+
+  .header {
+    padding: 16px !important;
+  }
+
+  .header h2 {
+    font-size: 17px !important;
+  }
+
+  .header p {
+    font-size: 12px !important;
+  }
+
+  .avatar {
+    width: 40px !important;
+    height: 40px !important;
+    border-radius: 14px !important;
+  }
+
+  .messages {
+    min-height: 260px !important;
+    max-height: 420px !important;
+    padding: 16px !important;
+  }
+
+  .bubble {
+    max-width: 88% !important;
+    padding: 11px 13px !important;
+    font-size: 13px !important;
+    line-height: 1.55 !important;
+  }
+
+  .quickReplies {
+    padding: 12px 14px 0 !important;
+    gap: 7px !important;
+  }
+
+  .quickReplies button {
+    padding: 7px 10px !important;
+    font-size: 12px !important;
+  }
+
+  .inputBar {
+    padding: 14px !important;
+    gap: 8px !important;
+  }
+
+  .inputBar textarea {
+    min-height: 44px !important;
+    padding: 11px 12px !important;
+    font-size: 13px !important;
+    border-radius: 14px !important;
+  }
+
+  .inputBar button {
+    min-width: 68px !important;
+    height: 44px !important;
+    border-radius: 14px !important;
+    font-size: 13px !important;
+  }
+}

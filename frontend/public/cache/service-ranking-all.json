@@ -1,0 +1,30 @@
+{
+  "generatedAt": "2026-06-24T12:14:41.247Z",
+  "totalOperators": 152,
+  "categories": {
+    "nha-xe": {
+      "total": 51,
+      "file": "/cache/service-ranking-nha-xe.json"
+    },
+    "khach-san": {
+      "total": 20,
+      "file": "/cache/service-ranking-khach-san.json"
+    },
+    "may-bay": {
+      "total": 20,
+      "file": "/cache/service-ranking-may-bay.json"
+    },
+    "tau-hoa": {
+      "total": 20,
+      "file": "/cache/service-ranking-tau-hoa.json"
+    },
+    "tour": {
+      "total": 20,
+      "file": "/cache/service-ranking-tour.json"
+    },
+    "dich-vu-khac": {
+      "total": 20,
+      "file": "/cache/service-ranking-dich-vu-khac.json"
+    }
+  }
+}

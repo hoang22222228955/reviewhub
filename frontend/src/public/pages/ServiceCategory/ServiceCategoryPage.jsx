@@ -290,17 +290,165 @@ const SERVICE_META = {
   },
 };
 
-const REVIEW_ENDPOINTS = [
-  '/api/admin/reviews?size=10000',
-  '/api/admin/review-ai/all',
-  '/api/reviews?size=10000',
-  '/api/public/reviews?size=10000',
-  '/api/reviews',
-  '/api/public/reviews',
-  '/api/admin/review-ai/pending',
-];
 
 const LOCAL_REVIEW_KEY = 'reviewhub-public-service-reviews';
+
+// Trang danh mục không tải toàn bộ comment nữa.
+// Nếu API operator chưa trả sẵn tổng/sao, các endpoint thống kê nhẹ bên dưới sẽ được thử sau khi render xong.
+const REVIEW_STATS_ENDPOINTS = [
+  '/api/public/reviews/stats',
+  '/api/public/review-stats',
+  '/api/reviews/stats',
+  '/api/review-stats',
+  '/api/public/reviews/summary',
+  '/api/reviews/summary',
+  '/api/admin/review-ai/stats',
+  '/api/admin/review-ai/summary',
+];
+
+function withCategoryParam(endpoint, slug) {
+  const separator = endpoint.includes('?') ? '&' : '?';
+  return `${endpoint}${separator}category=${encodeURIComponent(slug)}`;
+}
+
+function categoryOperatorEndpoints(slug, fallbackEndpoints = []) {
+  const category = encodeURIComponent(slug);
+
+  // Endpoint đầu tiên là endpoint nhẹ mới: backend chỉ trả đúng nhóm đang xem.
+  // Các endpoint sau là fallback để tránh vỡ trang nếu backend chưa cập nhật.
+  return [
+    `/api/public/service-operators?category=${category}`,
+    `/api/public/operators/by-category?category=${category}`,
+    `/api/public/category-operators?category=${category}`,
+    ...fallbackEndpoints,
+  ];
+}
+
+const CATEGORY_CACHE_FILES = {
+  'nha-xe': '/cache/service-ranking-nha-xe.json',
+  'khach-san': '/cache/service-ranking-khach-san.json',
+  'may-bay': '/cache/service-ranking-may-bay.json',
+  'tau-hoa': '/cache/service-ranking-tau-hoa.json',
+  tour: '/cache/service-ranking-tour.json',
+  'dich-vu-khac': '/cache/service-ranking-dich-vu-khac.json',
+};
+
+async function readCategoryCache(slug) {
+  if (typeof window === 'undefined') {
+    throw new Error('Không thể đọc cache trên server.');
+  }
+
+  const file = CATEGORY_CACHE_FILES[slug] || CATEGORY_CACHE_FILES['nha-xe'];
+
+  const response = await fetch(file, {
+    method: 'GET',
+    cache: 'force-cache',
+    headers: {
+      Accept: 'application/json',
+    },
+  });
+
+  if (!response.ok) {
+    throw new Error(`Không đọc được cache ${file}: ${response.status}`);
+  }
+
+  const payload = await response.json();
+  const list = extractList(payload);
+
+  if (!list.length) {
+    throw new Error(`Cache ${file} chưa có dữ liệu items.`);
+  }
+
+  return {
+    endpoint: file,
+    list,
+    generatedAt: payload?.generatedAt || '',
+    total: Number(payload?.total || list.length),
+  };
+}
+
+const AVG_RATING_KEYS = [
+  'avgRating',
+  'averageRating',
+  'overallRating',
+  'ratingAvg',
+  'ratingAverage',
+  'rating',
+  'avgScore',
+  'averageScore',
+  'scoreAvg',
+  'scoreAverage',
+  'avgStars',
+  'starAvg',
+  'starsAvg',
+  'starAverage',
+  'averageStars',
+  'ratingValue',
+  'diemTb',
+  'diemTb10',
+  'diemTrungBinh',
+  'diemHienThi10',
+  'avg_rating',
+  'average_rating',
+  'overall_rating',
+  'rating_avg',
+  'rating_average',
+  'avg_score',
+  'average_score',
+  'score_avg',
+  'score_average',
+  'avg_stars',
+  'star_avg',
+  'stars_avg',
+  'star_average',
+  'average_stars',
+  'rating_value',
+  'diem_tb',
+  'diem_tb_10',
+  'diem_trung_binh',
+  'diem_hien_thi_10',
+];
+
+const TOTAL_REVIEW_KEYS = [
+  'totalReviews',
+  'reviewCount',
+  'reviewsCount',
+  'totalReview',
+  'totalReviewCount',
+  'reviewTotal',
+  'ratingCount',
+  'countReviews',
+  'numberOfReviews',
+  'totalRatings',
+  'ratingsCount',
+  'totalComments',
+  'commentCount',
+  'totalRv',
+  'rvCount',
+  'soLuongReview',
+  'soLuongRv',
+  'tongDanhGia',
+  'tongReview',
+  'total_reviews',
+  'review_count',
+  'reviews_count',
+  'total_review',
+  'total_review_count',
+  'review_total',
+  'rating_count',
+  'count_reviews',
+  'number_of_reviews',
+  'total_ratings',
+  'ratings_count',
+  'total_comments',
+  'comment_count',
+  'total_rv',
+  'rv_count',
+  'so_luong_review',
+  'so_luong_rv',
+  'tong_danh_gia',
+  'tong_review',
+];
 
 const RATING_CRITERIA = [
   { key: 'punctuality', label: 'Đúng giờ', icon: 'clock', weight: 20 },
@@ -354,6 +502,28 @@ function getCodePrefixBySlug(slug) {
   return getServiceMeta(slug).prefix;
 }
 
+
+function normalizeServiceCode(code) {
+  const raw = String(code || '').trim().toUpperCase();
+  if (!raw) return '';
+
+  const rules = [
+    { regex: /^BUS-(\d+)-001$/, prefix: 'PT' },
+    { regex: /^HOTEL-(\d+)-001$/, prefix: 'KS' },
+    { regex: /^AIR-(\d+)-001$/, prefix: 'MB' },
+    { regex: /^RAIL-(\d+)-001$/, prefix: 'TH' },
+    { regex: /^TOUR-(\d+)-001$/, prefix: 'TO' },
+    { regex: /^SERVICE-(\d+)-001$/, prefix: 'DV' },
+  ];
+
+  for (const rule of rules) {
+    const match = raw.match(rule.regex);
+    if (match) return `${rule.prefix}-${String(Number(match[1])).padStart(3, '0')}`;
+  }
+
+  return raw;
+}
+
 function extractList(payload) {
   if (Array.isArray(payload)) return payload;
   if (Array.isArray(payload?.content)) return payload.content;
@@ -365,14 +535,107 @@ function extractList(payload) {
   return [];
 }
 
+function objectMapToList(value) {
+  if (!value || typeof value !== 'object' || Array.isArray(value)) return [];
+
+  return Object.entries(value)
+    .filter(([, item]) => item && typeof item === 'object' && !Array.isArray(item))
+    .map(([key, item]) => ({ code: key, ...item }));
+}
+
+function extractStatsList(payload) {
+  const list = extractList(payload);
+  if (list.length) return list;
+
+  const mapped = [
+    ...objectMapToList(payload?.data),
+    ...objectMapToList(payload?.stats),
+    ...objectMapToList(payload?.reviewStats),
+    ...objectMapToList(payload?.review_stats),
+    ...objectMapToList(payload?.results),
+  ];
+
+  return mapped;
+}
+
 function toNumber(value, fallback = 0) {
-  const parsed = Number(value);
+  if (value === undefined || value === null || value === '') return fallback;
+  if (typeof value === 'number') return Number.isFinite(value) ? value : fallback;
+
+  let text = String(value).trim();
+  if (!text) return fallback;
+
+  text = text.replace(/\s/g, '');
+
+  // Hỗ trợ cả dạng 1,234 / 1.234 và 4,5.
+  if (/^-?\d{1,3}([.,]\d{3})+$/.test(text)) {
+    text = text.replace(/[.,]/g, '');
+  } else {
+    text = text.replace(',', '.');
+  }
+
+  const direct = Number(text);
+  if (Number.isFinite(direct)) return direct;
+
+  const match = text.match(/-?\d+(?:\.\d+)?/);
+  if (!match) return fallback;
+
+  const parsed = Number(match[0]);
   return Number.isFinite(parsed) ? parsed : fallback;
 }
 
 function firstText(...values) {
   const value = values.find(v => v !== undefined && v !== null && String(v).trim() !== '');
   return value === undefined ? '' : String(value).trim();
+}
+
+function normalizeFieldKey(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/[^a-zA-Z0-9]/g, '')
+    .toLowerCase();
+}
+
+function getStatCandidateObjects(source) {
+  if (!source || typeof source !== 'object') return [];
+
+  return [
+    source,
+    source.stats,
+    source.stat,
+    source.metrics,
+    source.metric,
+    source.summary,
+    source.reviewStats,
+    source.review_stats,
+    source.ratingStats,
+    source.rating_stats,
+    source.reviewSummary,
+    source.review_summary,
+    source.aggregate,
+    source.aggregates,
+  ].filter(item => item && typeof item === 'object' && !Array.isArray(item));
+}
+
+function readNumberByKeys(source, keys, fallback = 0) {
+  const wanted = new Set(keys.map(normalizeFieldKey));
+
+  for (const object of getStatCandidateObjects(source)) {
+    for (const key of keys) {
+      if (object[key] !== undefined && object[key] !== null && String(object[key]).trim() !== '') {
+        return toNumber(object[key], fallback);
+      }
+    }
+
+    for (const [key, value] of Object.entries(object)) {
+      if (wanted.has(normalizeFieldKey(key)) && value !== undefined && value !== null && String(value).trim() !== '') {
+        return toNumber(value, fallback);
+      }
+    }
+  }
+
+  return fallback;
 }
 
 function normalizeSearchText(value) {
@@ -466,11 +729,26 @@ function normalizeOperator(item, index, slug = 'nha-xe') {
   const embeddedReviews = Array.isArray(item?.reviews) ? item.reviews.filter(isApprovedReview) : [];
   const embeddedTotal = embeddedReviews.length;
   const embeddedSum = embeddedReviews.reduce((sum, review) => sum + toNumber(review.rating || review.score || review.stars), 0);
-  const code = getCode(item, `OP-${index + 1}`);
+  const rawCode = getCode(item, `OP-${index + 1}`);
+  const normalizedCode = normalizeServiceCode(rawCode);
+  const code = normalizedCode || rawCode;
   const name = getName(item, `${meta.sourceLabel} ${index + 1}`);
 
+  const embeddedAverage = embeddedTotal ? embeddedSum / embeddedTotal : 0;
+  const avgRating = readNumberByKeys(
+    item,
+    AVG_RATING_KEYS,
+    toNumber(firstText(item?.avgRating, item?.averageRating, item?.overallRating, item?.ratingAvg, item?.ratingAverage, item?.rating, embeddedAverage), embeddedAverage),
+  );
+  const totalReviews = readNumberByKeys(
+    item,
+    TOTAL_REVIEW_KEYS,
+    toNumber(firstText(item?.totalReviews, item?.reviewCount, item?.total_reviews, item?.reviewsCount, item?.totalReview, embeddedTotal), embeddedTotal),
+  );
+
   return {
-    id: firstText(item?.id, code, `${index + 1}`),
+    id: firstText(item?.id, rawCode, code, `${index + 1}`),
+    rawCode,
     code,
     name,
     region: getRegion(item),
@@ -498,8 +776,8 @@ function normalizeOperator(item, index, slug = 'nha-xe') {
       item?.shortDescription,
       meta.defaultDescription,
     ),
-    avgRating: toNumber(firstText(item?.avgRating, item?.averageRating, item?.overallRating, item?.ratingAvg, item?.ratingAverage, item?.rating, embeddedTotal ? embeddedSum / embeddedTotal : 0), 0),
-    totalReviews: toNumber(firstText(item?.totalReviews, item?.reviewCount, item?.total_reviews, item?.reviewsCount, item?.totalReview, embeddedTotal), 0),
+    avgRating,
+    totalReviews,
   };
 }
 
@@ -551,6 +829,159 @@ async function readFirstList(endpoints) {
   }
 
   return { endpoint: '', list: [], error: lastError };
+}
+
+async function readFirstStatsList(endpoints) {
+  let lastError = '';
+
+  const readWithApi = async (endpoint) => {
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const safeEndpoint = `${endpoint}${separator}_rh_t=${Date.now()}`;
+    const response = await api.get(safeEndpoint, {
+      timeout: 5000,
+      headers: {
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      },
+    });
+    return response.data;
+  };
+
+  const readWithFetchFallback = async (endpoint) => {
+    if (typeof window === 'undefined') return null;
+
+    const isLocalFrontend = ['localhost', '127.0.0.1'].includes(window.location.hostname);
+    const base = isLocalFrontend ? 'http://localhost:8080' : '';
+    const separator = endpoint.includes('?') ? '&' : '?';
+    const url = `${base}${endpoint}${separator}_rh_t=${Date.now()}`;
+
+    const response = await fetch(url, {
+      method: 'GET',
+      cache: 'no-store',
+      headers: {
+        Accept: 'application/json',
+        'Cache-Control': 'no-cache',
+        Pragma: 'no-cache',
+      },
+    });
+
+    if (!response.ok) {
+      throw new Error(`${response.status} ${response.statusText}`);
+    }
+
+    return response.json();
+  };
+
+  for (const endpoint of endpoints) {
+    for (const reader of [readWithApi, readWithFetchFallback]) {
+      try {
+        const data = await reader(endpoint);
+        const list = extractStatsList(data);
+        if (list.length) return { endpoint, list };
+
+        const single = normalizeStatItem(data, 0, '');
+        if (single.totalReviews || single.avgRating) return { endpoint, list: [single] };
+      } catch (err) {
+        lastError = err?.response?.data?.message || err?.message || endpoint;
+      }
+    }
+  }
+
+  return { endpoint: '', list: [], error: lastError };
+}
+
+function normalizeStatItem(item, index = 0, fallbackCode = '') {
+  const rawCode = getCode(item, fallbackCode);
+  const normalizedCode = normalizeServiceCode(rawCode);
+  const name = getName(item);
+
+  return {
+    rawCode,
+    code: normalizedCode || rawCode,
+    name,
+    avgRating: readNumberByKeys(item, AVG_RATING_KEYS, 0),
+    totalReviews: readNumberByKeys(item, TOTAL_REVIEW_KEYS, 0),
+    index,
+  };
+}
+
+function getCodeKeys(value) {
+  const raw = String(value || '').trim();
+  const normalized = normalizeServiceCode(raw);
+  return Array.from(new Set([
+    raw,
+    normalized,
+    normalizeSearchText(raw),
+    normalizeSearchText(normalized),
+  ].filter(Boolean)));
+}
+
+function setBestStat(map, key, stat) {
+  const safeKey = normalizeSearchText(key);
+  if (!safeKey) return;
+
+  const current = map.get(safeKey);
+  if (!current || Number(stat.totalReviews || 0) > Number(current.totalReviews || 0)) {
+    map.set(safeKey, stat);
+  }
+}
+
+function mergeStats(operators, stats) {
+  if (!stats?.length) return operators;
+
+  const byCode = new Map();
+  const byName = new Map();
+
+  stats.map(normalizeStatItem).forEach(stat => {
+    const hasStat = Number(stat.totalReviews || 0) > 0 || Number(stat.avgRating || 0) > 0;
+    if (!hasStat) return;
+
+    getCodeKeys(stat.rawCode).forEach(key => setBestStat(byCode, key, stat));
+    getCodeKeys(stat.code).forEach(key => setBestStat(byCode, key, stat));
+
+    const name = normalizeSearchText(stat.name);
+    if (name) setBestStat(byName, name, stat);
+  });
+
+  if (!byCode.size && !byName.size) return operators;
+
+  return operators.map(operator => {
+    const codeKeys = [
+      ...getCodeKeys(operator.rawCode),
+      ...getCodeKeys(operator.code),
+    ];
+
+    let stat = null;
+    for (const key of codeKeys) {
+      stat = byCode.get(normalizeSearchText(key));
+      if (stat) break;
+    }
+
+    const operatorName = normalizeSearchText(operator.name);
+    if (!stat && operatorName) {
+      stat = byName.get(operatorName);
+    }
+
+    if (!stat && operatorName) {
+      for (const [name, item] of byName.entries()) {
+        if (name && operatorName && (name.includes(operatorName) || operatorName.includes(name))) {
+          stat = item;
+          break;
+        }
+      }
+    }
+
+    if (!stat) return operator;
+
+    const statTotal = Number(stat.totalReviews || 0);
+    const statRating = Number(stat.avgRating || 0);
+
+    return {
+      ...operator,
+      totalReviews: statTotal || operator.totalReviews,
+      avgRating: statRating || operator.avgRating,
+    };
+  });
 }
 
 function buildReviewMaps(reviews) {
@@ -802,43 +1233,89 @@ export default function ServiceCategoryPage() {
   const [regionFilter, setRegionFilter] = useState('all');
   const [criterionFilter, setCriterionFilter] = useState('all');
   const [sortMode, setSortMode] = useState('trusted');
-  const [visibleLimit, setVisibleLimit] = useState(8);
+  const [visibleLimit, setVisibleLimit] = useState(1000);
   const [sourceInfo, setSourceInfo] = useState({ operators: '', reviews: '', images: '', error: '' });
 
   const loadData = useCallback(async () => {
     setLoading(true);
 
     try {
-      const [operatorResult, reviewResult] = await Promise.all([
-        readFirstList(config.operatorEndpoints),
-        readFirstList(REVIEW_ENDPOINTS),
+      const prefix = getCodePrefixBySlug(slug);
+
+      try {
+        // Ưu tiên đọc file cache JSON tĩnh trong public/cache.
+        // File này đã có sẵn tổng đánh giá + sao trung bình, nên không cần backend query DB khi mở trang.
+        const cacheResult = await readCategoryCache(slug);
+        const cachedOperators = cacheResult.list
+          .map((item, index) => normalizeOperator(item, index, slug))
+          .filter(item => String(item.code || '').startsWith(prefix));
+
+        if (typeof window !== 'undefined') {
+          window.__reviewhubStatsDebug = {
+            mode: 'cache-json',
+            category: slug,
+            cacheFile: cacheResult.endpoint,
+            cacheTotal: cacheResult.total,
+            generatedAt: cacheResult.generatedAt,
+            firstItems: cachedOperators.slice(0, 10),
+          };
+        }
+
+        setOperators(cachedOperators);
+        setReviews([]);
+        setSourceInfo({
+          operators: cacheResult.endpoint,
+          reviews: `Cache JSON${cacheResult.generatedAt ? ` · ${new Date(cacheResult.generatedAt).toLocaleString('vi-VN')}` : ''}`,
+          images: serviceMeta.imageInfo,
+          error: '',
+        });
+
+        return;
+      } catch (cacheErr) {
+        // Nếu chưa tạo cache hoặc file cache bị thiếu, tự fallback về API để trang không bị trắng.
+        console.warn('ReviewHub cache fallback:', cacheErr);
+      }
+
+      // Fallback: Lấy danh sách dịch vụ + thống kê nhẹ theo đúng nhóm đang xem.
+      // Ví dụ slug nha-xe chỉ gọi dữ liệu PT/BUS, không đọc toàn bộ KS/MB/TH/TO/DV.
+      const [operatorResult, statResult] = await Promise.all([
+        readFirstList(categoryOperatorEndpoints(slug, config.operatorEndpoints)),
+        readFirstStatsList(REVIEW_STATS_ENDPOINTS.map(endpoint => withCategoryParam(endpoint, slug))).catch(err => ({
+          endpoint: '',
+          list: [],
+          error: err?.message || 'Không đọc được thống kê nhẹ',
+        })),
       ]);
 
-      const prefix = getCodePrefixBySlug(slug);
+      if (typeof window !== 'undefined') {
+        window.__reviewhubStatsDebug = {
+          mode: 'api-fallback',
+          category: slug,
+          operatorEndpoint: operatorResult.endpoint,
+          statsEndpoint: statResult.endpoint,
+          statsError: statResult.error,
+          statsCount: statResult.list.length,
+          firstStats: statResult.list.slice(0, 10),
+        };
+      }
+
       const normalizedOperators = operatorResult.list
         .map((item, index) => normalizeOperator(item, index, slug))
         .filter(item => String(item.code || '').startsWith(prefix));
 
-      const localReviewList = readLocalReviews();
-      const reviewSourceList = [...localReviewList, ...reviewResult.list]
-        .filter((item, index, list) => {
-          const id = firstText(item?.id, item?.reviewId, item?.review_id, `${getCode(item)}-${getName(item)}-${item?.comment || item?.content || index}`);
-          return list.findIndex(other => firstText(other?.id, other?.reviewId, other?.review_id, `${getCode(other)}-${getName(other)}-${other?.comment || other?.content || index}`) === id) === index;
-        });
+      const mergedOperators = statResult.list.length
+        ? mergeStats(normalizedOperators, statResult.list)
+        : normalizedOperators;
 
-      const merged = mergeReviews(normalizedOperators, reviewSourceList);
-      const normalizedReviews = reviewSourceList
-        .filter(isApprovedReview)
-        .map(normalizeReview)
-        .filter(review => reviewBelongsToOperators(review, merged));
-
-      setOperators(merged);
-      setReviews(normalizedReviews);
+      setOperators(mergedOperators);
+      setReviews([]);
       setSourceInfo({
         operators: operatorResult.endpoint || serviceMeta.sourceFallback,
-        reviews: reviewResult.endpoint || 'Không đọc được API review',
+        reviews: statResult.list.length
+          ? (statResult.endpoint || 'Thống kê nhẹ')
+          : 'API chưa trả thống kê tổng/sao',
         images: serviceMeta.imageInfo,
-        error: operatorResult.error || reviewResult.error || '',
+        error: operatorResult.error || statResult.error || '',
       });
     } finally {
       setLoading(false);

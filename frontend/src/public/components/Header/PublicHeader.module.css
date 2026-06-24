@@ -752,3 +752,265 @@
     border-radius: 15px;
   }
 }
+
+/* ================================
+   MOBILE HEADER MENU FIX - SAFE PATCH
+   Giữ nguyên CSS cũ, chỉ đè giao diện điện thoại
+================================ */
+
+.mobileMenu {
+  display: none;
+}
+
+.mobileMenuButton {
+  display: none;
+}
+
+.mobileNavPanel {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .header {
+    padding: 0 !important;
+  }
+
+  .inner {
+    position: relative !important;
+    min-height: 62px !important;
+    padding: 10px 12px !important;
+    display: grid !important;
+    grid-template-columns: minmax(0, 1fr) auto auto !important;
+    align-items: center !important;
+    gap: 10px !important;
+    flex-wrap: nowrap !important;
+  }
+
+  .brand {
+    min-width: 0 !important;
+    gap: 8px !important;
+  }
+
+  .logo {
+    width: 40px !important;
+    height: 40px !important;
+    flex: 0 0 40px !important;
+    border-radius: 14px !important;
+  }
+
+  .logo img {
+    border-radius: 13px !important;
+  }
+
+  .brandText {
+    min-width: 0 !important;
+  }
+
+  .brandTop {
+    max-width: 120px !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+    font-size: 10px !important;
+    letter-spacing: 0.08em !important;
+  }
+
+  .brandName {
+    display: none !important;
+  }
+
+  .nav {
+    display: none !important;
+  }
+
+  .actions {
+    margin-left: 0 !important;
+    justify-content: flex-end !important;
+  }
+
+  .guestActions {
+    gap: 0 !important;
+  }
+
+  .loginLink {
+    display: none !important;
+  }
+
+  .signupButton {
+    min-height: 38px !important;
+    padding: 0 15px !important;
+    border-radius: 15px !important;
+    font-size: 13px !important;
+    white-space: nowrap !important;
+  }
+
+  .accountTrigger {
+    min-width: auto !important;
+    width: 48px !important;
+    height: 42px !important;
+    padding: 0 !important;
+    display: grid !important;
+    grid-template-columns: 1fr !important;
+    place-items: center !important;
+    border-radius: 16px !important;
+  }
+
+  .accountAvatar {
+    width: 32px !important;
+    height: 32px !important;
+    border-radius: 13px !important;
+    font-size: 12px !important;
+  }
+
+  .accountMeta,
+  .accountArrow {
+    display: none !important;
+  }
+
+  .accountDropdown {
+    right: 0 !important;
+    width: min(280px, calc(100vw - 24px)) !important;
+  }
+
+  .mobileMenu {
+    position: relative !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    z-index: 1300 !important;
+  }
+
+  .mobileMenuButton {
+    width: 42px !important;
+    height: 42px !important;
+    flex: 0 0 42px !important;
+    display: grid !important;
+    place-items: center !important;
+    border: 1px solid rgba(79, 110, 255, 0.2) !important;
+    border-radius: 16px !important;
+    background:
+      linear-gradient(180deg, rgba(255, 255, 255, 0.98), rgba(241, 246, 255, 0.94)) !important;
+    box-shadow:
+      0 10px 24px rgba(37, 99, 235, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+    color: #3557ff !important;
+    cursor: pointer !important;
+    outline: none !important;
+    appearance: none !important;
+    -webkit-tap-highlight-color: transparent !important;
+  }
+
+  .mobileMenuButton:focus,
+  .mobileMenuButton:focus-visible {
+    outline: none !important;
+    box-shadow:
+      0 10px 24px rgba(37, 99, 235, 0.12),
+      0 0 0 3px rgba(79, 110, 255, 0.12),
+      inset 0 1px 0 rgba(255, 255, 255, 0.95) !important;
+  }
+
+  .mobileMenuIcon {
+    width: 18px !important;
+    height: 14px !important;
+    display: grid !important;
+    gap: 4px !important;
+  }
+
+  .mobileMenuIcon span {
+    display: block !important;
+    height: 2px !important;
+    border-radius: 999px !important;
+    background: linear-gradient(90deg, #3557ff, #06b6d4) !important;
+    transition: transform 0.2s ease, opacity 0.2s ease;
+  }
+
+  .mobileMenuButtonOpen {
+    background: linear-gradient(135deg, #4f6eff, #2563eb) !important;
+    border-color: rgba(37, 99, 235, 0.38) !important;
+    box-shadow:
+      0 16px 34px rgba(37, 99, 235, 0.24),
+      inset 0 1px 0 rgba(255, 255, 255, 0.25) !important;
+  }
+
+  .mobileMenuButtonOpen .mobileMenuIcon span {
+    background: #ffffff !important;
+  }
+
+  .mobileMenuButtonOpen .mobileMenuIcon span:nth-child(1) {
+    transform: translateY(6px) rotate(45deg) !important;
+  }
+
+  .mobileMenuButtonOpen .mobileMenuIcon span:nth-child(2) {
+    opacity: 0 !important;
+  }
+
+  .mobileMenuButtonOpen .mobileMenuIcon span:nth-child(3) {
+    transform: translateY(-6px) rotate(-45deg) !important;
+  }
+
+  .mobileNavPanel {
+    position: absolute !important;
+    top: calc(100% + 10px) !important;
+    right: 0 !important;
+    width: min(260px, calc(100vw - 24px)) !important;
+    padding: 10px !important;
+    display: grid !important;
+    gap: 6px !important;
+    border-radius: 20px !important;
+    border: 1px solid rgba(147, 197, 253, 0.7) !important;
+    background: rgba(255, 255, 255, 0.98) !important;
+    backdrop-filter: blur(18px) !important;
+    -webkit-backdrop-filter: blur(18px) !important;
+    box-shadow:
+      0 24px 56px rgba(15, 23, 42, 0.16),
+      inset 0 1px 0 rgba(255, 255, 255, 0.9) !important;
+    z-index: 1500 !important;
+  }
+
+  .mobileNavLink {
+    min-height: 42px !important;
+    padding: 0 14px !important;
+    display: flex !important;
+    align-items: center !important;
+    border-radius: 14px !important;
+    text-decoration: none !important;
+    color: #1e293b !important;
+    font-size: 13.5px !important;
+    font-weight: 650 !important;
+    background: transparent !important;
+  }
+
+  .mobileNavLinkActive {
+    color: #3557ff !important;
+    background: linear-gradient(180deg, #eef4ff, #eaf2ff) !important;
+  }
+
+  .mobileLoginLink {
+    color: #0f766e !important;
+    background: rgba(20, 184, 166, 0.08) !important;
+  }
+}
+
+@media (max-width: 390px) {
+  .inner {
+    padding-left: 9px !important;
+    padding-right: 9px !important;
+    gap: 8px !important;
+  }
+
+  .brandTop {
+    max-width: 95px !important;
+    font-size: 9.5px !important;
+  }
+
+  .signupButton {
+    padding: 0 12px !important;
+    font-size: 12px !important;
+  }
+
+  .mobileMenuButton {
+    width: 40px !important;
+    height: 40px !important;
+    flex-basis: 40px !important;
+  }
+}

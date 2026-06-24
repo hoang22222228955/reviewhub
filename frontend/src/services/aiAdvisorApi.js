@@ -11,7 +11,7 @@ export async function askAIAdvisor(message) {
   });
 
   if (!res.ok) {
-    throw new Error("KhÃ´ng gá»i Ä‘Æ°á»£c AI tÆ° váº¥n");
+    throw new Error("Không gọi được AI tư vấn");
   }
 
   return await res.json();

@@ -10,32 +10,54 @@ function getInitials(name = '') {
   return `${words[0][0]}${words[words.length - 1][0]}`.toUpperCase()
 }
 
+const PUBLIC_NAV_LINKS = [
+  { to: '/', label: 'Trang chủ', end: true },
+  { to: '/bang-gia', label: 'Bảng giá' },
+  { to: '/tai-lieu-api', label: 'Tài liệu API' },
+  { to: '/luong-he-thong', label: 'Luồng hệ thống' },
+]
+
 export default function PublicHeader() {
   const { currentUser, logout } = useAuth()
   const navigate = useNavigate()
 
   const [menuOpen, setMenuOpen] = useState(false)
+  const [mobileNavOpen, setMobileNavOpen] = useState(false)
+
   const menuRef = useRef(null)
+  const mobileMenuRef = useRef(null)
 
   useEffect(() => {
     const handleClickOutside = (event) => {
       if (menuRef.current && !menuRef.current.contains(event.target)) {
         setMenuOpen(false)
       }
+
+      if (mobileMenuRef.current && !mobileMenuRef.current.contains(event.target)) {
+        setMobileNavOpen(false)
+      }
     }
 
     document.addEventListener('mousedown', handleClickOutside)
-    return () => document.removeEventListener('mousedown', handleClickOutside)
+
+    return () => {
+      document.removeEventListener('mousedown', handleClickOutside)
+    }
   }, [])
 
-  const handleLogout = () => {
+  const closeAllMenus = () => {
     setMenuOpen(false)
+    setMobileNavOpen(false)
+  }
+
+  const handleLogout = () => {
+    closeAllMenus()
     logout()
     navigate('/')
   }
 
   const goToAccountTab = (tab) => {
-    setMenuOpen(false)
+    closeAllMenus()
     navigate(`/tai-khoan?tab=${tab}`)
   }
 
@@ -48,12 +70,41 @@ export default function PublicHeader() {
         ? 'Quản trị'
         : 'Người dùng'
 
+  const renderNavLinks = (mobile = false) =>
+    PUBLIC_NAV_LINKS.map((item) => (
+      <NavLink
+        key={item.to}
+        to={item.to}
+        end={item.end}
+        onClick={() => {
+          if (mobile) setMobileNavOpen(false)
+        }}
+        className={({ isActive }) =>
+          `${mobile ? styles.mobileNavLink : styles.navLink} ${
+            isActive
+              ? mobile
+                ? styles.mobileNavLinkActive
+                : styles.navLinkActive
+              : ''
+          }`
+        }
+      >
+        {item.label}
+      </NavLink>
+    ))
+
   return (
     <header className={styles.header}>
       <div className={`pageContainer ${styles.inner}`}>
-        <Link to="/" className={styles.brand}>
+        <Link to="/" className={styles.brand} onClick={closeAllMenus}>
           <div className={styles.logo}>
-            <img src="/logo.png" alt="ReviewHub Logo" />
+            <img
+              src="/logo.webp"
+              alt="ReviewHub Logo"
+              onError={(event) => {
+                event.currentTarget.src = '/logo.png'
+              }}
+            />
           </div>
 
           <div className={styles.brandText}>
@@ -62,45 +113,7 @@ export default function PublicHeader() {
           </div>
         </Link>
 
-        <nav className={styles.nav}>
-          <NavLink
-            to="/"
-            end
-            className={({ isActive }) =>
-              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-            }
-          >
-            Trang chủ
-          </NavLink>
-
-          <NavLink
-            to="/bang-gia"
-            className={({ isActive }) =>
-              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-            }
-          >
-            Bảng giá
-          </NavLink>
-
-          <NavLink
-            to="/tai-lieu-api"
-            className={({ isActive }) =>
-              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-            }
-          >
-            Tài liệu API
-          </NavLink>
-
-          <NavLink
-            to="/luong-he-thong"
-            className={({ isActive }) =>
-              `${styles.navLink} ${isActive ? styles.navLinkActive : ''}`
-            }
-          >
-            Luồng hệ thống
-          </NavLink>
-
-        </nav>
+        <nav className={styles.nav}>{renderNavLinks(false)}</nav>
 
         <div className={styles.actions}>
           {currentUser ? (
@@ -167,7 +180,7 @@ export default function PublicHeader() {
                       type="button"
                       className={styles.dropdownItem}
                       onClick={() => {
-                        setMenuOpen(false)
+                        closeAllMenus()
                         navigate('/doi-tac')
                       }}
                     >
@@ -180,7 +193,7 @@ export default function PublicHeader() {
                       type="button"
                       className={styles.dropdownItem}
                       onClick={() => {
-                        setMenuOpen(false)
+                        closeAllMenus()
                         navigate('/quan-tri')
                       }}
                     >
@@ -207,6 +220,40 @@ export default function PublicHeader() {
               <Link to="/dang-ky" className={styles.signupButton}>
                 Đăng ký
               </Link>
+            </div>
+          )}
+        </div>
+
+        <div className={styles.mobileMenu} ref={mobileMenuRef}>
+          <button
+            type="button"
+            className={`${styles.mobileMenuButton} ${
+              mobileNavOpen ? styles.mobileMenuButtonOpen : ''
+            }`}
+            onClick={() => setMobileNavOpen((prev) => !prev)}
+            aria-label={mobileNavOpen ? 'Đóng menu' : 'Mở menu'}
+            aria-expanded={mobileNavOpen}
+          >
+            <span className={styles.mobileMenuIcon} aria-hidden="true">
+              <span />
+              <span />
+              <span />
+            </span>
+          </button>
+
+          {mobileNavOpen && (
+            <div className={styles.mobileNavPanel}>
+              {renderNavLinks(true)}
+
+              {!currentUser && (
+                <Link
+                  to="/dang-nhap"
+                  className={`${styles.mobileNavLink} ${styles.mobileLoginLink}`}
+                  onClick={() => setMobileNavOpen(false)}
+                >
+                  Đăng nhập
+                </Link>
+              )}
             </div>
           )}
         </div>

@@ -534,7 +534,7 @@ export default function ProfilePage() {
       {/* ── Thông tin cá nhân (có thể chỉnh sửa) ── */}
       <div className={styles.planSectionLabel}>
         <span className={styles.cartEyebrowDash} />
-        THÔNG TIN CÁ NHÂN
+        THÔNG TIN CÁ NHN
       </div>
 
       <div className={styles.formGrid}>
@@ -1256,7 +1256,7 @@ export default function ProfilePage() {
                       <button className={styles.bankingBack} onClick={() => setPayStep('choose')}>← Quay lại</button>
                       <div className={styles.cartEyebrowLine}>
                         <span className={styles.cartEyebrowDash} />
-                        <span className={styles.cartEyebrowText}>CHUYỂN KHOẢN NGÂN HÀNG</span>
+                        <span className={styles.cartEyebrowText}>CHUYỂN KHOẢN NGN HÀNG</span>
                       </div>
                       <h3 className={styles.modalTitle}>Quét mã QR để thanh toán</h3>
                       {cartPlanData && (
