@@ -13,7 +13,7 @@ const API_BASE =
   "https://reviewhub-backend-ki8w.onrender.com";
 
 const CATEGORIES = [
-  { key: "nhaxe", label: "Top nhÃ  xe uy tín", short: "NhÃ  xe" },
+  { key: "nhaxe", label: "Top nhà xe uy tín", short: "Nhà xe" },
   { key: "khachsan", label: "Top khách sạn uy tín", short: "Khách sạn" },
   { key: "maybay", label: "Top máy bay uy tín", short: "Máy bay" },
   { key: "tour", label: "Top tour uy tín", short: "Tour" },
@@ -596,7 +596,7 @@ function welcomeMessage() {
     role: "ai",
     kind: "menu",
     text:
-      "Xin chÃ o! Tôi có thể tư vấn gói/bảng giá, đồng thời hỗ trợ bạn xem dịch vụ uy tín và tóm tắt review.",
+      "Xin chào! Tôi có thể tư vấn gói/bảng giá, đồng thời hỗ trợ bạn xem dịch vụ uy tín và tóm tắt review.",
   };
 }
 
@@ -622,7 +622,7 @@ function cleanSummaryLabel(label, lower = false) {
     "Giờ giấc / đúng giờ": "Giờ giấc đúng giờ",
     "Đặt chỗ / thủ tục": "Đặt chỗ và thủ tục",
     "Ăn uống / phục vụ kèm": "Ăn uống và dịch vụ kèm",
-    "HÃ nh lý / đồ đạc": "HÃ nh lý và đồ đạc",
+    "Hành lý / đồ đạc": "Hành lý và đồ đạc",
     "Tour / lịch trình": "Tour và lịch trình",
   };
 
@@ -659,17 +659,17 @@ function topicSentence(topic, tone, kind) {
   const textMap = {
     bus: {
       good: {
-        "thai do phuc vu": "Nhân viên/tÃ i xế được khen hỗ trợ lịch sự, dễ trao đổi",
+        "thai do phuc vu": "Nhân viên/tài xế được khen hỗ trợ lịch sự, dễ trao đổi",
         "ve sinh sach se": "Xe hoặc khu vực sử dụng khá sạch, tạo cảm giác dễ chịu",
         "gia ve chi phi": "Một số khách thấy giá vé/chi phí ở mức chấp nhận được",
         "khong gian tien nghi": "Ghế/giường, máy lạnh hoặc tiện nghi được đánh giá ổn",
         "gio giac dung gio": "Có chuyến được ghi nhận chạy đúng hoặc gần đúng giờ",
-        "an toan": "Một số khách cảm thấy chuyến đi khá an toÃ n",
+        "an toan": "Một số khách cảm thấy chuyến đi khá an toàn",
         "don tra trung chuyen": "Điểm đón/trả hoặc trung chuyển được nhận xét thuận tiện",
         "dat cho thu tuc": "Đặt vé và xác nhận thông tin tương đối dễ theo dõi",
       },
       risk: {
-        "thai do phuc vu": "Thái độ nhân viên/tÃ i xế còn bị phản ánh khi có phát sinh",
+        "thai do phuc vu": "Thái độ nhân viên/tài xế còn bị phản ánh khi có phát sinh",
         "ve sinh sach se": "Cần kiểm tra mùi xe, ghế/giường và vệ sinh gần đây",
         "gia ve chi phi": "Nên hỏi rõ giá cuối, phụ phí và điều kiện hoàn/hủy",
         "khong gian tien nghi": "Cần kiểm tra loại xe, ghế, máy lạnh, ổ sạc hoặc wifi",
@@ -690,7 +690,7 @@ function topicSentence(topic, tone, kind) {
       },
       risk: {
         "thai do phuc vu": "Nên xem phản ánh về cách xử lý khiếu nại của nhân viên",
-        "ve sinh sach se": "Cần kiểm tra vệ sinh phòng, ga giường và nhÃ  vệ sinh",
+        "ve sinh sach se": "Cần kiểm tra vệ sinh phòng, ga giường và nhà vệ sinh",
         "gia ve chi phi": "Nên hỏi rõ phụ phí, tiền cọc và chính sách hủy phòng",
         "khong gian tien nghi": "Cần đối chiếu ảnh thật, cách âm, wifi và tiện nghi",
         "an uong phuc vu kem": "Nên xem review mới nếu bạn quan trọng bữa sáng/dịch vụ kèm",
@@ -703,15 +703,15 @@ function topicSentence(topic, tone, kind) {
         "gia ve chi phi": "Giá vé có thể hợp lý nếu đặt đúng thời điểm",
         "gio giac dung gio": "Một số chuyến được ghi nhận đúng giờ hoặc ít lệch giờ",
         "dat cho thu tuc": "Đặt vé/check-in được nhận xét khá dễ theo dõi",
-        "hanh ly do dac": "Xử lý hÃ nh lý được một số khách đánh giá ổn",
+        "hanh ly do dac": "Xử lý hành lý được một số khách đánh giá ổn",
         "khong gian tien nghi": "Ghế ngồi hoặc tiện nghi cơ bản được nhắc tích cực",
       },
       risk: {
-        "thai do phuc vu": "Cần xem kỹ hỗ trợ khi đổi vé, hoÃ n vé hoặc phát sinh",
-        "gia ve chi phi": "Nên kiểm tra phí hÃ nh lý, đổi vé và điều kiện hoÃ n vé",
+        "thai do phuc vu": "Cần xem kỹ hỗ trợ khi đổi vé, hoàn vé hoặc phát sinh",
+        "gia ve chi phi": "Nên kiểm tra phí hành lý, đổi vé và điều kiện hoàn vé",
         "gio giac dung gio": "Delay, đổi giờ hoặc hủy chuyến có thể ảnh hưởng lịch trình",
         "dat cho thu tuc": "Nên chuẩn bị mã đặt chỗ và kiểm tra quy định check-in",
-        "hanh ly do dac": "Cần kiểm tra cân nặng/kích thước hÃ nh lý trước khi bay",
+        "hanh ly do dac": "Cần kiểm tra cân nặng/kích thước hành lý trước khi bay",
         "khong gian tien nghi": "Nên xem loại ghế và tiện nghi nếu bạn cần thoải mái",
       },
     },
@@ -721,7 +721,7 @@ function topicSentence(topic, tone, kind) {
         "gia ve chi phi": "Giá tour được xem là hợp lý so với lịch trình",
         "tour lich trinh": "Lịch trình tham quan được đánh giá dễ theo dõi",
         "an uong phuc vu kem": "Ăn uống hoặc dịch vụ kèm được một số khách đánh giá ổn",
-        "dat cho thu tuc": "Đặt tour và xác nhận lịch tương đối rõ rÃ ng",
+        "dat cho thu tuc": "Đặt tour và xác nhận lịch tương đối rõ ràng",
         "khong gian tien nghi": "Phương tiện hoặc nơi nghỉ trong tour được nhận xét ổn",
       },
       risk: {
@@ -742,10 +742,10 @@ function topicSentence(topic, tone, kind) {
         "khong gian tien nghi": "Ghế/giường và tiện nghi cơ bản được đánh giá ổn",
       },
       risk: {
-        "thai do phuc vu": "Nên xem phản ánh về hỗ trợ tại ga hoặc trên tÃ u",
-        "gia ve chi phi": "Cần kiểm tra hạng vé, phí đổi/trả và hoÃ n vé",
+        "thai do phuc vu": "Nên xem phản ánh về hỗ trợ tại ga hoặc trên tàu",
+        "gia ve chi phi": "Cần kiểm tra hạng vé, phí đổi/trả và hoàn vé",
         "gio giac dung gio": "Chậm chuyến có thể ảnh hưởng lịch nối chuyến",
-        "ve sinh sach se": "Nên xem vệ sinh khoang tÃ u và nhÃ  vệ sinh gần đây",
+        "ve sinh sach se": "Nên xem vệ sinh khoang tàu và nhà vệ sinh gần đây",
         "khong gian tien nghi": "Nếu đi xa, nên kiểm tra ghế/giường và điều hòa",
       },
     },
@@ -781,15 +781,15 @@ function fallbackTopicSentences(tone, kind, usedLabels = new Set()) {
   const fallbacks = {
     bus: {
       good: ["Thái độ phục vụ (0 review)", "Vệ sinh / sạch sẽ (0 review)", "Không gian / tiện nghi (0 review)", "Giờ giấc / đúng giờ (0 review)"],
-      risk: ["Giờ giấc / đúng giờ (0 review)", "An toÃ n (0 review)", "Giá vé / chi phí (0 review)", "Vệ sinh / sạch sẽ (0 review)"],
+      risk: ["Giờ giấc / đúng giờ (0 review)", "An toàn (0 review)", "Giá vé / chi phí (0 review)", "Vệ sinh / sạch sẽ (0 review)"],
     },
     hotel: {
       good: ["Vệ sinh / sạch sẽ (0 review)", "Thái độ phục vụ (0 review)", "Không gian / tiện nghi (0 review)", "Ăn uống / phục vụ kèm (0 review)"],
       risk: ["Vệ sinh / sạch sẽ (0 review)", "Không gian / tiện nghi (0 review)", "Giá vé / chi phí (0 review)", "Đặt chỗ / thủ tục (0 review)"],
     },
     air: {
-      good: ["Giờ giấc / đúng giờ (0 review)", "Thái độ phục vụ (0 review)", "Đặt chỗ / thủ tục (0 review)", "HÃ nh lý / đồ đạc (0 review)"],
-      risk: ["Giờ giấc / đúng giờ (0 review)", "HÃ nh lý / đồ đạc (0 review)", "Giá vé / chi phí (0 review)", "Đặt chỗ / thủ tục (0 review)"],
+      good: ["Giờ giấc / đúng giờ (0 review)", "Thái độ phục vụ (0 review)", "Đặt chỗ / thủ tục (0 review)", "Hành lý / đồ đạc (0 review)"],
+      risk: ["Giờ giấc / đúng giờ (0 review)", "Hành lý / đồ đạc (0 review)", "Giá vé / chi phí (0 review)", "Đặt chỗ / thủ tục (0 review)"],
     },
     tour: {
       good: ["Tour / lịch trình (0 review)", "Thái độ phục vụ (0 review)", "Ăn uống / phục vụ kèm (0 review)", "Giá vé / chi phí (0 review)"],
@@ -857,13 +857,13 @@ function buildAdviceBullets(data, kind) {
   if (kind === "bus") {
     result.push(topBad.label ? `Trước khi đặt vé, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, giờ đón/trả và loại xe.` : "Trước khi đặt vé, hỏi rõ giờ đón/trả, loại xe và điểm trung chuyển.");
     result.push(topGood.label ? `Nếu vẫn chọn, hãy tận dụng điểm mạnh về ${cleanSummaryLabel(topGood.label, true)} nhưng xem review mới.` : "Nếu vẫn chọn, ưu tiên chuyến có thông tin rõ về xe, giờ chạy và điểm đón.");
-    result.push("Nên so sánh thêm 1-2 nhÃ  xe cùng tuyến trước khi quyết định.");
+    result.push("Nên so sánh thêm 1-2 nhà xe cùng tuyến trước khi quyết định.");
   } else if (kind === "hotel") {
     result.push(topBad.label ? `Trước khi đặt phòng, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, ảnh thật và phụ phí.` : "Trước khi đặt phòng, kiểm tra ảnh thật, vị trí, phụ phí và chính sách hủy.");
-    result.push(topGood.label ? `Nếu ${cleanSummaryLabel(topGood.label, true)} đúng nhu cầu, có thể giữ là m phương án tham khảo.` : "Nếu vị trí, vệ sinh và tiện nghi phù hợp, có thể giữ là m phương án tham khảo.");
+    result.push(topGood.label ? `Nếu ${cleanSummaryLabel(topGood.label, true)} đúng nhu cầu, có thể giữ một phương án tham khảo.` : "Nếu vị trí, vệ sinh và tiện nghi phù hợp, có thể giữ một phương án tham khảo.");
     result.push("Nên so sánh thêm khách sạn cùng khu vực có review mới ổn định.");
   } else if (kind === "air") {
-    result.push(topBad.label ? `Trước khi mua vé, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, hÃ nh lý và điều kiện đổi vé.` : "Trước khi mua vé, kiểm tra hÃ nh lý, đổi vé, hoÃ n vé và lịch bay gần đây.");
+    result.push(topBad.label ? `Trước khi mua vé, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, hành lý và điều kiện đổi vé.` : "Trước khi mua vé, kiểm tra hành lý, đổi vé, hoàn vé và lịch bay gần đây.");
     result.push(topGood.label ? `Có thể tận dụng điểm mạnh về ${cleanSummaryLabel(topGood.label, true)}, nhưng cần phương án dự phòng nếu lịch gấp.` : "Nếu lịch trình gấp, nên chọn chuyến có hỗ trợ và giờ bay an toàn.");
     result.push("Nên so sánh thêm chuyến/hãng khác cùng khung giờ.");
   } else if (kind === "tour") {
@@ -876,8 +876,8 @@ function buildAdviceBullets(data, kind) {
     result.push("Nên so sánh thêm lựa chọn cùng tuyến để tránh rủi ro lịch trình.");
   } else {
     result.push(topBad.label ? `Trước khi dùng, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, giá cuối và hỗ trợ phát sinh.` : "Trước khi dùng, hỏi rõ giá cuối, quy trình và hỗ trợ khi phát sinh.");
-    result.push(topGood.label ? `Nếu ${cleanSummaryLabel(topGood.label, true)} đúng nhu cầu, có thể đưa và o danh sách cân nhắc.` : "Nếu dịch vụ đáp ứng đúng nhu cầu chính, có thể đưa và o danh sách cân nhắc.");
-    result.push("Nên so sánh thêm 1-2 đơn vị khác có review mới rõ rÃ ng.");
+    result.push(topGood.label ? `Nếu ${cleanSummaryLabel(topGood.label, true)} đúng nhu cầu, có thể đưa vào danh sách cân nhắc.` : "Nếu dịch vụ đáp ứng đúng nhu cầu chính, có thể đưa vào danh sách cân nhắc.");
+    result.push("Nên so sánh thêm 1-2 đơn vị khác có review mới rõ ràng.");
   }
 
   return result.slice(0, 4);
@@ -958,7 +958,7 @@ function TopServices({ items, onSummary }) {
   const rankedItems = sortTopServicesLikeCategoryPage(items);
 
   if (!rankedItems.length) {
-    return <div className={styles.emptyResult}>Chưa có dữ liệu đủ để xếp hạng nhóm nÃ y.</div>;
+    return <div className={styles.emptyResult}>Chưa có dữ liệu đủ để xếp hạng nhóm này.</div>;
   }
 
   return (
@@ -970,7 +970,7 @@ function TopServices({ items, onSummary }) {
           <div className={styles.rankingBody}>
             <strong>{item.label || item.targetName}</strong>
             <div className={styles.rankingMeta}>
-              <span>â­ {item.averageRating}/5</span>
+              <span>⭐ {item.averageRating}/5</span>
               <span>Uy tín {item.trustDisplayScore}/10</span>
               <span>{item.totalReviews} review</span>
             </div>
@@ -1033,7 +1033,7 @@ export default function FloatingAIChat() {
     window.requestAnimationFrame(run);
 
     // Card/menu/top/tóm tắt có chiều cao thay đổi sau khi render,
-    // nên cuộn thêm và i nhịp để luôn xuống đúng tin nhắn cuối.
+    // nên cuộn thêm vài nhịp để luôn xuống đúng tin nhắn cuối.
     [40, 120, 260, 520].forEach((delay) => {
       const timerId = window.setTimeout(run, delay);
       scrollTimersRef.current.push(timerId);
@@ -1118,7 +1118,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         text:
-          "Hiện AI tư vấn gói chưa kết nối được. Tôi đã ghi nhận câu hỏi này để admin bổ sung và o file huấn luyện sau.",
+          "Hiện AI tư vấn gói chưa kết nối được. Tôi đã ghi nhận câu hỏi này để admin bổ sung vào file huấn luyện sau.",
       });
     } finally {
       setLoading(false);
@@ -1135,7 +1135,7 @@ Câu hỏi người dùng: ${text}`
       let items = await loadTopByCategoryPageLogic(category);
 
       // Fallback: nếu không đọc được danh sách operator như ServiceCategoryPage
-      // thì mới dùng API AI cũ. Trường hợp bình thường sẽ không dùng fallback nÃ y.
+      // thì mới dùng API AI cũ. Trường hợp bình thường sẽ không dùng fallback này.
       if (!items.length) {
         const data = await fetchJson(
           `/api/public/ai/top-services?category=${encodeURIComponent(category)}&limit=10`
@@ -1197,7 +1197,7 @@ Câu hỏi người dùng: ${text}`
     if (isThanksOrClose(text)) {
       pushMessage({
         role: "ai",
-        text: "Vâng, không có gì ạ. Chúc bạn một ngày tốt là nh ạ ðŸ˜Š",
+        text: "Vâng, không có gì ạ. Chúc bạn một ngày tốt lành ạ 😊",
       });
       return;
     }
@@ -1205,7 +1205,7 @@ Câu hỏi người dùng: ${text}`
     if (isGreeting(text)) {
       pushMessage({
         role: "ai",
-        text: "Chào bạn ạ ðŸ˜Š Bạn cần tôi tư vấn gói, xem dịch vụ uy tín hay tóm tắt review dịch vụ nÃ o không ạ?",
+        text: "Chào bạn ạ. Bạn cần tôi tư vấn gói, xem dịch vụ uy tín hay tóm tắt review dịch vụ nào không ạ?",
       });
       return;
     }
@@ -1228,7 +1228,7 @@ Câu hỏi người dùng: ${text}`
         rememberUnansweredQuestion(text, { mode: "summary" });
         pushMessage({
           role: "ai",
-          text: "Tôi chưa tìm thấy dịch vụ phù hợp. Bạn thử nhập rõ hơn tên nhÃ  xe, khách sạn hoặc mã dịch vụ nhé.",
+          text: "Tôi chưa tìm thấy dịch vụ phù hợp. Bạn thử nhập rõ hơn tên nhà xe, khách sạn hoặc mã dịch vụ nhé.",
         });
         return;
       }
@@ -1309,7 +1309,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "categoryMenu",
-        text: "Bạn muốn xem top dịch vụ uy tín ở nhóm nÃ o?",
+        text: "Bạn muốn xem top dịch vụ uy tín ở nhóm nào?",
       });
       return;
     }
@@ -1372,7 +1372,7 @@ Câu hỏi người dùng: ${text}`
     if (isThanksOrClose(text)) {
       pushMessage({
         role: "ai",
-        text: "Vâng, không có gì ạ. Chúc bạn một ngày tốt là nh ạ ðŸ˜Š",
+        text: "Vâng, không có gì ạ. Chúc bạn một ngày tốt lành ạ 😊",
       });
       return;
     }
@@ -1380,7 +1380,7 @@ Câu hỏi người dùng: ${text}`
     if (isGreeting(text)) {
       pushMessage({
         role: "ai",
-        text: "Chào bạn ạ ðŸ˜Š Bạn cần tôi tư vấn gói, xem dịch vụ uy tín hay tóm tắt review dịch vụ nÃ o không ạ?",
+        text: "Chào bạn ạ 😊 Bạn cần tôi tư vấn gói, xem dịch vụ uy tín hay tóm tắt review dịch vụ nào không ạ?",
       });
       return;
     }
@@ -1419,7 +1419,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "categoryMenu",
-        text: "Bạn muốn xem top dịch vụ uy tín ở nhóm nÃ o?",
+        text: "Bạn muốn xem top dịch vụ uy tín ở nhóm nào?",
       });
       return;
     }
@@ -1554,7 +1554,7 @@ Câu hỏi người dùng: ${text}`
           {
             key: "discount",
             title: "Hỏi ưu đãi",
-            desc: "Tư vấn giảm giá khi mua nhiều hoặc dùng lâu dÃ i",
+            desc: "Tư vấn giảm giá khi mua nhiều hoặc dùng lâu dài",
             onClick: () => quickPackage("Mua nhiều có được giảm giá không?"),
           },
           {
@@ -1588,7 +1588,7 @@ Câu hỏi người dùng: ${text}`
           {
             key: "need-bus",
             title: "Tôi cần nhà xe được đánh giá cao",
-            desc: "Ưu tiên nhÃ  xe có nhiều review tốt",
+            desc: "Ưu tiên nhà xe có nhiều review tốt",
             onClick: () => loadTop("nhaxe"),
           },
           {
@@ -1687,7 +1687,7 @@ Câu hỏi người dùng: ${text}`
           {[a, b].filter(Boolean).map((service) => (
             <article key={service.targetCode}>
               <strong>{service.label || service.targetName}</strong>
-              <span>â­ {service.averageRating}/5</span>
+              <span>⭐ {service.averageRating}/5</span>
               <span>{service.totalReviews} review</span>
               <span>Tốt: {percent(service.goodReviews, service.totalReviews)}</span>
               <span>Cần theo dõi: {percent(service.badReviews, service.totalReviews)}</span>

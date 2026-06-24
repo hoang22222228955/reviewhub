@@ -13,10 +13,10 @@ import HeroIllustration from '../../components/Hero/HeroIllustration';
 import styles from './HomePage.module.css';
 
 /*
-  LUU Y QUAN TRONG:
-  Object nay KHONG PHAI du lieu DB. Day chi la map ten 6 card tren UI sang URL.
-  DB cua ban co bang transport_operators cho Nha xe. Cac muc khac neu chua co bang/API
-  thi ServiceCategoryPage se hien du lieu demo de giao dien khong bi trang.
+  LƯU Ý QUAN TRỌNG:
+  Object này KHÔNG PHẢI dữ liệu DB. Đây chỉ là map tên 6 card trên UI sang URL.
+  DB của bạn có bảng transport_operators cho Nhà xe. Các mục khác nếu chưa có bảng/API
+  thì ServiceCategoryPage sẽ hiển thị dữ liệu demo để giao diện không bị trắng.
 */
 
 const getHugeIcon = (...names) => {
@@ -91,7 +91,7 @@ const HOME_CUSTOMER_VOICE_CARDS = [
   {
     name: 'Phạm Nhật Quốc',
     role: 'Khách hàng đặt xe',
-    initials: 'MQ',
+    initials: 'NQ',
     quote:
       'Tôi dễ dàng xem điểm uy tín, đọc nhận xét thật và chọn được nhà xe phù hợp trước khi đặt vé.',
     avatar: '/images/avatars/khach-hang-viet-1.jpg',
@@ -99,7 +99,7 @@ const HOME_CUSTOMER_VOICE_CARDS = [
   {
     name: 'Hoàng Nhật Minh',
     role: 'Quản lý khách sạn',
-    initials: 'TD',
+    initials: 'NM',
     quote:
       'Trang quản lý phản hồi rất rõ ràng, giúp khách sạn theo dõi đánh giá và cải thiện chất lượng dịch vụ.',
     avatar: '/images/avatars/khach-hang-viet-2.jpg',
@@ -107,7 +107,7 @@ const HOME_CUSTOMER_VOICE_CARDS = [
   {
     name: 'Trần Minh Hoàng',
     role: 'Quản trị hệ thống',
-    initials: 'AT',
+    initials: 'MH',
     quote:
       'Cơ chế lọc đánh giá ảo và kiểm duyệt AI giúp dữ liệu sạch hơn, đáng tin cậy hơn khi cung cấp qua API.',
     avatar: '/images/avatars/khach-hang-viet-3.jpg',
@@ -236,8 +236,8 @@ export default function HomePage() {
           </h1>
 
           <p className={styles.heroText}>
-            ReviewHub là data hub dành cho partner: mua gói, nhận API key, lấy review đúng phạm vi,
-            gửi review mới về hub và quản lý public/private cùng AI moderation trong một hệ thống thống nhất.
+            ReviewHub là kho dữ liệu dành cho đối tác: mua gói, nhận API key, lấy review đúng phạm vi,
+            gửi review mới về hệ thống và quản lý public/private cùng AI kiểm duyệt trong một hệ thống thống nhất.
           </p>
 
           <div className={styles.heroActions}>
@@ -249,7 +249,7 @@ export default function HomePage() {
           <div className={styles.miniStrip}>
             <span>API key theo partner</span>
             <span>Public / private tách rõ</span>
-            <span>AI moderation đầu vào</span>
+            <span>AI kiểm duyệt đầu vào</span>
             <span>Quota theo gói dịch vụ</span>
           </div>
 
@@ -292,7 +292,7 @@ export default function HomePage() {
 
       <section className={styles.trust} data-reveal="out">
         <p className={styles.trustText}>
-          Thiết kế theo tư duy SaaS / API platform: rõ quyền truy cập, dễ quét thông tin và đủ chất liệu để thuyết trình đồ án.
+          Thiết kế theo tư duy SaaS / API platform: rõ quyền truy cập, dễ nắm thông tin và đủ chất liệu để thuyết trình đồ án.
         </p>
 
         <div className={styles.trustList}>

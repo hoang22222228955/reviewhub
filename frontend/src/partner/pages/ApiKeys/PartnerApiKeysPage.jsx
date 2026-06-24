@@ -19,27 +19,27 @@ function splitValues(value) {
 }
 
 const SERVICE_NAME_MAP = {
- 'DV-001': 'Dịch vụ đưa đón sân bay',
+  'DV-001': 'Dịch vụ đưa đón sân bay',
   'DV-002': 'Dịch vụ thuê xe tự lái',
-  'DV-003': 'Dịch vụ thuê xe có tÃ i xế',
+  'DV-003': 'Dịch vụ thuê xe có tài xế',
   'DV-004': 'Dịch vụ đặt vé tham quan',
   'DV-005': 'Dịch vụ bảo hiểm du lịch',
-  'DV-006': 'Dịch vụ là m visa du lịch',
+  'DV-006': 'Dịch vụ làm visa du lịch',
   'DV-007': 'Dịch vụ hộ chiếu và giấy tờ du lịch',
   'DV-008': 'Dịch vụ eSIM du lịch',
   'DV-009': 'Dịch vụ đổi tiền du lịch',
-  'DV-010': 'Dịch vụ gửi hÃ nh lý',
-  'DV-011': 'Dịch vụ giao hÃ nh lý tận nơi',
+  'DV-010': 'Dịch vụ gửi hành lý',
+  'DV-011': 'Dịch vụ giao hành lý tận nơi',
   'DV-012': 'Dịch vụ hướng dẫn viên địa phương',
   'DV-013': 'Dịch vụ phiên dịch du lịch',
   'DV-014': 'Dịch vụ đặt nhà hàng du lịch',
   'DV-015': 'Dịch vụ đặt du thuyền',
   'DV-016': 'Dịch vụ booking engine OTA',
   'DV-017': 'Dịch vụ quản lý đánh giá OTA',
-  'DV-018': 'Dịch vụ chăm sóc khách hÃ ng du lịch',
+  'DV-018': 'Dịch vụ chăm sóc khách hàng du lịch',
   'DV-019': 'Dịch vụ thiết kế lịch trình du lịch',
   'DV-020': 'Dịch vụ hỗ trợ khẩn cấp du lịch',
-  'KS-001': 'Mường Thanh Luxury Äà Nẵng',
+  'KS-001': 'Mường Thanh Luxury Đà Nẵng',
   'KS-002': 'Vinpearl Resort Nha Trang',
   'KS-003': 'FLC Grand Hotel Hạ Long',
   'KS-004': 'InterContinental Hanoi Westlake',
@@ -50,7 +50,7 @@ const SERVICE_NAME_MAP = {
   'KS-009': 'Sapa Jade Hill Resort',
   'KS-010': 'Dalat Palace Heritage Hotel',
   'KS-011': 'Novotel Phu Quoc Resort',
-  'KS-012': 'Melia Ba Vi Mountain Retreat',
+  'KS-012': 'Meliá Ba Vì Mountain Retreat',
   'KS-013': 'Sofitel Legend Metropole Hanoi',
   'KS-014': 'JW Marriott Hotel Hanoi',
   'KS-015': 'Sheraton Saigon Grand Opera Hotel',
@@ -120,53 +120,53 @@ const SERVICE_NAME_MAP = {
   'PT-039': 'Trung Trang',
   'PT-040': 'Như Vinh',
   'PT-041': 'Anh Tuyên',
-  'PT-042': 'VÅ© Linh',
+  'PT-042': 'Vũ Linh',
   'PT-043': 'Thiện Trí',
   'PT-044': 'Trọng Minh',
   'PT-045': 'Toàn Thắng',
-  'PT-046': 'DÅ©ng Lệ',
+  'PT-046': 'Dũng Lệ',
   'PT-047': 'Minh Nghĩa',
   'PT-048': 'Tiến Oanh',
-  'PT-049': 'Võ Cúc Phương ',
-  'PT-050': 'HoÃ  Liêm',
+  'PT-049': 'Võ Cúc Phương',
+  'PT-050': 'Hòa Liêm',
   'PT-051': 'Đức Minh',
   'TH-001': 'Tuyến SE1 Hà Nội - TP. Hồ Chí Minh',
-  'TH-002': 'Tuyến SE2 TP. Hồ Chí Minh - HÃ  Nội',
-  'TH-003': 'Tuyến SE3 Hà Nội - SÃ i Gòn',
-  'TH-004': 'Tuyến SE4 SÃ i Gòn - HÃ  Nội',
+  'TH-002': 'Tuyến SE2 TP. Hồ Chí Minh - Hà Nội',
+  'TH-003': 'Tuyến SE3 Hà Nội - Sài Gòn',
+  'TH-004': 'Tuyến SE4 Sài Gòn - Hà Nội',
   'TH-005': 'Tuyến Hà Nội - Hải Phòng',
-  'TH-006': 'Tuyến Hải Phòng - HÃ  Nội',
+  'TH-006': 'Tuyến Hải Phòng - Hà Nội',
   'TH-007': 'Tuyến Hà Nội - Lào Cai',
-  'TH-008': 'Tuyến Lào Cai - HÃ  Nội',
+  'TH-008': 'Tuyến Lào Cai - Hà Nội',
   'TH-009': 'Tuyến Hà Nội - Vinh',
   'TH-010': 'Tuyến Vinh - Hà Nội',
-  'TH-011': 'Tuyến SÃ i Gòn - Nha Trang',
-  'TH-012': 'Tuyến Nha Trang - SÃ i Gòn',
-  'TH-013': 'Tuyến SÃ i Gòn - Phan Thiết',
-  'TH-014': 'Tuyến Phan Thiết - SÃ i Gòn',
-  'TH-015': 'Tuyến Äà Nẵng - Huế',
-  'TH-016': 'Tuyến Huế - Äà Nẵng',
-  'TH-017': 'Tuyến Äà Nẵng - Quy Nhơn',
-  'TH-018': 'Tuyến Quy Nhơn - Äà Nẵng',
-  'TH-019': 'Tuyến SÃ i Gòn - Äà Lạt',
+  'TH-011': 'Tuyến Sài Gòn - Nha Trang',
+  'TH-012': 'Tuyến Nha Trang - Sài Gòn',
+  'TH-013': 'Tuyến Sài Gòn - Phan Thiết',
+  'TH-014': 'Tuyến Phan Thiết - Sài Gòn',
+  'TH-015': 'Tuyến Đà Nẵng - Huế',
+  'TH-016': 'Tuyến Huế - Đà Nẵng',
+  'TH-017': 'Tuyến Đà Nẵng - Quy Nhơn',
+  'TH-018': 'Tuyến Quy Nhơn - Đà Nẵng',
+  'TH-019': 'Tuyến Sài Gòn - Đà Lạt',
   'TH-020': 'Tuyến Hà Nội - Hạ Long',
   'TO-001': 'Tour Sa Pa 3 ngày 2 đêm',
   'TO-002': 'Tour Hạ Long 2 ngày 1 đêm',
-  'TO-003': 'Tour Ninh Bình TrÃ ng An - Bái Đính',
+  'TO-003': 'Tour Ninh Bình Tràng An - Bái Đính',
   'TO-004': 'Tour Hà Giang 3 ngày 2 đêm',
-  'TO-005': 'Tour Äà Nẵng - Hội An - Huế',
+  'TO-005': 'Tour Đà Nẵng - Hội An - Huế',
   'TO-006': 'Tour Bà Nà Hills 1 ngày',
-  'TO-007': 'Tour Cù Lao ChÃ m 1 ngÃ y',
+  'TO-007': 'Tour Cù Lao Chàm 1 ngày',
   'TO-008': 'Tour Nha Trang 3 ngày 2 đêm',
-  'TO-009': 'Tour Äà Lạt 3 ngày 2 đêm',
+  'TO-009': 'Tour Đà Lạt 3 ngày 2 đêm',
   'TO-010': 'Tour Phú Quốc 4 ngày 3 đêm',
   'TO-011': 'Tour Côn Đảo 3 ngày 2 đêm',
-  'TO-012': 'Tour Miền Tây 2 ngÃ y 1 đêm',
+  'TO-012': 'Tour Miền Tây 2 ngày 1 đêm',
   'TO-013': 'Tour Củ Chi - Mekong 1 ngày',
-  'TO-014': 'Tour Mũi Né 2 ngÃ y 1 đêm',
-  'TO-015': 'Tour Quy Nhơn - Phú Yên 4 ngÃ y 3 đêm',
-  'TO-016': 'Tour Mộc Châu 2 ngÃ y 1 đêm',
-  'TO-017': 'Tour Mai Châu 2 ngÃ y 1 đêm',
+  'TO-014': 'Tour Mũi Né 2 ngày 1 đêm',
+  'TO-015': 'Tour Quy Nhơn - Phú Yên 4 ngày 3 đêm',
+  'TO-016': 'Tour Mộc Châu 2 ngày 1 đêm',
+  'TO-017': 'Tour Mai Châu 2 ngày 1 đêm',
   'TO-018': 'Tour Singapore 4 ngày 3 đêm',
   'TO-019': 'Tour Thái Lan Bangkok - Pattaya',
   'TO-020': 'Tour Hàn Quốc Seoul - Nami',
@@ -289,7 +289,7 @@ function makeImportBody({ targetCode, targetName }) {
         externalId: 'rv-002',
         reviewerName: 'Trần Thị B',
         rating: 2,
-        comment: 'Cần cải thiện thời gian phục vụ và phản hồi khách hÃ ng.',
+        comment: 'Cần cải thiện thời gian phục vụ và phản hồi khách hàng.',
         createdAt: new Date().toISOString(),
       },
     ],
@@ -501,14 +501,14 @@ export default function PartnerApiKeysPage() {
           <span className={styles.eyebrow}>Kết nối đối tác</span>
           <h1>Khóa API và AI tóm tắt review</h1>
           <p>
-            Đối tác dùng khóa nÃ y để gửi review từ website của mình về hệ thống, sau đó gắn nút AI để hiển thị bản tóm tắt review.
+            Đối tác dùng khóa này để gửi review từ website của mình về hệ thống, sau đó gắn nút AI để hiển thị bản tóm tắt review.
           </p>
         </div>
 
         <div className={styles.keyPreview}>
           <span>Khóa live</span>
           <strong>{maskKey(liveKey)}</strong>
-          <small>Mỗi lần gọi API thÃ nh công sẽ tính và o quota.</small>
+          <small>Mỗi lần gọi API thành công sẽ tính vào quota.</small>
         </div>
       </section>
 
@@ -533,7 +533,7 @@ export default function PartnerApiKeysPage() {
           <div>
             <span className={styles.sectionTag}>Thiết lập</span>
             <h2>Thông tin kết nối</h2>
-            <p>Điền đúng mã dịch vụ đã được cấp quyền. AI chỉ xử lý dữ liệu trong phạm vi mã nÃ y.</p>
+            <p>Điền đúng mã dịch vụ đã được cấp quyền. AI chỉ xử lý dữ liệu trong phạm vi mã này.</p>
           </div>
 
           <div className={styles.safeBadge}>Không trả raw review</div>
@@ -691,7 +691,7 @@ export default function PartnerApiKeysPage() {
         <section className={styles.snippetPanel}>
           <div className={styles.snippetHead}>
             <div>
-              <span>Mã dÃ nh cho kỹ thuật</span>
+              <span>Mã dành cho kỹ thuật</span>
               <h3>{snippets[activeSnippet]?.title}</h3>
             </div>
             <div className={styles.snippetActions}>
@@ -733,7 +733,7 @@ export default function PartnerApiKeysPage() {
 
             <h3>Tạo lại khóa API?</h3>
             <p>
-              Khóa cũ sẽ ngừng hoạt động ngay. Nếu website đang dùng khóa nÃ y,
+              Khóa cũ sẽ ngừng hoạt động ngay. Nếu website đang dùng khóa này,
               đối tác cần cập nhật lại khóa mới sau khi tạo.
             </p>
 
