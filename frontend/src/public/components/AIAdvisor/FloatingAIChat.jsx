@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+﻿import { useEffect, useMemo, useRef, useState } from "react";
 import styles from "./FloatingAIChat.module.css";
 import {
   buildTrainingContext,
@@ -10,20 +10,20 @@ import {
 const API_BASE =
   import.meta.env.VITE_API_BASE_URL ||
   import.meta.env.VITE_API_BASE ||
-  "http://localhost:8080";
+  "https://reviewhub-backend-ki8w.onrender.com";
 
 const CATEGORIES = [
-  { key: "nhaxe", label: "Top nhà xe uy tín", short: "Nhà xe" },
-  { key: "khachsan", label: "Top khách sạn uy tín", short: "Khách sạn" },
-  { key: "maybay", label: "Top máy bay uy tín", short: "Máy bay" },
-  { key: "tour", label: "Top tour uy tín", short: "Tour" },
-  { key: "dichvu", label: "Top dịch vụ khác uy tín", short: "Dịch vụ khác" },
+  { key: "nhaxe", label: "Top nhÃ  xe uy tÃ­n", short: "NhÃ  xe" },
+  { key: "khachsan", label: "Top khÃ¡ch sáº¡n uy tÃ­n", short: "KhÃ¡ch sáº¡n" },
+  { key: "maybay", label: "Top mÃ¡y bay uy tÃ­n", short: "MÃ¡y bay" },
+  { key: "tour", label: "Top tour uy tÃ­n", short: "Tour" },
+  { key: "dichvu", label: "Top dá»‹ch vá»¥ khÃ¡c uy tÃ­n", short: "Dá»‹ch vá»¥ khÃ¡c" },
 ];
 
 const TOP_SOURCE_CONFIG = {
   nhaxe: {
     prefix: "PT-",
-    typeLabel: "Nhà xe",
+    typeLabel: "NhÃ  xe",
     operatorEndpoints: [
       "/api/operators",
       "/api/public/operators",
@@ -33,7 +33,7 @@ const TOP_SOURCE_CONFIG = {
   },
   khachsan: {
     prefix: "KS-",
-    typeLabel: "Khách sạn",
+    typeLabel: "KhÃ¡ch sáº¡n",
     operatorEndpoints: [
       "/api/operators",
       "/api/public/operators",
@@ -43,7 +43,7 @@ const TOP_SOURCE_CONFIG = {
   },
   maybay: {
     prefix: "MB-",
-    typeLabel: "Máy bay",
+    typeLabel: "MÃ¡y bay",
     operatorEndpoints: [
       "/api/public/airlines",
       "/api/airlines",
@@ -63,7 +63,7 @@ const TOP_SOURCE_CONFIG = {
   },
   dichvu: {
     prefix: "DV-",
-    typeLabel: "Dịch vụ",
+    typeLabel: "Dá»‹ch vá»¥",
     operatorEndpoints: [
       "/api/public/services",
       "/api/services",
@@ -95,7 +95,7 @@ function normalizeText(value) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/đ/g, "d")
+    .replace(/Ä‘/g, "d")
     .replace(/[^a-z0-9\s-]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -190,7 +190,7 @@ function looksLikeServiceQuery(value) {
   ]);
   const usefulTokens = tokens.filter((token) => !stopWords.has(token));
 
-  // Chỉ cho tìm tên riêng ngắn khi câu rất ngắn, tránh câu xã giao/chung chung bị nhảy sang nhà xe.
+  // Chá»‰ cho tÃ¬m tÃªn riÃªng ngáº¯n khi cÃ¢u ráº¥t ngáº¯n, trÃ¡nh cÃ¢u xÃ£ giao/chung chung bá»‹ nháº£y sang nhÃ  xe.
   return usefulTokens.length > 0 && usefulTokens.length <= 3 && text.length <= 32;
 }
 
@@ -265,7 +265,7 @@ function normalizeSearchText(value) {
     .normalize("NFD")
     .replace(/[\u0300-\u036f]/g, "")
     .toLowerCase()
-    .replace(/đ/g, "d")
+    .replace(/Ä‘/g, "d")
     .replace(/[^a-z0-9\s-]/g, " ")
     .replace(/\s+/g, " ")
     .trim();
@@ -445,9 +445,9 @@ function mergeTopReviews(operators, reviews) {
 
     if (!stat?.count) return operator;
 
-    // Quan trọng: phải giống ServiceCategoryPage.
-    // Khi review API có dữ liệu thật theo code/tên thì dùng số review thật đó,
-    // không giữ totalReviews từ operator nếu operator đang là số demo/ảo.
+    // Quan trá»ng: pháº£i giá»‘ng ServiceCategoryPage.
+    // Khi review API cÃ³ dá»¯ liá»‡u tháº­t theo code/tÃªn thÃ¬ dÃ¹ng sá»‘ review tháº­t Ä‘Ã³,
+    // khÃ´ng giá»¯ totalReviews tá»« operator náº¿u operator Ä‘ang lÃ  sá»‘ demo/áº£o.
     return {
       ...operator,
       totalReviews: stat.count,
@@ -526,7 +526,7 @@ function toTopServiceItem(operator, config) {
     targetCode: operator.code,
     targetName: operator.name,
     category: config.typeLabel,
-    label: `${operator.code} · ${config.typeLabel} ${operator.name}`,
+    label: `${operator.code} Â· ${config.typeLabel} ${operator.name}`,
     averageRating,
     trustDisplayScore: trustScore,
     totalReviews,
@@ -596,7 +596,7 @@ function welcomeMessage() {
     role: "ai",
     kind: "menu",
     text:
-      "Xin chào! Tôi có thể tư vấn gói/bảng giá, đồng thời hỗ trợ bạn xem dịch vụ uy tín và tóm tắt review.",
+      "Xin chÃ o! TÃ´i cÃ³ thá»ƒ tÆ° váº¥n gÃ³i/báº£ng giÃ¡, Ä‘á»“ng thá»i há»— trá»£ báº¡n xem dá»‹ch vá»¥ uy tÃ­n vÃ  tÃ³m táº¯t review.",
   };
 }
 
@@ -616,17 +616,17 @@ function cleanSummaryLabel(label, lower = false) {
   const raw = String(label || "").trim();
 
   const mapped = {
-    "Giá vé / chi phí": "Giá vé và chi phí",
-    "Vệ sinh / sạch sẽ": "Vệ sinh sạch sẽ",
-    "Không gian / tiện nghi": "Không gian, tiện nghi",
-    "Giờ giấc / đúng giờ": "Giờ giấc đúng giờ",
-    "Đặt chỗ / thủ tục": "Đặt chỗ và thủ tục",
-    "Ăn uống / phục vụ kèm": "Ăn uống và dịch vụ kèm",
-    "Hành lý / đồ đạc": "Hành lý và đồ đạc",
-    "Tour / lịch trình": "Tour và lịch trình",
+    "GiÃ¡ vÃ© / chi phÃ­": "GiÃ¡ vÃ© vÃ  chi phÃ­",
+    "Vá»‡ sinh / sáº¡ch sáº½": "Vá»‡ sinh sáº¡ch sáº½",
+    "KhÃ´ng gian / tiá»‡n nghi": "KhÃ´ng gian, tiá»‡n nghi",
+    "Giá» giáº¥c / Ä‘Ãºng giá»": "Giá» giáº¥c Ä‘Ãºng giá»",
+    "Äáº·t chá»— / thá»§ tá»¥c": "Äáº·t chá»— vÃ  thá»§ tá»¥c",
+    "Ä‚n uá»‘ng / phá»¥c vá»¥ kÃ¨m": "Ä‚n uá»‘ng vÃ  dá»‹ch vá»¥ kÃ¨m",
+    "HÃ nh lÃ½ / Ä‘á»“ Ä‘áº¡c": "HÃ nh lÃ½ vÃ  Ä‘á»“ Ä‘áº¡c",
+    "Tour / lá»‹ch trÃ¬nh": "Tour vÃ  lá»‹ch trÃ¬nh",
   };
 
-  const text = mapped[raw] || raw.replace(/\s*\/\s*/g, " và ");
+  const text = mapped[raw] || raw.replace(/\s*\/\s*/g, " vÃ  ");
   return lower ? text.toLowerCase() : text;
 }
 
@@ -659,110 +659,110 @@ function topicSentence(topic, tone, kind) {
   const textMap = {
     bus: {
       good: {
-        "thai do phuc vu": "Nhân viên/tài xế được khen hỗ trợ lịch sự, dễ trao đổi",
-        "ve sinh sach se": "Xe hoặc khu vực sử dụng khá sạch, tạo cảm giác dễ chịu",
-        "gia ve chi phi": "Một số khách thấy giá vé/chi phí ở mức chấp nhận được",
-        "khong gian tien nghi": "Ghế/giường, máy lạnh hoặc tiện nghi được đánh giá ổn",
-        "gio giac dung gio": "Có chuyến được ghi nhận chạy đúng hoặc gần đúng giờ",
-        "an toan": "Một số khách cảm thấy chuyến đi khá an toàn",
-        "don tra trung chuyen": "Điểm đón/trả hoặc trung chuyển được nhận xét thuận tiện",
-        "dat cho thu tuc": "Đặt vé và xác nhận thông tin tương đối dễ theo dõi",
+        "thai do phuc vu": "NhÃ¢n viÃªn/tÃ i xáº¿ Ä‘Æ°á»£c khen há»— trá»£ lá»‹ch sá»±, dá»… trao Ä‘á»•i",
+        "ve sinh sach se": "Xe hoáº·c khu vá»±c sá»­ dá»¥ng khÃ¡ sáº¡ch, táº¡o cáº£m giÃ¡c dá»… chá»‹u",
+        "gia ve chi phi": "Má»™t sá»‘ khÃ¡ch tháº¥y giÃ¡ vÃ©/chi phÃ­ á»Ÿ má»©c cháº¥p nháº­n Ä‘Æ°á»£c",
+        "khong gian tien nghi": "Gháº¿/giÆ°á»ng, mÃ¡y láº¡nh hoáº·c tiá»‡n nghi Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ á»•n",
+        "gio giac dung gio": "CÃ³ chuyáº¿n Ä‘Æ°á»£c ghi nháº­n cháº¡y Ä‘Ãºng hoáº·c gáº§n Ä‘Ãºng giá»",
+        "an toan": "Má»™t sá»‘ khÃ¡ch cáº£m tháº¥y chuyáº¿n Ä‘i khÃ¡ an toÃ n",
+        "don tra trung chuyen": "Äiá»ƒm Ä‘Ã³n/tráº£ hoáº·c trung chuyá»ƒn Ä‘Æ°á»£c nháº­n xÃ©t thuáº­n tiá»‡n",
+        "dat cho thu tuc": "Äáº·t vÃ© vÃ  xÃ¡c nháº­n thÃ´ng tin tÆ°Æ¡ng Ä‘á»‘i dá»… theo dÃµi",
       },
       risk: {
-        "thai do phuc vu": "Thái độ nhân viên/tài xế còn bị phản ánh khi có phát sinh",
-        "ve sinh sach se": "Cần kiểm tra mùi xe, ghế/giường và vệ sinh gần đây",
-        "gia ve chi phi": "Nên hỏi rõ giá cuối, phụ phí và điều kiện hoàn/hủy",
-        "khong gian tien nghi": "Cần kiểm tra loại xe, ghế, máy lạnh, ổ sạc hoặc wifi",
-        "gio giac dung gio": "Dễ ảnh hưởng lịch trình nếu xe trễ giờ hoặc đổi giờ",
-        "an toan": "Cần đọc kỹ phản ánh về chạy nhanh, vượt ẩu hoặc mất an tâm",
-        "don tra trung chuyen": "Nên hỏi rõ điểm đón/trả để tránh chờ lâu hoặc đổi điểm",
-        "dat cho thu tuc": "Nên lưu mã vé và xác nhận đặt chỗ trước khi lên xe",
+        "thai do phuc vu": "ThÃ¡i Ä‘á»™ nhÃ¢n viÃªn/tÃ i xáº¿ cÃ²n bá»‹ pháº£n Ã¡nh khi cÃ³ phÃ¡t sinh",
+        "ve sinh sach se": "Cáº§n kiá»ƒm tra mÃ¹i xe, gháº¿/giÆ°á»ng vÃ  vá»‡ sinh gáº§n Ä‘Ã¢y",
+        "gia ve chi phi": "NÃªn há»i rÃµ giÃ¡ cuá»‘i, phá»¥ phÃ­ vÃ  Ä‘iá»u kiá»‡n hoÃ n/há»§y",
+        "khong gian tien nghi": "Cáº§n kiá»ƒm tra loáº¡i xe, gháº¿, mÃ¡y láº¡nh, á»• sáº¡c hoáº·c wifi",
+        "gio giac dung gio": "Dá»… áº£nh hÆ°á»Ÿng lá»‹ch trÃ¬nh náº¿u xe trá»… giá» hoáº·c Ä‘á»•i giá»",
+        "an toan": "Cáº§n Ä‘á»c ká»¹ pháº£n Ã¡nh vá» cháº¡y nhanh, vÆ°á»£t áº©u hoáº·c máº¥t an tÃ¢m",
+        "don tra trung chuyen": "NÃªn há»i rÃµ Ä‘iá»ƒm Ä‘Ã³n/tráº£ Ä‘á»ƒ trÃ¡nh chá» lÃ¢u hoáº·c Ä‘á»•i Ä‘iá»ƒm",
+        "dat cho thu tuc": "NÃªn lÆ°u mÃ£ vÃ© vÃ  xÃ¡c nháº­n Ä‘áº·t chá»— trÆ°á»›c khi lÃªn xe",
       },
     },
     hotel: {
       good: {
-        "thai do phuc vu": "Nhân viên/lễ tân được khen hỗ trợ lịch sự, dễ trao đổi",
-        "ve sinh sach se": "Phòng hoặc khu vực chung được đánh giá sạch sẽ",
-        "gia ve chi phi": "Giá phòng được xem là hợp lý so với tiện nghi nhận được",
-        "khong gian tien nghi": "Phòng, giường, điều hòa hoặc view được nhắc tích cực",
-        "an uong phuc vu kem": "Bữa sáng hoặc dịch vụ đi kèm được đánh giá ổn",
-        "dat cho thu tuc": "Đặt phòng và check-in/check-out tương đối thuận tiện",
+        "thai do phuc vu": "NhÃ¢n viÃªn/lá»… tÃ¢n Ä‘Æ°á»£c khen há»— trá»£ lá»‹ch sá»±, dá»… trao Ä‘á»•i",
+        "ve sinh sach se": "PhÃ²ng hoáº·c khu vá»±c chung Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ sáº¡ch sáº½",
+        "gia ve chi phi": "GiÃ¡ phÃ²ng Ä‘Æ°á»£c xem lÃ  há»£p lÃ½ so vá»›i tiá»‡n nghi nháº­n Ä‘Æ°á»£c",
+        "khong gian tien nghi": "PhÃ²ng, giÆ°á»ng, Ä‘iá»u hÃ²a hoáº·c view Ä‘Æ°á»£c nháº¯c tÃ­ch cá»±c",
+        "an uong phuc vu kem": "Bá»¯a sÃ¡ng hoáº·c dá»‹ch vá»¥ Ä‘i kÃ¨m Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ á»•n",
+        "dat cho thu tuc": "Äáº·t phÃ²ng vÃ  check-in/check-out tÆ°Æ¡ng Ä‘á»‘i thuáº­n tiá»‡n",
       },
       risk: {
-        "thai do phuc vu": "Nên xem phản ánh về cách xử lý khiếu nại của nhân viên",
-        "ve sinh sach se": "Cần kiểm tra vệ sinh phòng, ga giường và nhà vệ sinh",
-        "gia ve chi phi": "Nên hỏi rõ phụ phí, tiền cọc và chính sách hủy phòng",
-        "khong gian tien nghi": "Cần đối chiếu ảnh thật, cách âm, wifi và tiện nghi",
-        "an uong phuc vu kem": "Nên xem review mới nếu bạn quan trọng bữa sáng/dịch vụ kèm",
-        "dat cho thu tuc": "Nên lưu xác nhận đặt phòng và giờ nhận/trả phòng",
+        "thai do phuc vu": "NÃªn xem pháº£n Ã¡nh vá» cÃ¡ch xá»­ lÃ½ khiáº¿u náº¡i cá»§a nhÃ¢n viÃªn",
+        "ve sinh sach se": "Cáº§n kiá»ƒm tra vá»‡ sinh phÃ²ng, ga giÆ°á»ng vÃ  nhÃ  vá»‡ sinh",
+        "gia ve chi phi": "NÃªn há»i rÃµ phá»¥ phÃ­, tiá»n cá»c vÃ  chÃ­nh sÃ¡ch há»§y phÃ²ng",
+        "khong gian tien nghi": "Cáº§n Ä‘á»‘i chiáº¿u áº£nh tháº­t, cÃ¡ch Ã¢m, wifi vÃ  tiá»‡n nghi",
+        "an uong phuc vu kem": "NÃªn xem review má»›i náº¿u báº¡n quan trá»ng bá»¯a sÃ¡ng/dá»‹ch vá»¥ kÃ¨m",
+        "dat cho thu tuc": "NÃªn lÆ°u xÃ¡c nháº­n Ä‘áº·t phÃ²ng vÃ  giá» nháº­n/tráº£ phÃ²ng",
       },
     },
     air: {
       good: {
-        "thai do phuc vu": "Nhân viên hỗ trợ hoặc hướng dẫn được đánh giá ổn",
-        "gia ve chi phi": "Giá vé có thể hợp lý nếu đặt đúng thời điểm",
-        "gio giac dung gio": "Một số chuyến được ghi nhận đúng giờ hoặc ít lệch giờ",
-        "dat cho thu tuc": "Đặt vé/check-in được nhận xét khá dễ theo dõi",
-        "hanh ly do dac": "Xử lý hành lý được một số khách đánh giá ổn",
-        "khong gian tien nghi": "Ghế ngồi hoặc tiện nghi cơ bản được nhắc tích cực",
+        "thai do phuc vu": "NhÃ¢n viÃªn há»— trá»£ hoáº·c hÆ°á»›ng dáº«n Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ á»•n",
+        "gia ve chi phi": "GiÃ¡ vÃ© cÃ³ thá»ƒ há»£p lÃ½ náº¿u Ä‘áº·t Ä‘Ãºng thá»i Ä‘iá»ƒm",
+        "gio giac dung gio": "Má»™t sá»‘ chuyáº¿n Ä‘Æ°á»£c ghi nháº­n Ä‘Ãºng giá» hoáº·c Ã­t lá»‡ch giá»",
+        "dat cho thu tuc": "Äáº·t vÃ©/check-in Ä‘Æ°á»£c nháº­n xÃ©t khÃ¡ dá»… theo dÃµi",
+        "hanh ly do dac": "Xá»­ lÃ½ hÃ nh lÃ½ Ä‘Æ°á»£c má»™t sá»‘ khÃ¡ch Ä‘Ã¡nh giÃ¡ á»•n",
+        "khong gian tien nghi": "Gháº¿ ngá»“i hoáº·c tiá»‡n nghi cÆ¡ báº£n Ä‘Æ°á»£c nháº¯c tÃ­ch cá»±c",
       },
       risk: {
-        "thai do phuc vu": "Cần xem kỹ hỗ trợ khi đổi vé, hoàn vé hoặc phát sinh",
-        "gia ve chi phi": "Nên kiểm tra phí hành lý, đổi vé và điều kiện hoàn vé",
-        "gio giac dung gio": "Delay, đổi giờ hoặc hủy chuyến có thể ảnh hưởng lịch trình",
-        "dat cho thu tuc": "Nên chuẩn bị mã đặt chỗ và kiểm tra quy định check-in",
-        "hanh ly do dac": "Cần kiểm tra cân nặng/kích thước hành lý trước khi bay",
-        "khong gian tien nghi": "Nên xem loại ghế và tiện nghi nếu bạn cần thoải mái",
+        "thai do phuc vu": "Cáº§n xem ká»¹ há»— trá»£ khi Ä‘á»•i vÃ©, hoÃ n vÃ© hoáº·c phÃ¡t sinh",
+        "gia ve chi phi": "NÃªn kiá»ƒm tra phÃ­ hÃ nh lÃ½, Ä‘á»•i vÃ© vÃ  Ä‘iá»u kiá»‡n hoÃ n vÃ©",
+        "gio giac dung gio": "Delay, Ä‘á»•i giá» hoáº·c há»§y chuyáº¿n cÃ³ thá»ƒ áº£nh hÆ°á»Ÿng lá»‹ch trÃ¬nh",
+        "dat cho thu tuc": "NÃªn chuáº©n bá»‹ mÃ£ Ä‘áº·t chá»— vÃ  kiá»ƒm tra quy Ä‘á»‹nh check-in",
+        "hanh ly do dac": "Cáº§n kiá»ƒm tra cÃ¢n náº·ng/kÃ­ch thÆ°á»›c hÃ nh lÃ½ trÆ°á»›c khi bay",
+        "khong gian tien nghi": "NÃªn xem loáº¡i gháº¿ vÃ  tiá»‡n nghi náº¿u báº¡n cáº§n thoáº£i mÃ¡i",
       },
     },
     tour: {
       good: {
-        "thai do phuc vu": "Hướng dẫn viên/nhân sự được khen nhiệt tình, dễ hỗ trợ",
-        "gia ve chi phi": "Giá tour được xem là hợp lý so với lịch trình",
-        "tour lich trinh": "Lịch trình tham quan được đánh giá dễ theo dõi",
-        "an uong phuc vu kem": "Ăn uống hoặc dịch vụ kèm được một số khách đánh giá ổn",
-        "dat cho thu tuc": "Đặt tour và xác nhận lịch tương đối rõ ràng",
-        "khong gian tien nghi": "Phương tiện hoặc nơi nghỉ trong tour được nhận xét ổn",
+        "thai do phuc vu": "HÆ°á»›ng dáº«n viÃªn/nhÃ¢n sá»± Ä‘Æ°á»£c khen nhiá»‡t tÃ¬nh, dá»… há»— trá»£",
+        "gia ve chi phi": "GiÃ¡ tour Ä‘Æ°á»£c xem lÃ  há»£p lÃ½ so vá»›i lá»‹ch trÃ¬nh",
+        "tour lich trinh": "Lá»‹ch trÃ¬nh tham quan Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ dá»… theo dÃµi",
+        "an uong phuc vu kem": "Ä‚n uá»‘ng hoáº·c dá»‹ch vá»¥ kÃ¨m Ä‘Æ°á»£c má»™t sá»‘ khÃ¡ch Ä‘Ã¡nh giÃ¡ á»•n",
+        "dat cho thu tuc": "Äáº·t tour vÃ  xÃ¡c nháº­n lá»‹ch tÆ°Æ¡ng Ä‘á»‘i rÃµ rÃ ng",
+        "khong gian tien nghi": "PhÆ°Æ¡ng tiá»‡n hoáº·c nÆ¡i nghá»‰ trong tour Ä‘Æ°á»£c nháº­n xÃ©t á»•n",
       },
       risk: {
-        "thai do phuc vu": "Nên xem phản ánh về hướng dẫn viên và điều phối tour",
-        "gia ve chi phi": "Cần hỏi rõ giá đã bao gồm gì và các khoản phụ thu",
-        "tour lich trinh": "Nên kiểm tra lịch trình thực tế và thời gian ở từng điểm",
-        "an uong phuc vu kem": "Nếu quan trọng bữa ăn, nên xem review mới về suất ăn",
-        "dat cho thu tuc": "Nên lưu lịch trình, xác nhận tour và điều kiện hoàn/hủy",
-        "khong gian tien nghi": "Cần hỏi rõ loại xe, nơi nghỉ và tiện nghi đi kèm",
+        "thai do phuc vu": "NÃªn xem pháº£n Ã¡nh vá» hÆ°á»›ng dáº«n viÃªn vÃ  Ä‘iá»u phá»‘i tour",
+        "gia ve chi phi": "Cáº§n há»i rÃµ giÃ¡ Ä‘Ã£ bao gá»“m gÃ¬ vÃ  cÃ¡c khoáº£n phá»¥ thu",
+        "tour lich trinh": "NÃªn kiá»ƒm tra lá»‹ch trÃ¬nh thá»±c táº¿ vÃ  thá»i gian á»Ÿ tá»«ng Ä‘iá»ƒm",
+        "an uong phuc vu kem": "Náº¿u quan trá»ng bá»¯a Äƒn, nÃªn xem review má»›i vá» suáº¥t Äƒn",
+        "dat cho thu tuc": "NÃªn lÆ°u lá»‹ch trÃ¬nh, xÃ¡c nháº­n tour vÃ  Ä‘iá»u kiá»‡n hoÃ n/há»§y",
+        "khong gian tien nghi": "Cáº§n há»i rÃµ loáº¡i xe, nÆ¡i nghá»‰ vÃ  tiá»‡n nghi Ä‘i kÃ¨m",
       },
     },
     train: {
       good: {
-        "thai do phuc vu": "Nhân viên hỗ trợ được một số khách đánh giá lịch sự",
-        "gia ve chi phi": "Giá vé phù hợp nếu ưu tiên chi phí ổn định",
-        "gio giac dung gio": "Lịch trình được ghi nhận khá đúng giờ trong một số chuyến",
-        "ve sinh sach se": "Khoang ngồi/giường được khen sạch hơn kỳ vọng",
-        "khong gian tien nghi": "Ghế/giường và tiện nghi cơ bản được đánh giá ổn",
+        "thai do phuc vu": "NhÃ¢n viÃªn há»— trá»£ Ä‘Æ°á»£c má»™t sá»‘ khÃ¡ch Ä‘Ã¡nh giÃ¡ lá»‹ch sá»±",
+        "gia ve chi phi": "GiÃ¡ vÃ© phÃ¹ há»£p náº¿u Æ°u tiÃªn chi phÃ­ á»•n Ä‘á»‹nh",
+        "gio giac dung gio": "Lá»‹ch trÃ¬nh Ä‘Æ°á»£c ghi nháº­n khÃ¡ Ä‘Ãºng giá» trong má»™t sá»‘ chuyáº¿n",
+        "ve sinh sach se": "Khoang ngá»“i/giÆ°á»ng Ä‘Æ°á»£c khen sáº¡ch hÆ¡n ká»³ vá»ng",
+        "khong gian tien nghi": "Gháº¿/giÆ°á»ng vÃ  tiá»‡n nghi cÆ¡ báº£n Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ á»•n",
       },
       risk: {
-        "thai do phuc vu": "Nên xem phản ánh về hỗ trợ tại ga hoặc trên tàu",
-        "gia ve chi phi": "Cần kiểm tra hạng vé, phí đổi/trả và hoàn vé",
-        "gio giac dung gio": "Chậm chuyến có thể ảnh hưởng lịch nối chuyến",
-        "ve sinh sach se": "Nên xem vệ sinh khoang tàu và nhà vệ sinh gần đây",
-        "khong gian tien nghi": "Nếu đi xa, nên kiểm tra ghế/giường và điều hòa",
+        "thai do phuc vu": "NÃªn xem pháº£n Ã¡nh vá» há»— trá»£ táº¡i ga hoáº·c trÃªn tÃ u",
+        "gia ve chi phi": "Cáº§n kiá»ƒm tra háº¡ng vÃ©, phÃ­ Ä‘á»•i/tráº£ vÃ  hoÃ n vÃ©",
+        "gio giac dung gio": "Cháº­m chuyáº¿n cÃ³ thá»ƒ áº£nh hÆ°á»Ÿng lá»‹ch ná»‘i chuyáº¿n",
+        "ve sinh sach se": "NÃªn xem vá»‡ sinh khoang tÃ u vÃ  nhÃ  vá»‡ sinh gáº§n Ä‘Ã¢y",
+        "khong gian tien nghi": "Náº¿u Ä‘i xa, nÃªn kiá»ƒm tra gháº¿/giÆ°á»ng vÃ  Ä‘iá»u hÃ²a",
       },
     },
     service: {
       good: {
-        "thai do phuc vu": "Dịch vụ được khen về cách hỗ trợ và phản hồi khách",
-        "gia ve chi phi": "Chi phí được đánh giá tương đối phù hợp",
-        "ve sinh sach se": "Sự sạch sẽ hoặc chỉn chu được nhắc tích cực",
-        "khong gian tien nghi": "Không gian hoặc tiện ích sử dụng được đánh giá ổn",
-        "dat cho thu tuc": "Đặt lịch/xác nhận dịch vụ khá dễ theo dõi",
+        "thai do phuc vu": "Dá»‹ch vá»¥ Ä‘Æ°á»£c khen vá» cÃ¡ch há»— trá»£ vÃ  pháº£n há»“i khÃ¡ch",
+        "gia ve chi phi": "Chi phÃ­ Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ tÆ°Æ¡ng Ä‘á»‘i phÃ¹ há»£p",
+        "ve sinh sach se": "Sá»± sáº¡ch sáº½ hoáº·c chá»‰n chu Ä‘Æ°á»£c nháº¯c tÃ­ch cá»±c",
+        "khong gian tien nghi": "KhÃ´ng gian hoáº·c tiá»‡n Ã­ch sá»­ dá»¥ng Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ á»•n",
+        "dat cho thu tuc": "Äáº·t lá»‹ch/xÃ¡c nháº­n dá»‹ch vá»¥ khÃ¡ dá»… theo dÃµi",
       },
       risk: {
-        "thai do phuc vu": "Nên kiểm tra cách hỗ trợ khi có phát sinh",
-        "gia ve chi phi": "Cần hỏi rõ giá cuối, phụ phí và điều kiện hoàn/hủy",
-        "ve sinh sach se": "Nên xem review gần đây về mức độ sạch sẽ",
-        "khong gian tien nghi": "Cần đối chiếu ảnh thật, mô tả và review mới",
-        "dat cho thu tuc": "Nên lưu xác nhận đặt lịch và thông tin hỗ trợ",
+        "thai do phuc vu": "NÃªn kiá»ƒm tra cÃ¡ch há»— trá»£ khi cÃ³ phÃ¡t sinh",
+        "gia ve chi phi": "Cáº§n há»i rÃµ giÃ¡ cuá»‘i, phá»¥ phÃ­ vÃ  Ä‘iá»u kiá»‡n hoÃ n/há»§y",
+        "ve sinh sach se": "NÃªn xem review gáº§n Ä‘Ã¢y vá» má»©c Ä‘á»™ sáº¡ch sáº½",
+        "khong gian tien nghi": "Cáº§n Ä‘á»‘i chiáº¿u áº£nh tháº­t, mÃ´ táº£ vÃ  review má»›i",
+        "dat cho thu tuc": "NÃªn lÆ°u xÃ¡c nháº­n Ä‘áº·t lá»‹ch vÃ  thÃ´ng tin há»— trá»£",
       },
     },
   };
@@ -773,35 +773,35 @@ function topicSentence(topic, tone, kind) {
   if (sentence) return `${sentence}${suffix}`;
 
   return tone === "good"
-    ? `Dịch vụ được khen ở nhóm ${displayLabel}, có thể xem là điểm cộng khi cân nhắc${suffix}`
-    : `Cần theo dõi nhóm ${displayLabel} vì có thể ảnh hưởng trải nghiệm thực tế${suffix}`;
+    ? `Dá»‹ch vá»¥ Ä‘Æ°á»£c khen á»Ÿ nhÃ³m ${displayLabel}, cÃ³ thá»ƒ xem lÃ  Ä‘iá»ƒm cá»™ng khi cÃ¢n nháº¯c${suffix}`
+    : `Cáº§n theo dÃµi nhÃ³m ${displayLabel} vÃ¬ cÃ³ thá»ƒ áº£nh hÆ°á»Ÿng tráº£i nghiá»‡m thá»±c táº¿${suffix}`;
 }
 
 function fallbackTopicSentences(tone, kind, usedLabels = new Set()) {
   const fallbacks = {
     bus: {
-      good: ["Thái độ phục vụ (0 review)", "Vệ sinh / sạch sẽ (0 review)", "Không gian / tiện nghi (0 review)", "Giờ giấc / đúng giờ (0 review)"],
-      risk: ["Giờ giấc / đúng giờ (0 review)", "An toàn (0 review)", "Giá vé / chi phí (0 review)", "Vệ sinh / sạch sẽ (0 review)"],
+      good: ["ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)", "Vá»‡ sinh / sáº¡ch sáº½ (0 review)", "KhÃ´ng gian / tiá»‡n nghi (0 review)", "Giá» giáº¥c / Ä‘Ãºng giá» (0 review)"],
+      risk: ["Giá» giáº¥c / Ä‘Ãºng giá» (0 review)", "An toÃ n (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)", "Vá»‡ sinh / sáº¡ch sáº½ (0 review)"],
     },
     hotel: {
-      good: ["Vệ sinh / sạch sẽ (0 review)", "Thái độ phục vụ (0 review)", "Không gian / tiện nghi (0 review)", "Ăn uống / phục vụ kèm (0 review)"],
-      risk: ["Vệ sinh / sạch sẽ (0 review)", "Không gian / tiện nghi (0 review)", "Giá vé / chi phí (0 review)", "Đặt chỗ / thủ tục (0 review)"],
+      good: ["Vá»‡ sinh / sáº¡ch sáº½ (0 review)", "ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)", "KhÃ´ng gian / tiá»‡n nghi (0 review)", "Ä‚n uá»‘ng / phá»¥c vá»¥ kÃ¨m (0 review)"],
+      risk: ["Vá»‡ sinh / sáº¡ch sáº½ (0 review)", "KhÃ´ng gian / tiá»‡n nghi (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)", "Äáº·t chá»— / thá»§ tá»¥c (0 review)"],
     },
     air: {
-      good: ["Giờ giấc / đúng giờ (0 review)", "Thái độ phục vụ (0 review)", "Đặt chỗ / thủ tục (0 review)", "Hành lý / đồ đạc (0 review)"],
-      risk: ["Giờ giấc / đúng giờ (0 review)", "Hành lý / đồ đạc (0 review)", "Giá vé / chi phí (0 review)", "Đặt chỗ / thủ tục (0 review)"],
+      good: ["Giá» giáº¥c / Ä‘Ãºng giá» (0 review)", "ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)", "Äáº·t chá»— / thá»§ tá»¥c (0 review)", "HÃ nh lÃ½ / Ä‘á»“ Ä‘áº¡c (0 review)"],
+      risk: ["Giá» giáº¥c / Ä‘Ãºng giá» (0 review)", "HÃ nh lÃ½ / Ä‘á»“ Ä‘áº¡c (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)", "Äáº·t chá»— / thá»§ tá»¥c (0 review)"],
     },
     tour: {
-      good: ["Tour / lịch trình (0 review)", "Thái độ phục vụ (0 review)", "Ăn uống / phục vụ kèm (0 review)", "Giá vé / chi phí (0 review)"],
-      risk: ["Tour / lịch trình (0 review)", "Giá vé / chi phí (0 review)", "Thái độ phục vụ (0 review)", "Ăn uống / phục vụ kèm (0 review)"],
+      good: ["Tour / lá»‹ch trÃ¬nh (0 review)", "ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)", "Ä‚n uá»‘ng / phá»¥c vá»¥ kÃ¨m (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)"],
+      risk: ["Tour / lá»‹ch trÃ¬nh (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)", "ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)", "Ä‚n uá»‘ng / phá»¥c vá»¥ kÃ¨m (0 review)"],
     },
     train: {
-      good: ["Giờ giấc / đúng giờ (0 review)", "Vệ sinh / sạch sẽ (0 review)", "Không gian / tiện nghi (0 review)", "Thái độ phục vụ (0 review)"],
-      risk: ["Giờ giấc / đúng giờ (0 review)", "Vệ sinh / sạch sẽ (0 review)", "Không gian / tiện nghi (0 review)", "Giá vé / chi phí (0 review)"],
+      good: ["Giá» giáº¥c / Ä‘Ãºng giá» (0 review)", "Vá»‡ sinh / sáº¡ch sáº½ (0 review)", "KhÃ´ng gian / tiá»‡n nghi (0 review)", "ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)"],
+      risk: ["Giá» giáº¥c / Ä‘Ãºng giá» (0 review)", "Vá»‡ sinh / sáº¡ch sáº½ (0 review)", "KhÃ´ng gian / tiá»‡n nghi (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)"],
     },
     service: {
-      good: ["Thái độ phục vụ (0 review)", "Giá vé / chi phí (0 review)", "Đặt chỗ / thủ tục (0 review)", "Không gian / tiện nghi (0 review)"],
-      risk: ["Thái độ phục vụ (0 review)", "Giá vé / chi phí (0 review)", "Đặt chỗ / thủ tục (0 review)", "Vệ sinh / sạch sẽ (0 review)"],
+      good: ["ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)", "Äáº·t chá»— / thá»§ tá»¥c (0 review)", "KhÃ´ng gian / tiá»‡n nghi (0 review)"],
+      risk: ["ThÃ¡i Ä‘á»™ phá»¥c vá»¥ (0 review)", "GiÃ¡ vÃ© / chi phÃ­ (0 review)", "Äáº·t chá»— / thá»§ tá»¥c (0 review)", "Vá»‡ sinh / sáº¡ch sáº½ (0 review)"],
     },
   };
 
@@ -847,37 +847,37 @@ function buildAdviceBullets(data, kind) {
   const result = [];
 
   if (badRate >= 50) {
-    result.push(`Tỷ lệ cần theo dõi rất cao (${percent(bad, total)}), chưa nên chọn vội nếu cần trải nghiệm ổn định.`);
+    result.push(`Tá»· lá»‡ cáº§n theo dÃµi ráº¥t cao (${percent(bad, total)}), chÆ°a nÃªn chá»n vá»™i náº¿u cáº§n tráº£i nghiá»‡m á»•n Ä‘á»‹nh.`);
   } else if (badRate >= 30) {
-    result.push(`Có thể cân nhắc, nhưng nên đọc kỹ review gần đây vì phản ánh tiêu cực chiếm ${percent(bad, total)}.`);
+    result.push(`CÃ³ thá»ƒ cÃ¢n nháº¯c, nhÆ°ng nÃªn Ä‘á»c ká»¹ review gáº§n Ä‘Ã¢y vÃ¬ pháº£n Ã¡nh tiÃªu cá»±c chiáº¿m ${percent(bad, total)}.`);
   } else {
-    result.push(`Có thể ưu tiên nếu nhu cầu khớp với điểm mạnh chính của dịch vụ.`);
+    result.push(`CÃ³ thá»ƒ Æ°u tiÃªn náº¿u nhu cáº§u khá»›p vá»›i Ä‘iá»ƒm máº¡nh chÃ­nh cá»§a dá»‹ch vá»¥.`);
   }
 
   if (kind === "bus") {
-    result.push(topBad.label ? `Trước khi đặt vé, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, giờ đón/trả và loại xe.` : "Trước khi đặt vé, hỏi rõ giờ đón/trả, loại xe và điểm trung chuyển.");
-    result.push(topGood.label ? `Nếu vẫn chọn, hãy tận dụng điểm mạnh về ${cleanSummaryLabel(topGood.label, true)} nhưng xem review mới.` : "Nếu vẫn chọn, ưu tiên chuyến có thông tin rõ về xe, giờ chạy và điểm đón.");
-    result.push("Nên so sánh thêm 1-2 nhà xe cùng tuyến trước khi quyết định.");
+    result.push(topBad.label ? `TrÆ°á»›c khi Ä‘áº·t vÃ©, kiá»ƒm tra ká»¹ ${cleanSummaryLabel(topBad.label, true)}, giá» Ä‘Ã³n/tráº£ vÃ  loáº¡i xe.` : "TrÆ°á»›c khi Ä‘áº·t vÃ©, há»i rÃµ giá» Ä‘Ã³n/tráº£, loáº¡i xe vÃ  Ä‘iá»ƒm trung chuyá»ƒn.");
+    result.push(topGood.label ? `Náº¿u váº«n chá»n, hÃ£y táº­n dá»¥ng Ä‘iá»ƒm máº¡nh vá» ${cleanSummaryLabel(topGood.label, true)} nhÆ°ng xem review má»›i.` : "Náº¿u váº«n chá»n, Æ°u tiÃªn chuyáº¿n cÃ³ thÃ´ng tin rÃµ vá» xe, giá» cháº¡y vÃ  Ä‘iá»ƒm Ä‘Ã³n.");
+    result.push("NÃªn so sÃ¡nh thÃªm 1-2 nhÃ  xe cÃ¹ng tuyáº¿n trÆ°á»›c khi quyáº¿t Ä‘á»‹nh.");
   } else if (kind === "hotel") {
-    result.push(topBad.label ? `Trước khi đặt phòng, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, ảnh thật và phụ phí.` : "Trước khi đặt phòng, kiểm tra ảnh thật, vị trí, phụ phí và chính sách hủy.");
-    result.push(topGood.label ? `Nếu ${cleanSummaryLabel(topGood.label, true)} đúng nhu cầu, có thể giữ làm phương án tham khảo.` : "Nếu vị trí, vệ sinh và tiện nghi phù hợp, có thể giữ làm phương án tham khảo.");
-    result.push("Nên so sánh thêm khách sạn cùng khu vực có review mới ổn định.");
+    result.push(topBad.label ? `TrÆ°á»›c khi Ä‘áº·t phÃ²ng, kiá»ƒm tra ká»¹ ${cleanSummaryLabel(topBad.label, true)}, áº£nh tháº­t vÃ  phá»¥ phÃ­.` : "TrÆ°á»›c khi Ä‘áº·t phÃ²ng, kiá»ƒm tra áº£nh tháº­t, vá»‹ trÃ­, phá»¥ phÃ­ vÃ  chÃ­nh sÃ¡ch há»§y.");
+    result.push(topGood.label ? `Náº¿u ${cleanSummaryLabel(topGood.label, true)} Ä‘Ãºng nhu cáº§u, cÃ³ thá»ƒ giá»¯ lÃ m phÆ°Æ¡ng Ã¡n tham kháº£o.` : "Náº¿u vá»‹ trÃ­, vá»‡ sinh vÃ  tiá»‡n nghi phÃ¹ há»£p, cÃ³ thá»ƒ giá»¯ lÃ m phÆ°Æ¡ng Ã¡n tham kháº£o.");
+    result.push("NÃªn so sÃ¡nh thÃªm khÃ¡ch sáº¡n cÃ¹ng khu vá»±c cÃ³ review má»›i á»•n Ä‘á»‹nh.");
   } else if (kind === "air") {
-    result.push(topBad.label ? `Trước khi mua vé, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, hành lý và điều kiện đổi vé.` : "Trước khi mua vé, kiểm tra hành lý, đổi vé, hoàn vé và lịch bay gần đây.");
-    result.push(topGood.label ? `Có thể tận dụng điểm mạnh về ${cleanSummaryLabel(topGood.label, true)}, nhưng cần phương án dự phòng nếu lịch gấp.` : "Nếu lịch trình gấp, nên chọn chuyến có hỗ trợ và giờ bay an toàn.");
-    result.push("Nên so sánh thêm chuyến/hãng khác cùng khung giờ.");
+    result.push(topBad.label ? `TrÆ°á»›c khi mua vÃ©, kiá»ƒm tra ká»¹ ${cleanSummaryLabel(topBad.label, true)}, hÃ nh lÃ½ vÃ  Ä‘iá»u kiá»‡n Ä‘á»•i vÃ©.` : "TrÆ°á»›c khi mua vÃ©, kiá»ƒm tra hÃ nh lÃ½, Ä‘á»•i vÃ©, hoÃ n vÃ© vÃ  lá»‹ch bay gáº§n Ä‘Ã¢y.");
+    result.push(topGood.label ? `CÃ³ thá»ƒ táº­n dá»¥ng Ä‘iá»ƒm máº¡nh vá» ${cleanSummaryLabel(topGood.label, true)}, nhÆ°ng cáº§n phÆ°Æ¡ng Ã¡n dá»± phÃ²ng náº¿u lá»‹ch gáº¥p.` : "Náº¿u lá»‹ch trÃ¬nh gáº¥p, nÃªn chá»n chuyáº¿n cÃ³ há»— trá»£ vÃ  giá» bay an toÃ n.");
+    result.push("NÃªn so sÃ¡nh thÃªm chuyáº¿n/hÃ£ng khÃ¡c cÃ¹ng khung giá».");
   } else if (kind === "tour") {
-    result.push(topBad.label ? `Trước khi đặt tour, hỏi rõ ${cleanSummaryLabel(topBad.label, true)}, phụ thu và dịch vụ đã bao gồm.` : "Trước khi đặt tour, hỏi rõ lịch trình, phụ thu và điều kiện hoàn/hủy.");
-    result.push(topGood.label ? `Nếu ${cleanSummaryLabel(topGood.label, true)} phù hợp phong cách đi, có thể cân nhắc.` : "Nếu lịch trình và dịch vụ kèm phù hợp, có thể cân nhắc sau khi xem review mới.");
-    result.push("Nên so sánh thêm tour cùng điểm đến trước khi đặt.");
+    result.push(topBad.label ? `TrÆ°á»›c khi Ä‘áº·t tour, há»i rÃµ ${cleanSummaryLabel(topBad.label, true)}, phá»¥ thu vÃ  dá»‹ch vá»¥ Ä‘Ã£ bao gá»“m.` : "TrÆ°á»›c khi Ä‘áº·t tour, há»i rÃµ lá»‹ch trÃ¬nh, phá»¥ thu vÃ  Ä‘iá»u kiá»‡n hoÃ n/há»§y.");
+    result.push(topGood.label ? `Náº¿u ${cleanSummaryLabel(topGood.label, true)} phÃ¹ há»£p phong cÃ¡ch Ä‘i, cÃ³ thá»ƒ cÃ¢n nháº¯c.` : "Náº¿u lá»‹ch trÃ¬nh vÃ  dá»‹ch vá»¥ kÃ¨m phÃ¹ há»£p, cÃ³ thá»ƒ cÃ¢n nháº¯c sau khi xem review má»›i.");
+    result.push("NÃªn so sÃ¡nh thÃªm tour cÃ¹ng Ä‘iá»ƒm Ä‘áº¿n trÆ°á»›c khi Ä‘áº·t.");
   } else if (kind === "train") {
-    result.push(topBad.label ? `Trước khi đặt vé, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, hạng ghế và giờ chạy.` : "Trước khi đặt vé, kiểm tra hạng ghế/giường, giờ chạy và điều kiện đổi trả.");
-    result.push(topGood.label ? `Có thể tận dụng điểm mạnh về ${cleanSummaryLabel(topGood.label, true)}, nhất là khi đi đường dài.` : "Nếu đi xa, ưu tiên chuyến có tiện nghi và giờ chạy phù hợp.");
-    result.push("Nên so sánh thêm lựa chọn cùng tuyến để tránh rủi ro lịch trình.");
+    result.push(topBad.label ? `TrÆ°á»›c khi Ä‘áº·t vÃ©, kiá»ƒm tra ká»¹ ${cleanSummaryLabel(topBad.label, true)}, háº¡ng gháº¿ vÃ  giá» cháº¡y.` : "TrÆ°á»›c khi Ä‘áº·t vÃ©, kiá»ƒm tra háº¡ng gháº¿/giÆ°á»ng, giá» cháº¡y vÃ  Ä‘iá»u kiá»‡n Ä‘á»•i tráº£.");
+    result.push(topGood.label ? `CÃ³ thá»ƒ táº­n dá»¥ng Ä‘iá»ƒm máº¡nh vá» ${cleanSummaryLabel(topGood.label, true)}, nháº¥t lÃ  khi Ä‘i Ä‘Æ°á»ng dÃ i.` : "Náº¿u Ä‘i xa, Æ°u tiÃªn chuyáº¿n cÃ³ tiá»‡n nghi vÃ  giá» cháº¡y phÃ¹ há»£p.");
+    result.push("NÃªn so sÃ¡nh thÃªm lá»±a chá»n cÃ¹ng tuyáº¿n Ä‘á»ƒ trÃ¡nh rá»§i ro lá»‹ch trÃ¬nh.");
   } else {
-    result.push(topBad.label ? `Trước khi dùng, kiểm tra kỹ ${cleanSummaryLabel(topBad.label, true)}, giá cuối và hỗ trợ phát sinh.` : "Trước khi dùng, hỏi rõ giá cuối, quy trình và hỗ trợ khi phát sinh.");
-    result.push(topGood.label ? `Nếu ${cleanSummaryLabel(topGood.label, true)} đúng nhu cầu, có thể đưa vào danh sách cân nhắc.` : "Nếu dịch vụ đáp ứng đúng nhu cầu chính, có thể đưa vào danh sách cân nhắc.");
-    result.push("Nên so sánh thêm 1-2 đơn vị khác có review mới rõ ràng.");
+    result.push(topBad.label ? `TrÆ°á»›c khi dÃ¹ng, kiá»ƒm tra ká»¹ ${cleanSummaryLabel(topBad.label, true)}, giÃ¡ cuá»‘i vÃ  há»— trá»£ phÃ¡t sinh.` : "TrÆ°á»›c khi dÃ¹ng, há»i rÃµ giÃ¡ cuá»‘i, quy trÃ¬nh vÃ  há»— trá»£ khi phÃ¡t sinh.");
+    result.push(topGood.label ? `Náº¿u ${cleanSummaryLabel(topGood.label, true)} Ä‘Ãºng nhu cáº§u, cÃ³ thá»ƒ Ä‘Æ°a vÃ o danh sÃ¡ch cÃ¢n nháº¯c.` : "Náº¿u dá»‹ch vá»¥ Ä‘Ã¡p á»©ng Ä‘Ãºng nhu cáº§u chÃ­nh, cÃ³ thá»ƒ Ä‘Æ°a vÃ o danh sÃ¡ch cÃ¢n nháº¯c.");
+    result.push("NÃªn so sÃ¡nh thÃªm 1-2 Ä‘Æ¡n vá»‹ khÃ¡c cÃ³ review má»›i rÃµ rÃ ng.");
   }
 
   return result.slice(0, 4);
@@ -898,55 +898,55 @@ function ServiceSummary({ data }) {
   return (
     <div className={styles.summaryCard}>
       <div className={styles.summaryHead}>
-        <span>AI tóm tắt review</span>
+        <span>AI tÃ³m táº¯t review</span>
         <strong>{data.label || data.targetName}</strong>
       </div>
 
       <div className={styles.summaryStats}>
         <div>
-          <span>Tổng</span>
+          <span>Tá»•ng</span>
           <strong>{total}</strong>
           <small>review</small>
         </div>
 
         <div className={styles.goodStat}>
-          <span>Tốt</span>
+          <span>Tá»‘t</span>
           <strong>{good}</strong>
           <small>{percent(good, total)}</small>
         </div>
 
         <div className={styles.badStat}>
-          <span>Cần theo dõi</span>
+          <span>Cáº§n theo dÃµi</span>
           <strong>{bad}</strong>
           <small>{percent(bad, total)}</small>
         </div>
 
         <div>
-          <span>Trung lập</span>
+          <span>Trung láº­p</span>
           <strong>{neutral}</strong>
           <small>{percent(neutral, total)}</small>
         </div>
 
         <div className={styles.scoreStat}>
-          <span>Điểm TB</span>
+          <span>Äiá»ƒm TB</span>
           <strong>{data.averageRating}/5</strong>
-          <small>trung bình</small>
+          <small>trung bÃ¬nh</small>
         </div>
       </div>
 
       <div className={styles.summaryGroups}>
         <section>
-          <h4>Điểm được khen</h4>
+          <h4>Äiá»ƒm Ä‘Æ°á»£c khen</h4>
           <ul>{goodBullets.map((item) => <li key={item}>{item}</li>)}</ul>
         </section>
 
         <section>
-          <h4>Vấn đề cần theo dõi</h4>
+          <h4>Váº¥n Ä‘á» cáº§n theo dÃµi</h4>
           <ul>{badBullets.map((item) => <li key={item}>{item}</li>)}</ul>
         </section>
 
         <section>
-          <h4>Gợi ý cho bạn</h4>
+          <h4>Gá»£i Ã½ cho báº¡n</h4>
           <ul>{adviceBullets.map((item) => <li key={item}>{item}</li>)}</ul>
         </section>
       </div>
@@ -958,7 +958,7 @@ function TopServices({ items, onSummary }) {
   const rankedItems = sortTopServicesLikeCategoryPage(items);
 
   if (!rankedItems.length) {
-    return <div className={styles.emptyResult}>Chưa có dữ liệu đủ để xếp hạng nhóm này.</div>;
+    return <div className={styles.emptyResult}>ChÆ°a cÃ³ dá»¯ liá»‡u Ä‘á»§ Ä‘á»ƒ xáº¿p háº¡ng nhÃ³m nÃ y.</div>;
   }
 
   return (
@@ -970,14 +970,14 @@ function TopServices({ items, onSummary }) {
           <div className={styles.rankingBody}>
             <strong>{item.label || item.targetName}</strong>
             <div className={styles.rankingMeta}>
-              <span>⭐ {item.averageRating}/5</span>
-              <span>Uy tín {item.trustDisplayScore}/10</span>
+              <span>â­ {item.averageRating}/5</span>
+              <span>Uy tÃ­n {item.trustDisplayScore}/10</span>
               <span>{item.totalReviews} review</span>
             </div>
           </div>
 
           <button type="button" onClick={() => onSummary(item)}>
-            Tóm tắt
+            TÃ³m táº¯t
           </button>
         </article>
       ))}
@@ -996,11 +996,11 @@ export default function FloatingAIChat() {
   const scrollTimersRef = useRef([]);
 
   const headerText = useMemo(() => {
-    if (mode === "package") return "AI tư vấn gói & bảng giá";
-    if (mode === "top") return "Phân tích dịch vụ uy tín";
-    if (mode === "summary") return "Phân tích tóm tắt review";
-    if (mode === "compare") return "So sánh dịch vụ";
-    if (mode === "need") return "Gợi ý theo nhu cầu";
+    if (mode === "package") return "AI tÆ° váº¥n gÃ³i & báº£ng giÃ¡";
+    if (mode === "top") return "PhÃ¢n tÃ­ch dá»‹ch vá»¥ uy tÃ­n";
+    if (mode === "summary") return "PhÃ¢n tÃ­ch tÃ³m táº¯t review";
+    if (mode === "compare") return "So sÃ¡nh dá»‹ch vá»¥";
+    if (mode === "need") return "Gá»£i Ã½ theo nhu cáº§u";
     return "BLU Review AI";
   }, [mode]);
 
@@ -1032,8 +1032,8 @@ export default function FloatingAIChat() {
 
     window.requestAnimationFrame(run);
 
-    // Card/menu/top/tóm tắt có chiều cao thay đổi sau khi render,
-    // nên cuộn thêm vài nhịp để luôn xuống đúng tin nhắn cuối.
+    // Card/menu/top/tÃ³m táº¯t cÃ³ chiá»u cao thay Ä‘á»•i sau khi render,
+    // nÃªn cuá»™n thÃªm vÃ i nhá»‹p Ä‘á»ƒ luÃ´n xuá»‘ng Ä‘Ãºng tin nháº¯n cuá»‘i.
     [40, 120, 260, 520].forEach((delay) => {
       const timerId = window.setTimeout(run, delay);
       scrollTimersRef.current.push(timerId);
@@ -1097,7 +1097,7 @@ export default function FloatingAIChat() {
       const finalMessage = trainingContext
         ? `${trainingContext}
 
-Câu hỏi người dùng: ${text}`
+CÃ¢u há»i ngÆ°á»i dÃ¹ng: ${text}`
         : text;
 
       const data = await fetchJson("/api/ai/advisor", {
@@ -1118,7 +1118,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         text:
-          "Hiện AI tư vấn gói chưa kết nối được. Tôi đã ghi nhận câu hỏi này để admin bổ sung vào file huấn luyện sau.",
+          "Hiá»‡n AI tÆ° váº¥n gÃ³i chÆ°a káº¿t ná»‘i Ä‘Æ°á»£c. TÃ´i Ä‘Ã£ ghi nháº­n cÃ¢u há»i nÃ y Ä‘á»ƒ admin bá»• sung vÃ o file huáº¥n luyá»‡n sau.",
       });
     } finally {
       setLoading(false);
@@ -1129,13 +1129,13 @@ Câu hỏi người dùng: ${text}`
     const picked = CATEGORIES.find((item) => item.key === category);
 
     setLoading(true);
-    pushMessage({ role: "user", text: picked?.label || "Xem top dịch vụ uy tín" });
+    pushMessage({ role: "user", text: picked?.label || "Xem top dá»‹ch vá»¥ uy tÃ­n" });
 
     try {
       let items = await loadTopByCategoryPageLogic(category);
 
-      // Fallback: nếu không đọc được danh sách operator như ServiceCategoryPage
-      // thì mới dùng API AI cũ. Trường hợp bình thường sẽ không dùng fallback này.
+      // Fallback: náº¿u khÃ´ng Ä‘á»c Ä‘Æ°á»£c danh sÃ¡ch operator nhÆ° ServiceCategoryPage
+      // thÃ¬ má»›i dÃ¹ng API AI cÅ©. TrÆ°á»ng há»£p bÃ¬nh thÆ°á»ng sáº½ khÃ´ng dÃ¹ng fallback nÃ y.
       if (!items.length) {
         const data = await fetchJson(
           `/api/public/ai/top-services?category=${encodeURIComponent(category)}&limit=10`
@@ -1152,11 +1152,11 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "topServices",
-        text: `Đây là top ${picked?.short || "dịch vụ"} theo đúng dữ liệu đang dùng ở trang xếp hạng:`,
+        text: `ÄÃ¢y lÃ  top ${picked?.short || "dá»‹ch vá»¥"} theo Ä‘Ãºng dá»¯ liá»‡u Ä‘ang dÃ¹ng á»Ÿ trang xáº¿p háº¡ng:`,
         items,
       });
     } catch (err) {
-      pushMessage({ role: "ai", text: `Không tải được bảng xếp hạng: ${err.message}` });
+      pushMessage({ role: "ai", text: `KhÃ´ng táº£i Ä‘Æ°á»£c báº£ng xáº¿p háº¡ng: ${err.message}` });
     } finally {
       setLoading(false);
     }
@@ -1178,15 +1178,15 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "summary",
-        text: `Đây là bản tóm tắt review của ${service.label || service.targetName}:`,
+        text: `ÄÃ¢y lÃ  báº£n tÃ³m táº¯t review cá»§a ${service.label || service.targetName}:`,
         data: data.data,
       });
     } catch (err) {
       pushMessage({
         role: "ai",
         text:
-          `Không tóm tắt được review: ${err.message}. ` +
-          "Phần xếp hạng vẫn dùng đúng điểm/tổng review từ trang bảng xếp hạng, nhưng dịch vụ này chưa có nội dung review công khai đủ để AI tóm tắt chi tiết.",
+          `KhÃ´ng tÃ³m táº¯t Ä‘Æ°á»£c review: ${err.message}. ` +
+          "Pháº§n xáº¿p háº¡ng váº«n dÃ¹ng Ä‘Ãºng Ä‘iá»ƒm/tá»•ng review tá»« trang báº£ng xáº¿p háº¡ng, nhÆ°ng dá»‹ch vá»¥ nÃ y chÆ°a cÃ³ ná»™i dung review cÃ´ng khai Ä‘á»§ Ä‘á»ƒ AI tÃ³m táº¯t chi tiáº¿t.",
       });
     } finally {
       setLoading(false);
@@ -1197,7 +1197,7 @@ Câu hỏi người dùng: ${text}`
     if (isThanksOrClose(text)) {
       pushMessage({
         role: "ai",
-        text: "Vâng, không có gì ạ. Chúc bạn một ngày tốt lành ạ 😊",
+        text: "VÃ¢ng, khÃ´ng cÃ³ gÃ¬ áº¡. ChÃºc báº¡n má»™t ngÃ y tá»‘t lÃ nh áº¡ ðŸ˜Š",
       });
       return;
     }
@@ -1205,7 +1205,7 @@ Câu hỏi người dùng: ${text}`
     if (isGreeting(text)) {
       pushMessage({
         role: "ai",
-        text: "Chào bạn ạ 😊 Bạn cần tôi tư vấn gói, xem dịch vụ uy tín hay tóm tắt review dịch vụ nào không ạ?",
+        text: "ChÃ o báº¡n áº¡ ðŸ˜Š Báº¡n cáº§n tÃ´i tÆ° váº¥n gÃ³i, xem dá»‹ch vá»¥ uy tÃ­n hay tÃ³m táº¯t review dá»‹ch vá»¥ nÃ o khÃ´ng áº¡?",
       });
       return;
     }
@@ -1214,7 +1214,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "summaryHelp",
-        text: "Bạn vui lòng nhập rõ tên dịch vụ cần xem review, ví dụ: Sao Việt, xe Sao Việt, FLC Hạ Long hoặc mã PT-013.",
+        text: "Báº¡n vui lÃ²ng nháº­p rÃµ tÃªn dá»‹ch vá»¥ cáº§n xem review, vÃ­ dá»¥: Sao Viá»‡t, xe Sao Viá»‡t, FLC Háº¡ Long hoáº·c mÃ£ PT-013.",
       });
       return;
     }
@@ -1228,7 +1228,7 @@ Câu hỏi người dùng: ${text}`
         rememberUnansweredQuestion(text, { mode: "summary" });
         pushMessage({
           role: "ai",
-          text: "Tôi chưa tìm thấy dịch vụ phù hợp. Bạn thử nhập rõ hơn tên nhà xe, khách sạn hoặc mã dịch vụ nhé.",
+          text: "TÃ´i chÆ°a tÃ¬m tháº¥y dá»‹ch vá»¥ phÃ¹ há»£p. Báº¡n thá»­ nháº­p rÃµ hÆ¡n tÃªn nhÃ  xe, khÃ¡ch sáº¡n hoáº·c mÃ£ dá»‹ch vá»¥ nhÃ©.",
         });
         return;
       }
@@ -1238,12 +1238,12 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "confirmService",
-        text: `Bạn cần hỏi về ${best.label} đúng không ạ?`,
+        text: `Báº¡n cáº§n há»i vá» ${best.label} Ä‘Ãºng khÃ´ng áº¡?`,
         service: best,
         alternatives: matches.slice(1, 4),
       });
     } catch (err) {
-      pushMessage({ role: "ai", text: `Không tìm được dịch vụ: ${err.message}` });
+      pushMessage({ role: "ai", text: `KhÃ´ng tÃ¬m Ä‘Æ°á»£c dá»‹ch vá»¥: ${err.message}` });
     } finally {
       setLoading(false);
     }
@@ -1255,7 +1255,7 @@ Câu hỏi người dùng: ${text}`
     if (parts.length < 2) {
       pushMessage({
         role: "ai",
-        text: "Bạn vui lòng nhập 2 dịch vụ, cách nhau bằng dấu phẩy. Ví dụ: Sao Việt, Như Vinh",
+        text: "Báº¡n vui lÃ²ng nháº­p 2 dá»‹ch vá»¥, cÃ¡ch nhau báº±ng dáº¥u pháº©y. VÃ­ dá»¥: Sao Viá»‡t, NhÆ° Vinh",
       });
       return;
     }
@@ -1269,7 +1269,7 @@ Câu hỏi người dùng: ${text}`
       if (!firstMatches[0] || !secondMatches[0]) {
         pushMessage({
           role: "ai",
-          text: "Tôi chưa tìm đủ 2 dịch vụ để so sánh. Bạn thử nhập rõ hơn tên dịch vụ nhé.",
+          text: "TÃ´i chÆ°a tÃ¬m Ä‘á»§ 2 dá»‹ch vá»¥ Ä‘á»ƒ so sÃ¡nh. Báº¡n thá»­ nháº­p rÃµ hÆ¡n tÃªn dá»‹ch vá»¥ nhÃ©.",
         });
         return;
       }
@@ -1282,11 +1282,11 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "compare",
-        text: `So sánh nhanh ${aRes.data.label || aRes.data.targetName} và ${bRes.data.label || bRes.data.targetName}:`,
+        text: `So sÃ¡nh nhanh ${aRes.data.label || aRes.data.targetName} vÃ  ${bRes.data.label || bRes.data.targetName}:`,
         data: [aRes.data, bRes.data],
       });
     } catch (err) {
-      pushMessage({ role: "ai", text: `Không so sánh được: ${err.message}` });
+      pushMessage({ role: "ai", text: `KhÃ´ng so sÃ¡nh Ä‘Æ°á»£c: ${err.message}` });
     } finally {
       setLoading(false);
     }
@@ -1299,7 +1299,7 @@ Câu hỏi người dùng: ${text}`
         role: "ai",
         kind: "packageQuick",
         text:
-          "Bạn muốn tôi tư vấn gói theo nhu cầu nào? Bạn có thể nhập quota/tháng, AI moderation, API key hoặc ngân sách dự kiến.",
+          "Báº¡n muá»‘n tÃ´i tÆ° váº¥n gÃ³i theo nhu cáº§u nÃ o? Báº¡n cÃ³ thá»ƒ nháº­p quota/thÃ¡ng, AI moderation, API key hoáº·c ngÃ¢n sÃ¡ch dá»± kiáº¿n.",
       });
       return;
     }
@@ -1309,7 +1309,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "categoryMenu",
-        text: "Bạn muốn xem top dịch vụ uy tín ở nhóm nào?",
+        text: "Báº¡n muá»‘n xem top dá»‹ch vá»¥ uy tÃ­n á»Ÿ nhÃ³m nÃ o?",
       });
       return;
     }
@@ -1318,7 +1318,7 @@ Câu hỏi người dùng: ${text}`
       setMode("summary");
       pushMessage({
         role: "ai",
-        text: "Bạn cần tham khảo review của dịch vụ nào ạ? Ví dụ: Sao Việt, xe Sao Việt, FLC Hạ Long...",
+        text: "Báº¡n cáº§n tham kháº£o review cá»§a dá»‹ch vá»¥ nÃ o áº¡? VÃ­ dá»¥: Sao Viá»‡t, xe Sao Viá»‡t, FLC Háº¡ Long...",
       });
       return;
     }
@@ -1327,7 +1327,7 @@ Câu hỏi người dùng: ${text}`
       setMode("compare");
       pushMessage({
         role: "ai",
-        text: "Bạn nhập 2 dịch vụ muốn so sánh, cách nhau bằng dấu phẩy. Ví dụ: Sao Việt, Như Vinh",
+        text: "Báº¡n nháº­p 2 dá»‹ch vá»¥ muá»‘n so sÃ¡nh, cÃ¡ch nhau báº±ng dáº¥u pháº©y. VÃ­ dá»¥: Sao Viá»‡t, NhÆ° Vinh",
       });
       return;
     }
@@ -1337,7 +1337,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "needMenu",
-        text: "Bạn đang cần gợi ý theo nhu cầu nào?",
+        text: "Báº¡n Ä‘ang cáº§n gá»£i Ã½ theo nhu cáº§u nÃ o?",
       });
     }
   }
@@ -1372,7 +1372,7 @@ Câu hỏi người dùng: ${text}`
     if (isThanksOrClose(text)) {
       pushMessage({
         role: "ai",
-        text: "Vâng, không có gì ạ. Chúc bạn một ngày tốt lành ạ 😊",
+        text: "VÃ¢ng, khÃ´ng cÃ³ gÃ¬ áº¡. ChÃºc báº¡n má»™t ngÃ y tá»‘t lÃ nh áº¡ ðŸ˜Š",
       });
       return;
     }
@@ -1380,7 +1380,7 @@ Câu hỏi người dùng: ${text}`
     if (isGreeting(text)) {
       pushMessage({
         role: "ai",
-        text: "Chào bạn ạ 😊 Bạn cần tôi tư vấn gói, xem dịch vụ uy tín hay tóm tắt review dịch vụ nào không ạ?",
+        text: "ChÃ o báº¡n áº¡ ðŸ˜Š Báº¡n cáº§n tÃ´i tÆ° váº¥n gÃ³i, xem dá»‹ch vá»¥ uy tÃ­n hay tÃ³m táº¯t review dá»‹ch vá»¥ nÃ o khÃ´ng áº¡?",
       });
       return;
     }
@@ -1419,7 +1419,7 @@ Câu hỏi người dùng: ${text}`
       pushMessage({
         role: "ai",
         kind: "categoryMenu",
-        text: "Bạn muốn xem top dịch vụ uy tín ở nhóm nào?",
+        text: "Báº¡n muá»‘n xem top dá»‹ch vá»¥ uy tÃ­n á»Ÿ nhÃ³m nÃ o?",
       });
       return;
     }
@@ -1433,7 +1433,7 @@ Câu hỏi người dùng: ${text}`
     rememberUnansweredQuestion(text, { mode: "general" });
     pushMessage({
       role: "ai",
-      text: "Tôi chưa hiểu rõ ý bạn. Bạn có thể bấm Menu để chọn mục hỗ trợ, hoặc nhập rõ hơn câu hỏi về gói, dịch vụ uy tín hay tóm tắt review nhé.",
+      text: "TÃ´i chÆ°a hiá»ƒu rÃµ Ã½ báº¡n. Báº¡n cÃ³ thá»ƒ báº¥m Menu Ä‘á»ƒ chá»n má»¥c há»— trá»£, hoáº·c nháº­p rÃµ hÆ¡n cÃ¢u há»i vá» gÃ³i, dá»‹ch vá»¥ uy tÃ­n hay tÃ³m táº¯t review nhÃ©.",
     });
   }
 
@@ -1464,7 +1464,7 @@ Câu hỏi người dùng: ${text}`
                 <strong>{option.title}</strong>
                 {option.desc && <small>{option.desc}</small>}
               </span>
-              <i>›</i>
+              <i>â€º</i>
             </button>
           ))}
         </div>
@@ -1477,31 +1477,31 @@ Câu hỏi người dùng: ${text}`
       const mainItems = [
         {
           key: "package",
-          title: "AI tư vấn gói / bảng giá",
-          desc: "Tư vấn gói, quota, API key và ngân sách",
+          title: "AI tÆ° váº¥n gÃ³i / báº£ng giÃ¡",
+          desc: "TÆ° váº¥n gÃ³i, quota, API key vÃ  ngÃ¢n sÃ¡ch",
         },
         {
           key: "top",
-          title: "Phân tích dịch vụ uy tín",
-          desc: "Xem top dịch vụ theo từng nhóm đánh giá",
+          title: "PhÃ¢n tÃ­ch dá»‹ch vá»¥ uy tÃ­n",
+          desc: "Xem top dá»‹ch vá»¥ theo tá»«ng nhÃ³m Ä‘Ã¡nh giÃ¡",
         },
         {
           key: "summary",
-          title: "Phân tích tóm tắt review",
-          desc: "Tóm tắt ưu điểm, nhược điểm và lời khuyên",
+          title: "PhÃ¢n tÃ­ch tÃ³m táº¯t review",
+          desc: "TÃ³m táº¯t Æ°u Ä‘iá»ƒm, nhÆ°á»£c Ä‘iá»ƒm vÃ  lá»i khuyÃªn",
         },
       ];
 
       const chipItems = [
-        { key: "compare", label: "So sánh nhanh 2 dịch vụ" },
-        { key: "need", label: "Gợi ý theo nhu cầu" },
+        { key: "compare", label: "So sÃ¡nh nhanh 2 dá»‹ch vá»¥" },
+        { key: "need", label: "Gá»£i Ã½ theo nhu cáº§u" },
       ];
 
       return (
         <div className={styles.menuCard}>
           <div className={styles.menuIntro}>
-            <strong>AI hỗ trợ nhanh</strong>
-            <span>Chọn một mục, AI sẽ gợi ý câu hỏi và trả lời ngay.</span>
+            <strong>AI há»— trá»£ nhanh</strong>
+            <span>Chá»n má»™t má»¥c, AI sáº½ gá»£i Ã½ cÃ¢u há»i vÃ  tráº£ lá»i ngay.</span>
           </div>
 
           <div className={styles.menuList}>
@@ -1515,13 +1515,13 @@ Câu hỏi người dùng: ${text}`
                   <strong>{menuItem.title}</strong>
                   <small>{menuItem.desc}</small>
                 </span>
-                <i>›</i>
+                <i>â€º</i>
               </button>
             ))}
           </div>
 
           <div className={styles.menuMore}>
-            <span>HỖ TRỢ THÊM</span>
+            <span>Há»– TRá»¢ THÃŠM</span>
             <div className={styles.menuChips}>
               {chipItems.map((chip) => (
                 <button key={chip.key} type="button" onClick={() => chooseMain(chip.key)}>
@@ -1536,32 +1536,32 @@ Câu hỏi người dùng: ${text}`
 
     if (item.kind === "packageQuick") {
       return renderOptionCard({
-        title: "AI tư vấn gói / bảng giá",
-        subtitle: "Chọn nhanh nhu cầu của bạn hoặc nhập trực tiếp ở ô chat.",
+        title: "AI tÆ° váº¥n gÃ³i / báº£ng giÃ¡",
+        subtitle: "Chá»n nhanh nhu cáº§u cá»§a báº¡n hoáº·c nháº­p trá»±c tiáº¿p á»Ÿ Ã´ chat.",
         items: [
           {
             key: "moderation",
-            title: "Cần AI moderation",
-            desc: "Tư vấn gói phù hợp cho kiểm duyệt review",
-            onClick: () => quickPackage("Tôi cần AI moderation cho app review"),
+            title: "Cáº§n AI moderation",
+            desc: "TÆ° váº¥n gÃ³i phÃ¹ há»£p cho kiá»ƒm duyá»‡t review",
+            onClick: () => quickPackage("TÃ´i cáº§n AI moderation cho app review"),
           },
           {
             key: "request-20000",
-            title: "20.000 request/tháng",
-            desc: "Ước tính gói theo quota sử dụng mỗi tháng",
-            onClick: () => quickPackage("Tôi cần khoảng 20000 request mỗi tháng"),
+            title: "20.000 request/thÃ¡ng",
+            desc: "Æ¯á»›c tÃ­nh gÃ³i theo quota sá»­ dá»¥ng má»—i thÃ¡ng",
+            onClick: () => quickPackage("TÃ´i cáº§n khoáº£ng 20000 request má»—i thÃ¡ng"),
           },
           {
             key: "discount",
-            title: "Hỏi ưu đãi",
-            desc: "Tư vấn giảm giá khi mua nhiều hoặc dùng lâu dài",
-            onClick: () => quickPackage("Mua nhiều có được giảm giá không?"),
+            title: "Há»i Æ°u Ä‘Ã£i",
+            desc: "TÆ° váº¥n giáº£m giÃ¡ khi mua nhiá»u hoáº·c dÃ¹ng lÃ¢u dÃ i",
+            onClick: () => quickPackage("Mua nhiá»u cÃ³ Ä‘Æ°á»£c giáº£m giÃ¡ khÃ´ng?"),
           },
           {
             key: "api-summary",
-            title: "API key + AI tóm tắt review",
-            desc: "Gói có API key và chức năng tóm tắt review",
-            onClick: () => quickPackage("Tôi muốn gói có API key và AI tóm tắt review"),
+            title: "API key + AI tÃ³m táº¯t review",
+            desc: "GÃ³i cÃ³ API key vÃ  chá»©c nÄƒng tÃ³m táº¯t review",
+            onClick: () => quickPackage("TÃ´i muá»‘n gÃ³i cÃ³ API key vÃ  AI tÃ³m táº¯t review"),
           },
         ],
       });
@@ -1569,12 +1569,12 @@ Câu hỏi người dùng: ${text}`
 
     if (item.kind === "categoryMenu") {
       return renderOptionCard({
-        title: "Phân tích dịch vụ uy tín",
-        subtitle: "Chọn nhóm dịch vụ muốn xem bảng xếp hạng.",
+        title: "PhÃ¢n tÃ­ch dá»‹ch vá»¥ uy tÃ­n",
+        subtitle: "Chá»n nhÃ³m dá»‹ch vá»¥ muá»‘n xem báº£ng xáº¿p háº¡ng.",
         items: CATEGORIES.map((category) => ({
           key: category.key,
           title: category.label,
-          desc: `Xem danh sách ${category.short.toLowerCase()} được đánh giá tốt`,
+          desc: `Xem danh sÃ¡ch ${category.short.toLowerCase()} Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ tá»‘t`,
           onClick: () => loadTop(category.key),
         })),
       });
@@ -1582,31 +1582,31 @@ Câu hỏi người dùng: ${text}`
 
     if (item.kind === "needMenu") {
       return renderOptionCard({
-        title: "Gợi ý theo nhu cầu",
-        subtitle: "Chọn nhu cầu để AI gợi ý dịch vụ phù hợp.",
+        title: "Gá»£i Ã½ theo nhu cáº§u",
+        subtitle: "Chá»n nhu cáº§u Ä‘á»ƒ AI gá»£i Ã½ dá»‹ch vá»¥ phÃ¹ há»£p.",
         items: [
           {
             key: "need-bus",
-            title: "Tôi cần nhà xe được đánh giá cao",
-            desc: "Ưu tiên nhà xe có nhiều review tốt",
+            title: "TÃ´i cáº§n nhÃ  xe Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ cao",
+            desc: "Æ¯u tiÃªn nhÃ  xe cÃ³ nhiá»u review tá»‘t",
             onClick: () => loadTop("nhaxe"),
           },
           {
             key: "need-hotel",
-            title: "Tôi cần khách sạn nhiều review tốt",
-            desc: "Ưu tiên khách sạn có điểm đánh giá ổn định",
+            title: "TÃ´i cáº§n khÃ¡ch sáº¡n nhiá»u review tá»‘t",
+            desc: "Æ¯u tiÃªn khÃ¡ch sáº¡n cÃ³ Ä‘iá»ƒm Ä‘Ã¡nh giÃ¡ á»•n Ä‘á»‹nh",
             onClick: () => loadTop("khachsan"),
           },
           {
             key: "need-tour",
-            title: "Tôi cần tour uy tín",
-            desc: "Xem nhóm tour được đánh giá tốt",
+            title: "TÃ´i cáº§n tour uy tÃ­n",
+            desc: "Xem nhÃ³m tour Ä‘Æ°á»£c Ä‘Ã¡nh giÃ¡ tá»‘t",
             onClick: () => loadTop("tour"),
           },
           {
             key: "need-specific",
-            title: "Tôi muốn hỏi một dịch vụ cụ thể",
-            desc: "Nhập tên hoặc mã dịch vụ để tóm tắt review",
+            title: "TÃ´i muá»‘n há»i má»™t dá»‹ch vá»¥ cá»¥ thá»ƒ",
+            desc: "Nháº­p tÃªn hoáº·c mÃ£ dá»‹ch vá»¥ Ä‘á»ƒ tÃ³m táº¯t review",
             onClick: () => chooseMain("summary"),
           },
         ],
@@ -1615,31 +1615,31 @@ Câu hỏi người dùng: ${text}`
 
     if (item.kind === "summaryHelp") {
       return renderOptionCard({
-        title: "Phân tích tóm tắt review",
-        subtitle: "Chọn ví dụ nhanh hoặc nhập tên dịch vụ ở ô chat.",
+        title: "PhÃ¢n tÃ­ch tÃ³m táº¯t review",
+        subtitle: "Chá»n vÃ­ dá»¥ nhanh hoáº·c nháº­p tÃªn dá»‹ch vá»¥ á»Ÿ Ã´ chat.",
         items: [
           {
             key: "summary-saoviet",
-            title: "Nhà xe Sao Việt",
-            desc: "Điền nhanh tên dịch vụ để tra cứu",
-            onClick: () => setMessage("Sao Việt"),
+            title: "NhÃ  xe Sao Viá»‡t",
+            desc: "Äiá»n nhanh tÃªn dá»‹ch vá»¥ Ä‘á»ƒ tra cá»©u",
+            onClick: () => setMessage("Sao Viá»‡t"),
           },
           {
             key: "summary-nhuvinh",
-            title: "Nhà xe Như Vinh",
-            desc: "Điền nhanh tên dịch vụ để tra cứu",
-            onClick: () => setMessage("Như Vinh"),
+            title: "NhÃ  xe NhÆ° Vinh",
+            desc: "Äiá»n nhanh tÃªn dá»‹ch vá»¥ Ä‘á»ƒ tra cá»©u",
+            onClick: () => setMessage("NhÆ° Vinh"),
           },
           {
             key: "summary-flc",
-            title: "Khách sạn FLC Hạ Long",
-            desc: "Điền nhanh tên dịch vụ để tra cứu",
-            onClick: () => setMessage("FLC Hạ Long"),
+            title: "KhÃ¡ch sáº¡n FLC Háº¡ Long",
+            desc: "Äiá»n nhanh tÃªn dá»‹ch vá»¥ Ä‘á»ƒ tra cá»©u",
+            onClick: () => setMessage("FLC Háº¡ Long"),
           },
           {
             key: "summary-top",
-            title: "Xem top dịch vụ uy tín",
-            desc: "Chọn nhóm dịch vụ để xem xếp hạng",
+            title: "Xem top dá»‹ch vá»¥ uy tÃ­n",
+            desc: "Chá»n nhÃ³m dá»‹ch vá»¥ Ä‘á»ƒ xem xáº¿p háº¡ng",
             onClick: () => chooseMain("top"),
           },
         ],
@@ -1650,12 +1650,12 @@ Câu hỏi người dùng: ${text}`
       return (
         <div className={styles.confirmBox}>
           <button className={styles.primaryConfirm} onClick={() => loadSummary(item.service)}>
-            Đúng, tóm tắt review
+            ÄÃºng, tÃ³m táº¯t review
           </button>
 
           {item.alternatives?.length > 0 && (
             <div className={styles.altList}>
-              <span>Hoặc chọn dịch vụ khác:</span>
+              <span>Hoáº·c chá»n dá»‹ch vá»¥ khÃ¡c:</span>
               {item.alternatives.map((service) => (
                 <button key={service.targetCode} onClick={() => loadSummary(service)}>
                   {service.label}
@@ -1687,10 +1687,10 @@ Câu hỏi người dùng: ${text}`
           {[a, b].filter(Boolean).map((service) => (
             <article key={service.targetCode}>
               <strong>{service.label || service.targetName}</strong>
-              <span>⭐ {service.averageRating}/5</span>
+              <span>â­ {service.averageRating}/5</span>
               <span>{service.totalReviews} review</span>
-              <span>Tốt: {percent(service.goodReviews, service.totalReviews)}</span>
-              <span>Cần theo dõi: {percent(service.badReviews, service.totalReviews)}</span>
+              <span>Tá»‘t: {percent(service.goodReviews, service.totalReviews)}</span>
+              <span>Cáº§n theo dÃµi: {percent(service.badReviews, service.totalReviews)}</span>
             </article>
           ))}
         </div>
@@ -1716,12 +1716,12 @@ Câu hỏi người dùng: ${text}`
               <div className={styles.avatar}>AI</div>
               <div>
                 <h3>{headerText}</h3>
-                <p>Tư vấn gói, bảng giá và chọn dịch vụ uy tín</p>
+                <p>TÆ° váº¥n gÃ³i, báº£ng giÃ¡ vÃ  chá»n dá»‹ch vá»¥ uy tÃ­n</p>
               </div>
             </div>
 
             <button className={styles.closeBtn} onClick={() => setOpen(false)}>
-              ×
+              Ã—
             </button>
           </div>
 
@@ -1772,9 +1772,9 @@ Câu hỏi người dùng: ${text}`
           </div>
 
           <div className={styles.quickReplies}>
-            <button onClick={() => chooseMain("package")}>Tư vấn gói</button>
-            <button onClick={() => chooseMain("top")}>Dịch vụ uy tín</button>
-            <button onClick={() => chooseMain("summary")}>Tóm tắt review</button>
+            <button onClick={() => chooseMain("package")}>TÆ° váº¥n gÃ³i</button>
+            <button onClick={() => chooseMain("top")}>Dá»‹ch vá»¥ uy tÃ­n</button>
+            <button onClick={() => chooseMain("summary")}>TÃ³m táº¯t review</button>
           </div>
 
           <div className={styles.inputArea}>
@@ -1788,16 +1788,16 @@ Câu hỏi người dùng: ${text}`
               onKeyDown={handleKeyDown}
               placeholder={
                 mode === "package"
-                  ? "Nhập nhu cầu gói, quota hoặc ngân sách..."
+                  ? "Nháº­p nhu cáº§u gÃ³i, quota hoáº·c ngÃ¢n sÃ¡ch..."
                   : mode === "summary"
-                    ? "Nhập tên dịch vụ, ví dụ: Sao Việt..."
-                    : "Hỏi AI..."
+                    ? "Nháº­p tÃªn dá»‹ch vá»¥, vÃ­ dá»¥: Sao Viá»‡t..."
+                    : "Há»i AI..."
               }
               rows={1}
             />
 
             <button onClick={sendMessage} disabled={loading || !message.trim()}>
-              Gửi
+              Gá»­i
             </button>
           </div>
         </div>
@@ -1805,3 +1805,4 @@ Câu hỏi người dùng: ${text}`
     </>
   );
 }
+

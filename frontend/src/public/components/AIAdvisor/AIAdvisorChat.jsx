@@ -1,4 +1,4 @@
-import { useState } from "react";
+﻿import { useState } from "react";
 import styles from "./AIAdvisorChat.module.css";
 
 export default function AIAdvisorChat() {
@@ -6,7 +6,7 @@ export default function AIAdvisorChat() {
   const [messages, setMessages] = useState([
     {
       role: "ai",
-      text: "Xin chào! Tôi là AI tư vấn gói dịch vụ. Bạn cần quota bao nhiêu request/tháng hoặc có cần AI moderation không?",
+      text: "Xin chÃ o! TÃ´i lÃ  AI tÆ° váº¥n gÃ³i dá»‹ch vá»¥. Báº¡n cáº§n quota bao nhiÃªu request/thÃ¡ng hoáº·c cÃ³ cáº§n AI moderation khÃ´ng?",
     },
   ]);
   const [loading, setLoading] = useState(false);
@@ -20,7 +20,7 @@ export default function AIAdvisorChat() {
     setLoading(true);
 
     try {
-      const res = await fetch("http://localhost:8080/api/ai/advisor", {
+      const res = await fetch("https://reviewhub-backend-ki8w.onrender.com/api/ai/advisor", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
@@ -52,7 +52,7 @@ export default function AIAdvisorChat() {
         ...prev,
         {
           role: "ai",
-          text: "Lỗi kết nối AI: " + err.message,
+          text: "Lá»—i káº¿t ná»‘i AI: " + err.message,
         },
       ]);
     } finally {
@@ -72,8 +72,8 @@ export default function AIAdvisorChat() {
       <div className={styles.header}>
         <div className={styles.avatar}>AI</div>
         <div>
-          <h2>AI tư vấn gói phù hợp</h2>
-          <p>Online · Sẵn sàng hỗ trợ bạn chọn gói</p>
+          <h2>AI tÆ° váº¥n gÃ³i phÃ¹ há»£p</h2>
+          <p>Online Â· Sáºµn sÃ ng há»— trá»£ báº¡n chá»n gÃ³i</p>
         </div>
       </div>
 
@@ -101,21 +101,21 @@ export default function AIAdvisorChat() {
           <div className={`${styles.messageRow} ${styles.aiRow}`}>
             <div className={styles.smallAvatar}>AI</div>
             <div className={`${styles.bubble} ${styles.aiBubble}`}>
-              Đang suy nghĩ...
+              Äang suy nghÄ©...
             </div>
           </div>
         )}
       </div>
 
       <div className={styles.quickReplies}>
-        <button onClick={() => setMessage("Tôi cần AI moderation cho app review")}>
-          Cần AI moderation
+        <button onClick={() => setMessage("TÃ´i cáº§n AI moderation cho app review")}>
+          Cáº§n AI moderation
         </button>
-        <button onClick={() => setMessage("Tôi cần khoảng 20000 request mỗi tháng")}>
-          20.000 request/tháng
+        <button onClick={() => setMessage("TÃ´i cáº§n khoáº£ng 20000 request má»—i thÃ¡ng")}>
+          20.000 request/thÃ¡ng
         </button>
-        <button onClick={() => setMessage("Mua nhiều có được giảm giá không?")}>
-          Hỏi ưu đãi
+        <button onClick={() => setMessage("Mua nhiá»u cÃ³ Ä‘Æ°á»£c giáº£m giÃ¡ khÃ´ng?")}>
+          Há»i Æ°u Ä‘Ã£i
         </button>
       </div>
 
@@ -124,12 +124,12 @@ export default function AIAdvisorChat() {
           value={message}
           onChange={(e) => setMessage(e.target.value)}
           onKeyDown={handleKeyDown}
-          placeholder="Nhập tin nhắn..."
+          placeholder="Nháº­p tin nháº¯n..."
           rows={1}
         />
 
         <button onClick={handleAsk} disabled={loading || !message.trim()}>
-          Gửi
+          Gá»­i
         </button>
       </div>
     </section>

@@ -1,5 +1,5 @@
-const API_BASE_URL =
-  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+﻿const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "https://reviewhub-backend-ki8w.onrender.com";
 
 export async function askAIAdvisor(message) {
   const res = await fetch(`${API_BASE_URL}/api/ai/advisor`, {
@@ -11,7 +11,7 @@ export async function askAIAdvisor(message) {
   });
 
   if (!res.ok) {
-    throw new Error("Không gọi được AI tư vấn");
+    throw new Error("KhÃ´ng gá»i Ä‘Æ°á»£c AI tÆ° váº¥n");
   }
 
   return await res.json();

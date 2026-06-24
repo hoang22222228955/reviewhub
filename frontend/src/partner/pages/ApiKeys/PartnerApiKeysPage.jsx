@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useState } from 'react';
+﻿import { useEffect, useMemo, useState } from 'react';
 import { useAuth } from '../../../auth/context/AuthContext';
 import ApiKeyCard from '../../components/ApiKeyCard/ApiKeyCard';
 import api from '../../../services/api';
@@ -19,32 +19,32 @@ function splitValues(value) {
 }
 
 const SERVICE_NAME_MAP = {
- 'DV-001': 'Dịch vụ đưa đón sân bay',
-  'DV-002': 'Dịch vụ thuê xe tự lái',
-  'DV-003': 'Dịch vụ thuê xe có tài xế',
-  'DV-004': 'Dịch vụ đặt vé tham quan',
-  'DV-005': 'Dịch vụ bảo hiểm du lịch',
-  'DV-006': 'Dịch vụ làm visa du lịch',
-  'DV-007': 'Dịch vụ hộ chiếu và giấy tờ du lịch',
-  'DV-008': 'Dịch vụ eSIM du lịch',
-  'DV-009': 'Dịch vụ đổi tiền du lịch',
-  'DV-010': 'Dịch vụ gửi hành lý',
-  'DV-011': 'Dịch vụ giao hành lý tận nơi',
-  'DV-012': 'Dịch vụ hướng dẫn viên địa phương',
-  'DV-013': 'Dịch vụ phiên dịch du lịch',
-  'DV-014': 'Dịch vụ đặt nhà hàng du lịch',
-  'DV-015': 'Dịch vụ đặt du thuyền',
-  'DV-016': 'Dịch vụ booking engine OTA',
-  'DV-017': 'Dịch vụ quản lý đánh giá OTA',
-  'DV-018': 'Dịch vụ chăm sóc khách hàng du lịch',
-  'DV-019': 'Dịch vụ thiết kế lịch trình du lịch',
-  'DV-020': 'Dịch vụ hỗ trợ khẩn cấp du lịch',
-  'KS-001': 'Mường Thanh Luxury Đà Nẵng',
+ 'DV-001': 'Dá»‹ch vá»¥ Ä‘Æ°a Ä‘Ã³n sÃ¢n bay',
+  'DV-002': 'Dá»‹ch vá»¥ thuÃª xe tá»± lÃ¡i',
+  'DV-003': 'Dá»‹ch vá»¥ thuÃª xe cÃ³ tÃ i xáº¿',
+  'DV-004': 'Dá»‹ch vá»¥ Ä‘áº·t vÃ© tham quan',
+  'DV-005': 'Dá»‹ch vá»¥ báº£o hiá»ƒm du lá»‹ch',
+  'DV-006': 'Dá»‹ch vá»¥ lÃ m visa du lá»‹ch',
+  'DV-007': 'Dá»‹ch vá»¥ há»™ chiáº¿u vÃ  giáº¥y tá» du lá»‹ch',
+  'DV-008': 'Dá»‹ch vá»¥ eSIM du lá»‹ch',
+  'DV-009': 'Dá»‹ch vá»¥ Ä‘á»•i tiá»n du lá»‹ch',
+  'DV-010': 'Dá»‹ch vá»¥ gá»­i hÃ nh lÃ½',
+  'DV-011': 'Dá»‹ch vá»¥ giao hÃ nh lÃ½ táº­n nÆ¡i',
+  'DV-012': 'Dá»‹ch vá»¥ hÆ°á»›ng dáº«n viÃªn Ä‘á»‹a phÆ°Æ¡ng',
+  'DV-013': 'Dá»‹ch vá»¥ phiÃªn dá»‹ch du lá»‹ch',
+  'DV-014': 'Dá»‹ch vá»¥ Ä‘áº·t nhÃ  hÃ ng du lá»‹ch',
+  'DV-015': 'Dá»‹ch vá»¥ Ä‘áº·t du thuyá»n',
+  'DV-016': 'Dá»‹ch vá»¥ booking engine OTA',
+  'DV-017': 'Dá»‹ch vá»¥ quáº£n lÃ½ Ä‘Ã¡nh giÃ¡ OTA',
+  'DV-018': 'Dá»‹ch vá»¥ chÄƒm sÃ³c khÃ¡ch hÃ ng du lá»‹ch',
+  'DV-019': 'Dá»‹ch vá»¥ thiáº¿t káº¿ lá»‹ch trÃ¬nh du lá»‹ch',
+  'DV-020': 'Dá»‹ch vá»¥ há»— trá»£ kháº©n cáº¥p du lá»‹ch',
+  'KS-001': 'MÆ°á»ng Thanh Luxury ÄÃ  Náºµng',
   'KS-002': 'Vinpearl Resort Nha Trang',
-  'KS-003': 'FLC Grand Hotel Hạ Long',
+  'KS-003': 'FLC Grand Hotel Háº¡ Long',
   'KS-004': 'InterContinental Hanoi Westlake',
   'KS-005': 'Hotel Nikko Saigon',
-  'KS-006': 'Saigon Morin Hotel Huế',
+  'KS-006': 'Saigon Morin Hotel Huáº¿',
   'KS-007': 'Pullman Danang Beach Resort',
   'KS-008': 'Lotte Hotel Saigon',
   'KS-009': 'Sapa Jade Hill Resort',
@@ -55,7 +55,7 @@ const SERVICE_NAME_MAP = {
   'KS-014': 'JW Marriott Hotel Hanoi',
   'KS-015': 'Sheraton Saigon Grand Opera Hotel',
   'KS-016': 'InterContinental Danang Sun Peninsula Resort',
-  'KS-017': 'Meliá Hanoi',
+  'KS-017': 'MeliÃ¡ Hanoi',
   'KS-018': 'Caravelle Saigon',
   'KS-019': 'New World Saigon Hotel',
   'KS-020': 'Pan Pacific Hanoi',
@@ -82,113 +82,113 @@ const SERVICE_NAME_MAP = {
   'PT-001': 'VeXeNhanh',
   'PT-002': 'FUTA Bus Lines',
   'PT-003': 'An Vui',
-  'PT-004': 'Phương Trang',
-  'PT-005': 'Thành Bưởi',
-  'PT-006': 'Hoàng Long',
+  'PT-004': 'PhÆ°Æ¡ng Trang',
+  'PT-005': 'ThÃ nh BÆ°á»Ÿi',
+  'PT-006': 'HoÃ ng Long',
   'PT-007': 'Kumho Samco',
-  'PT-008': 'Trung Nghĩa',
-  'PT-009': 'Cúc Tùng',
+  'PT-008': 'Trung NghÄ©a',
+  'PT-009': 'CÃºc TÃ¹ng',
   'PT-010': 'Mai Linh Express',
-  'PT-011': 'Xe Hạnh',
-  'PT-012': 'Tân Phước Khánh',
-  'PT-013': 'Sao Việt',
-  'PT-014': 'Đức Thanh',
-  'PT-015': 'Thuận Thảo',
-  'PT-016': 'Vạn Xuân',
-  'PT-017': 'Xe Phương Nam',
-  'PT-018': 'Hoa Phượng',
+  'PT-011': 'Xe Háº¡nh',
+  'PT-012': 'TÃ¢n PhÆ°á»›c KhÃ¡nh',
+  'PT-013': 'Sao Viá»‡t',
+  'PT-014': 'Äá»©c Thanh',
+  'PT-015': 'Thuáº­n Tháº£o',
+  'PT-016': 'Váº¡n XuÃ¢n',
+  'PT-017': 'Xe PhÆ°Æ¡ng Nam',
+  'PT-018': 'Hoa PhÆ°á»£ng',
   'PT-019': 'Sinh Tourist',
   'PT-020': 'Eva Express',
-  'PT-021': 'Hanh Café',
-  'PT-022': 'Liên Hưng',
-  'PT-023': 'Tấn Phát',
-  'PT-024': 'Thiện Trường',
-  'PT-025': 'Xe Minh Quân',
-  'PT-026': 'Mê Kông Express',
-  'PT-027': 'Thùy Dương',
-  'PT-028': 'Phú Quý',
-  'PT-029': 'Tiến Thành',
-  'PT-030': 'Minh Châu',
+  'PT-021': 'Hanh CafÃ©',
+  'PT-022': 'LiÃªn HÆ°ng',
+  'PT-023': 'Táº¥n PhÃ¡t',
+  'PT-024': 'Thiá»‡n TrÆ°á»ng',
+  'PT-025': 'Xe Minh QuÃ¢n',
+  'PT-026': 'MÃª KÃ´ng Express',
+  'PT-027': 'ThÃ¹y DÆ°Æ¡ng',
+  'PT-028': 'PhÃº QuÃ½',
+  'PT-029': 'Tiáº¿n ThÃ nh',
+  'PT-030': 'Minh ChÃ¢u',
   'PT-031': 'Quang Vinh',
-  'PT-032': 'Trường Tiến',
-  'PT-033': 'Phúc Lộc',
-  'PT-034': 'Hùng Cường',
-  'PT-035': 'Việt Thanh',
-  'PT-036': 'Đức Dương',
-  'PT-037': 'Tân Hải Long',
-  'PT-038': 'Minh Hiếu',
+  'PT-032': 'TrÆ°á»ng Tiáº¿n',
+  'PT-033': 'PhÃºc Lá»™c',
+  'PT-034': 'HÃ¹ng CÆ°á»ng',
+  'PT-035': 'Viá»‡t Thanh',
+  'PT-036': 'Äá»©c DÆ°Æ¡ng',
+  'PT-037': 'TÃ¢n Háº£i Long',
+  'PT-038': 'Minh Hiáº¿u',
   'PT-039': 'Trung Trang',
-  'PT-040': 'Như Vinh',
-  'PT-041': 'Anh Tuyên',
-  'PT-042': 'Vũ Linh',
-  'PT-043': 'Thiện Trí',
-  'PT-044': 'Trọng Minh',
-  'PT-045': 'Toàn Thắng',
-  'PT-046': 'Dũng Lệ',
-  'PT-047': 'Minh Nghĩa',
-  'PT-048': 'Tiến Oanh',
-  'PT-049': 'Võ Cúc Phương ',
-  'PT-050': 'Hoà Liêm',
-  'PT-051': 'Đức Minh',
-  'TH-001': 'Tuyến SE1 Hà Nội - TP. Hồ Chí Minh',
-  'TH-002': 'Tuyến SE2 TP. Hồ Chí Minh - Hà Nội',
-  'TH-003': 'Tuyến SE3 Hà Nội - Sài Gòn',
-  'TH-004': 'Tuyến SE4 Sài Gòn - Hà Nội',
-  'TH-005': 'Tuyến Hà Nội - Hải Phòng',
-  'TH-006': 'Tuyến Hải Phòng - Hà Nội',
-  'TH-007': 'Tuyến Hà Nội - Lào Cai',
-  'TH-008': 'Tuyến Lào Cai - Hà Nội',
-  'TH-009': 'Tuyến Hà Nội - Vinh',
-  'TH-010': 'Tuyến Vinh - Hà Nội',
-  'TH-011': 'Tuyến Sài Gòn - Nha Trang',
-  'TH-012': 'Tuyến Nha Trang - Sài Gòn',
-  'TH-013': 'Tuyến Sài Gòn - Phan Thiết',
-  'TH-014': 'Tuyến Phan Thiết - Sài Gòn',
-  'TH-015': 'Tuyến Đà Nẵng - Huế',
-  'TH-016': 'Tuyến Huế - Đà Nẵng',
-  'TH-017': 'Tuyến Đà Nẵng - Quy Nhơn',
-  'TH-018': 'Tuyến Quy Nhơn - Đà Nẵng',
-  'TH-019': 'Tuyến Sài Gòn - Đà Lạt',
-  'TH-020': 'Tuyến Hà Nội - Hạ Long',
-  'TO-001': 'Tour Sa Pa 3 ngày 2 đêm',
-  'TO-002': 'Tour Hạ Long 2 ngày 1 đêm',
-  'TO-003': 'Tour Ninh Bình Tràng An - Bái Đính',
-  'TO-004': 'Tour Hà Giang 3 ngày 2 đêm',
-  'TO-005': 'Tour Đà Nẵng - Hội An - Huế',
-  'TO-006': 'Tour Bà Nà Hills 1 ngày',
-  'TO-007': 'Tour Cù Lao Chàm 1 ngày',
-  'TO-008': 'Tour Nha Trang 3 ngày 2 đêm',
-  'TO-009': 'Tour Đà Lạt 3 ngày 2 đêm',
-  'TO-010': 'Tour Phú Quốc 4 ngày 3 đêm',
-  'TO-011': 'Tour Côn Đảo 3 ngày 2 đêm',
-  'TO-012': 'Tour Miền Tây 2 ngày 1 đêm',
-  'TO-013': 'Tour Củ Chi - Mekong 1 ngày',
-  'TO-014': 'Tour Mũi Né 2 ngày 1 đêm',
-  'TO-015': 'Tour Quy Nhơn - Phú Yên 4 ngày 3 đêm',
-  'TO-016': 'Tour Mộc Châu 2 ngày 1 đêm',
-  'TO-017': 'Tour Mai Châu 2 ngày 1 đêm',
-  'TO-018': 'Tour Singapore 4 ngày 3 đêm',
-  'TO-019': 'Tour Thái Lan Bangkok - Pattaya',
-  'TO-020': 'Tour Hàn Quốc Seoul - Nami',
+  'PT-040': 'NhÆ° Vinh',
+  'PT-041': 'Anh TuyÃªn',
+  'PT-042': 'VÅ© Linh',
+  'PT-043': 'Thiá»‡n TrÃ­',
+  'PT-044': 'Trá»ng Minh',
+  'PT-045': 'ToÃ n Tháº¯ng',
+  'PT-046': 'DÅ©ng Lá»‡',
+  'PT-047': 'Minh NghÄ©a',
+  'PT-048': 'Tiáº¿n Oanh',
+  'PT-049': 'VÃµ CÃºc PhÆ°Æ¡ng ',
+  'PT-050': 'HoÃ  LiÃªm',
+  'PT-051': 'Äá»©c Minh',
+  'TH-001': 'Tuyáº¿n SE1 HÃ  Ná»™i - TP. Há»“ ChÃ­ Minh',
+  'TH-002': 'Tuyáº¿n SE2 TP. Há»“ ChÃ­ Minh - HÃ  Ná»™i',
+  'TH-003': 'Tuyáº¿n SE3 HÃ  Ná»™i - SÃ i GÃ²n',
+  'TH-004': 'Tuyáº¿n SE4 SÃ i GÃ²n - HÃ  Ná»™i',
+  'TH-005': 'Tuyáº¿n HÃ  Ná»™i - Háº£i PhÃ²ng',
+  'TH-006': 'Tuyáº¿n Háº£i PhÃ²ng - HÃ  Ná»™i',
+  'TH-007': 'Tuyáº¿n HÃ  Ná»™i - LÃ o Cai',
+  'TH-008': 'Tuyáº¿n LÃ o Cai - HÃ  Ná»™i',
+  'TH-009': 'Tuyáº¿n HÃ  Ná»™i - Vinh',
+  'TH-010': 'Tuyáº¿n Vinh - HÃ  Ná»™i',
+  'TH-011': 'Tuyáº¿n SÃ i GÃ²n - Nha Trang',
+  'TH-012': 'Tuyáº¿n Nha Trang - SÃ i GÃ²n',
+  'TH-013': 'Tuyáº¿n SÃ i GÃ²n - Phan Thiáº¿t',
+  'TH-014': 'Tuyáº¿n Phan Thiáº¿t - SÃ i GÃ²n',
+  'TH-015': 'Tuyáº¿n ÄÃ  Náºµng - Huáº¿',
+  'TH-016': 'Tuyáº¿n Huáº¿ - ÄÃ  Náºµng',
+  'TH-017': 'Tuyáº¿n ÄÃ  Náºµng - Quy NhÆ¡n',
+  'TH-018': 'Tuyáº¿n Quy NhÆ¡n - ÄÃ  Náºµng',
+  'TH-019': 'Tuyáº¿n SÃ i GÃ²n - ÄÃ  Láº¡t',
+  'TH-020': 'Tuyáº¿n HÃ  Ná»™i - Háº¡ Long',
+  'TO-001': 'Tour Sa Pa 3 ngÃ y 2 Ä‘Ãªm',
+  'TO-002': 'Tour Háº¡ Long 2 ngÃ y 1 Ä‘Ãªm',
+  'TO-003': 'Tour Ninh BÃ¬nh TrÃ ng An - BÃ¡i ÄÃ­nh',
+  'TO-004': 'Tour HÃ  Giang 3 ngÃ y 2 Ä‘Ãªm',
+  'TO-005': 'Tour ÄÃ  Náºµng - Há»™i An - Huáº¿',
+  'TO-006': 'Tour BÃ  NÃ  Hills 1 ngÃ y',
+  'TO-007': 'Tour CÃ¹ Lao ChÃ m 1 ngÃ y',
+  'TO-008': 'Tour Nha Trang 3 ngÃ y 2 Ä‘Ãªm',
+  'TO-009': 'Tour ÄÃ  Láº¡t 3 ngÃ y 2 Ä‘Ãªm',
+  'TO-010': 'Tour PhÃº Quá»‘c 4 ngÃ y 3 Ä‘Ãªm',
+  'TO-011': 'Tour CÃ´n Äáº£o 3 ngÃ y 2 Ä‘Ãªm',
+  'TO-012': 'Tour Miá»n TÃ¢y 2 ngÃ y 1 Ä‘Ãªm',
+  'TO-013': 'Tour Cá»§ Chi - Mekong 1 ngÃ y',
+  'TO-014': 'Tour MÅ©i NÃ© 2 ngÃ y 1 Ä‘Ãªm',
+  'TO-015': 'Tour Quy NhÆ¡n - PhÃº YÃªn 4 ngÃ y 3 Ä‘Ãªm',
+  'TO-016': 'Tour Má»™c ChÃ¢u 2 ngÃ y 1 Ä‘Ãªm',
+  'TO-017': 'Tour Mai ChÃ¢u 2 ngÃ y 1 Ä‘Ãªm',
+  'TO-018': 'Tour Singapore 4 ngÃ y 3 Ä‘Ãªm',
+  'TO-019': 'Tour ThÃ¡i Lan Bangkok - Pattaya',
+  'TO-020': 'Tour HÃ n Quá»‘c Seoul - Nami',
 };
 
 function getServiceType(code, category) {
   const value = String(code || '').trim().toUpperCase();
   const cate = String(category || '').toLowerCase();
 
-  if (value.startsWith('PT-') || value.startsWith('BUS-')) return 'Nhà xe';
-  if (value.startsWith('KS-') || value.startsWith('HOTEL-')) return 'Khách sạn';
-  if (value.startsWith('MB-') || value.startsWith('AIR-')) return 'Máy bay';
-  if (value.startsWith('TH-') || value.startsWith('TRAIN-')) return 'Tàu hỏa';
+  if (value.startsWith('PT-') || value.startsWith('BUS-')) return 'NhÃ  xe';
+  if (value.startsWith('KS-') || value.startsWith('HOTEL-')) return 'KhÃ¡ch sáº¡n';
+  if (value.startsWith('MB-') || value.startsWith('AIR-')) return 'MÃ¡y bay';
+  if (value.startsWith('TH-') || value.startsWith('TRAIN-')) return 'TÃ u há»a';
   if (value.startsWith('TO-') || value.startsWith('TOUR-')) return 'Tour';
-  if (value.startsWith('DV-') || value.startsWith('SERVICE-')) return 'Dịch vụ';
+  if (value.startsWith('DV-') || value.startsWith('SERVICE-')) return 'Dá»‹ch vá»¥';
 
-  if (cate.includes('khách') || cate.includes('hotel')) return 'Khách sạn';
-  if (cate.includes('máy') || cate.includes('bay')) return 'Máy bay';
-  if (cate.includes('tàu')) return 'Tàu hỏa';
+  if (cate.includes('khÃ¡ch') || cate.includes('hotel')) return 'KhÃ¡ch sáº¡n';
+  if (cate.includes('mÃ¡y') || cate.includes('bay')) return 'MÃ¡y bay';
+  if (cate.includes('tÃ u')) return 'TÃ u há»a';
   if (cate.includes('tour')) return 'Tour';
 
-  return 'Dịch vụ';
+  return 'Dá»‹ch vá»¥';
 }
 
 function cleanServiceName(name, code, type) {
@@ -204,11 +204,11 @@ function cleanServiceName(name, code, type) {
 
 function buildServiceLabel(service) {
   const code = service?.code || '';
-  const type = service?.type || 'Dịch vụ';
+  const type = service?.type || 'Dá»‹ch vá»¥';
   const name = service?.name || '';
 
-  if (name) return `${code} · ${type} ${name}`;
-  return `${code} · ${type}`;
+  if (name) return `${code} Â· ${type} ${name}`;
+  return `${code} Â· ${type}`;
 }
 
 function makeServiceOptions(user) {
@@ -266,30 +266,30 @@ function cleanBase(value, fallback) {
 
 function maskKey(value) {
   const text = String(value || '');
-  if (!text) return 'Chưa có khóa';
+  if (!text) return 'ChÆ°a cÃ³ khÃ³a';
   if (text.length <= 18) return text;
-  return `${text.slice(0, 12)}••••••••${text.slice(-6)}`;
+  return `${text.slice(0, 12)}â€¢â€¢â€¢â€¢â€¢â€¢â€¢â€¢${text.slice(-6)}`;
 }
 
 function makeImportBody({ targetCode, targetName }) {
   return JSON.stringify({
     targetCode: targetCode || 'PT-013',
-    targetName: targetName || 'Tên dịch vụ',
-    category: 'Nhà xe',
+    targetName: targetName || 'TÃªn dá»‹ch vá»¥',
+    category: 'NhÃ  xe',
     sourceName: 'website-doi-tac',
     reviews: [
       {
         externalId: 'rv-001',
-        reviewerName: 'Nguyễn Văn A',
+        reviewerName: 'Nguyá»…n VÄƒn A',
         rating: 5,
-        comment: 'Dịch vụ tốt, nhân viên hỗ trợ nhiệt tình.',
+        comment: 'Dá»‹ch vá»¥ tá»‘t, nhÃ¢n viÃªn há»— trá»£ nhiá»‡t tÃ¬nh.',
         createdAt: new Date().toISOString(),
       },
       {
         externalId: 'rv-002',
-        reviewerName: 'Trần Thị B',
+        reviewerName: 'Tráº§n Thá»‹ B',
         rating: 2,
-        comment: 'Cần cải thiện thời gian phục vụ và phản hồi khách hàng.',
+        comment: 'Cáº§n cáº£i thiá»‡n thá»i gian phá»¥c vá»¥ vÃ  pháº£n há»“i khÃ¡ch hÃ ng.',
         createdAt: new Date().toISOString(),
       },
     ],
@@ -297,20 +297,20 @@ function makeImportBody({ targetCode, targetName }) {
 }
 
 function makeImportCurl({ apiBase, apiKey, targetCode, targetName }) {
-  return `curl.exe -X POST "${cleanBase(apiBase, 'http://localhost:8080')}/api/v1/external-reviews/import" -H "Content-Type: application/json" -H "X-Api-Key:${apiKey || 'YOUR_API_KEY'}" -d '${makeImportBody({ targetCode, targetName }).replace(/'/g, "\\'")}'`;
+  return `curl.exe -X POST "${cleanBase(apiBase, 'https://reviewhub-backend-ki8w.onrender.com')}/api/v1/external-reviews/import" -H "Content-Type: application/json" -H "X-Api-Key:${apiKey || 'YOUR_API_KEY'}" -d '${makeImportBody({ targetCode, targetName }).replace(/'/g, "\\'")}'`;
 }
 
 function makeSummaryCurl({ apiBase, apiKey, targetCode }) {
-  return `curl.exe -X GET "${cleanBase(apiBase, 'http://localhost:8080')}/api/v1/ai/review-summary?targetCode=${encodeURIComponent(targetCode || 'PT-013')}" -H "X-Api-Key:${apiKey || 'YOUR_API_KEY'}"`;
+  return `curl.exe -X GET "${cleanBase(apiBase, 'https://reviewhub-backend-ki8w.onrender.com')}/api/v1/ai/review-summary?targetCode=${encodeURIComponent(targetCode || 'PT-013')}" -H "X-Api-Key:${apiKey || 'YOUR_API_KEY'}"`;
 }
 
 function makeEmbedCode({ frontendBase, apiBase, apiKey, targetCode, title }) {
   return `<script
   src="${cleanBase(frontendBase, 'http://localhost:5173')}/embed/partner-ai-summary.js"
-  data-api-base="${cleanBase(apiBase, 'http://localhost:8080')}"
+  data-api-base="${cleanBase(apiBase, 'https://reviewhub-backend-ki8w.onrender.com')}"
   data-api-key="${apiKey || 'YOUR_API_KEY'}"
   data-target-code="${targetCode || 'PT-013'}"
-  data-title="${title || 'Hỏi AI về đánh giá'}">
+  data-title="${title || 'Há»i AI vá» Ä‘Ã¡nh giÃ¡'}">
 </script>`;
 }
 
@@ -319,11 +319,11 @@ function makeTestHtml({ frontendBase, apiBase, apiKey, targetCode, title }) {
 <html lang="vi">
 <head>
   <meta charset="UTF-8" />
-  <title>Test AI tóm tắt review</title>
+  <title>Test AI tÃ³m táº¯t review</title>
 </head>
 <body>
-  <h1>Test AI tóm tắt review</h1>
-  <p>Bấm nút AI ở góc phải dưới để kiểm tra.</p>
+  <h1>Test AI tÃ³m táº¯t review</h1>
+  <p>Báº¥m nÃºt AI á»Ÿ gÃ³c pháº£i dÆ°á»›i Ä‘á»ƒ kiá»ƒm tra.</p>
 
   ${makeEmbedCode({ frontendBase, apiBase, apiKey, targetCode, title })}
 </body>
@@ -346,22 +346,22 @@ export default function PartnerApiKeysPage() {
     serviceOptions[0]?.code ||
     'PT-013';
 
-  const [apiBase, setApiBase] = useState('http://localhost:8080');
+  const [apiBase, setApiBase] = useState('https://reviewhub-backend-ki8w.onrender.com');
   const [frontendBase, setFrontendBase] = useState('http://localhost:5173');
   const [targetCode, setTargetCode] = useState(defaultCode);
   const [showServiceCode, setShowServiceCode] = useState(false);
   const [embedTitle, setEmbedTitle] = useState(
-    currentUser?.orgName ? `Hỏi AI về ${currentUser.orgName}` : 'Hỏi AI về đánh giá'
+    currentUser?.orgName ? `Há»i AI vá» ${currentUser.orgName}` : 'Há»i AI vá» Ä‘Ã¡nh giÃ¡'
   );
 
   const selectedService = useMemo(() => {
     return serviceOptions.find(item => item.code === targetCode) || serviceOptions[0] || {
       code: targetCode || 'PT-013',
-      name: currentUser?.orgName || 'Dịch vụ mặc định',
+      name: currentUser?.orgName || 'Dá»‹ch vá»¥ máº·c Ä‘á»‹nh',
     };
   }, [serviceOptions, targetCode, currentUser]);
 
-  const targetName = selectedService?.name || currentUser?.orgName || 'Tên dịch vụ';
+  const targetName = selectedService?.name || currentUser?.orgName || 'TÃªn dá»‹ch vá»¥';
 
   useEffect(() => {
     if (!serviceOptions.some(item => item.code === targetCode)) {
@@ -386,23 +386,23 @@ export default function PartnerApiKeysPage() {
 
   const snippets = useMemo(() => ({
     importJson: {
-      title: 'Mẫu dữ liệu review',
+      title: 'Máº«u dá»¯ liá»‡u review',
       value: importBody,
     },
     importCurl: {
-      title: 'Lệnh gửi review mẫu',
+      title: 'Lá»‡nh gá»­i review máº«u',
       value: makeImportCurl({ apiBase, apiKey: liveKey, targetCode, targetName }),
     },
     summaryCurl: {
-      title: 'Lệnh kiểm tra AI Summary',
+      title: 'Lá»‡nh kiá»ƒm tra AI Summary',
       value: makeSummaryCurl({ apiBase, apiKey: liveKey, targetCode }),
     },
     embedCode: {
-      title: 'Mã gắn vào website',
+      title: 'MÃ£ gáº¯n vÃ o website',
       value: makeEmbedCode({ frontendBase, apiBase, apiKey: liveKey, targetCode, title: embedTitle }),
     },
     testHtml: {
-      title: 'File test hoàn chỉnh',
+      title: 'File test hoÃ n chá»‰nh',
       value: makeTestHtml({ frontendBase, apiBase, apiKey: liveKey, targetCode, title: embedTitle }),
     },
   }), [apiBase, frontendBase, liveKey, targetCode, targetName, embedTitle, importBody]);
@@ -413,7 +413,7 @@ export default function PartnerApiKeysPage() {
       setCopiedKey(key);
       window.setTimeout(() => setCopiedKey(''), 1400);
     } catch {
-      setError('Không copy tự động được. Vui lòng copy thủ công.');
+      setError('KhÃ´ng copy tá»± Ä‘á»™ng Ä‘Æ°á»£c. Vui lÃ²ng copy thá»§ cÃ´ng.');
     }
   }
 
@@ -430,7 +430,7 @@ export default function PartnerApiKeysPage() {
       const res = await api.post('/api/partner/regenerate-key');
       setUser(res.data);
     } catch {
-      setError('Không thể tạo lại khóa. Vui lòng thử lại sau.');
+      setError('KhÃ´ng thá»ƒ táº¡o láº¡i khÃ³a. Vui lÃ²ng thá»­ láº¡i sau.');
     } finally {
       setRegenerating(false);
     }
@@ -438,7 +438,7 @@ export default function PartnerApiKeysPage() {
 
   async function sendSampleReviews() {
     if (!liveKey) {
-      setActionError('Tài khoản chưa có khóa live.');
+      setActionError('TÃ i khoáº£n chÆ°a cÃ³ khÃ³a live.');
       return;
     }
 
@@ -448,7 +448,7 @@ export default function PartnerApiKeysPage() {
     setShowImportData(false);
 
     try {
-      const res = await fetch(`${cleanBase(apiBase, 'http://localhost:8080')}/api/v1/external-reviews/import`, {
+      const res = await fetch(`${cleanBase(apiBase, 'https://reviewhub-backend-ki8w.onrender.com')}/api/v1/external-reviews/import`, {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -462,7 +462,7 @@ export default function PartnerApiKeysPage() {
       setImportResult(json);
       setShowImportData(true);
     } catch (err) {
-      setActionError(err?.message || 'Không gửi được review mẫu.');
+      setActionError(err?.message || 'KhÃ´ng gá»­i Ä‘Æ°á»£c review máº«u.');
     } finally {
       setImporting(false);
     }
@@ -470,7 +470,7 @@ export default function PartnerApiKeysPage() {
 
   async function checkSummary() {
     if (!liveKey) {
-      setActionError('Tài khoản chưa có khóa live.');
+      setActionError('TÃ i khoáº£n chÆ°a cÃ³ khÃ³a live.');
       return;
     }
 
@@ -480,7 +480,7 @@ export default function PartnerApiKeysPage() {
     setShowSummaryData(false);
 
     try {
-      const res = await fetch(`${cleanBase(apiBase, 'http://localhost:8080')}/api/v1/ai/review-summary?targetCode=${encodeURIComponent(targetCode)}`, {
+      const res = await fetch(`${cleanBase(apiBase, 'https://reviewhub-backend-ki8w.onrender.com')}/api/v1/ai/review-summary?targetCode=${encodeURIComponent(targetCode)}`, {
         headers: { 'X-Api-Key': liveKey },
       });
 
@@ -488,7 +488,7 @@ export default function PartnerApiKeysPage() {
       if (!res.ok) throw new Error(json?.error || json?.message || `HTTP ${res.status}`);
       setSummaryResult(json);
     } catch (err) {
-      setActionError(err?.message || 'Không kiểm tra được AI Summary.');
+      setActionError(err?.message || 'KhÃ´ng kiá»ƒm tra Ä‘Æ°á»£c AI Summary.');
     } finally {
       setChecking(false);
     }
@@ -498,31 +498,31 @@ export default function PartnerApiKeysPage() {
     <div className={styles.page}>
       <section className={styles.heroCard}>
         <div>
-          <span className={styles.eyebrow}>Kết nối đối tác</span>
-          <h1>Khóa API và AI tóm tắt review</h1>
+          <span className={styles.eyebrow}>Káº¿t ná»‘i Ä‘á»‘i tÃ¡c</span>
+          <h1>KhÃ³a API vÃ  AI tÃ³m táº¯t review</h1>
           <p>
-            Đối tác dùng khóa này để gửi review từ website của mình về hệ thống, sau đó gắn nút AI để hiển thị bản tóm tắt review.
+            Äá»‘i tÃ¡c dÃ¹ng khÃ³a nÃ y Ä‘á»ƒ gá»­i review tá»« website cá»§a mÃ¬nh vá» há»‡ thá»‘ng, sau Ä‘Ã³ gáº¯n nÃºt AI Ä‘á»ƒ hiá»ƒn thá»‹ báº£n tÃ³m táº¯t review.
           </p>
         </div>
 
         <div className={styles.keyPreview}>
-          <span>Khóa live</span>
+          <span>KhÃ³a live</span>
           <strong>{maskKey(liveKey)}</strong>
-          <small>Mỗi lần gọi API thành công sẽ tính vào quota.</small>
+          <small>Má»—i láº§n gá»i API thÃ nh cÃ´ng sáº½ tÃ­nh vÃ o quota.</small>
         </div>
       </section>
 
       <section className={styles.keyGrid}>
         <ApiKeyCard
-          title="Khóa sandbox"
+          title="KhÃ³a sandbox"
           value={sandboxKey}
-          helper="Dùng để thử nghiệm trước khi kết nối thật."
+          helper="DÃ¹ng Ä‘á»ƒ thá»­ nghiá»‡m trÆ°á»›c khi káº¿t ná»‘i tháº­t."
         />
 
         <ApiKeyCard
-          title="Khóa live"
+          title="KhÃ³a live"
           value={liveKey}
-          helper="Dùng cho website hoặc hệ thống thật của đối tác."
+          helper="DÃ¹ng cho website hoáº·c há»‡ thá»‘ng tháº­t cá»§a Ä‘á»‘i tÃ¡c."
           onRegenerate={() => setShowConfirm(true)}
           regenerating={regenerating}
         />
@@ -531,32 +531,32 @@ export default function PartnerApiKeysPage() {
       <section className={styles.panel}>
         <div className={styles.panelHeader}>
           <div>
-            <span className={styles.sectionTag}>Thiết lập</span>
-            <h2>Thông tin kết nối</h2>
-            <p>Điền đúng mã dịch vụ đã được cấp quyền. AI chỉ xử lý dữ liệu trong phạm vi mã này.</p>
+            <span className={styles.sectionTag}>Thiáº¿t láº­p</span>
+            <h2>ThÃ´ng tin káº¿t ná»‘i</h2>
+            <p>Äiá»n Ä‘Ãºng mÃ£ dá»‹ch vá»¥ Ä‘Ã£ Ä‘Æ°á»£c cáº¥p quyá»n. AI chá»‰ xá»­ lÃ½ dá»¯ liá»‡u trong pháº¡m vi mÃ£ nÃ y.</p>
           </div>
 
-          <div className={styles.safeBadge}>Không trả raw review</div>
+          <div className={styles.safeBadge}>KhÃ´ng tráº£ raw review</div>
         </div>
 
         <div className={styles.formGrid}>
           <label className={styles.field}>
-            <span>Địa chỉ API hệ thống</span>
+            <span>Äá»‹a chá»‰ API há»‡ thá»‘ng</span>
             <input value={apiBase} onChange={event => setApiBase(event.target.value)} />
-            <small>Test local dùng http://localhost:8080.</small>
+            <small>Test local dÃ¹ng https://reviewhub-backend-ki8w.onrender.com.</small>
           </label>
 
           <label className={styles.field}>
-            <span>Website hiển thị nút AI</span>
+            <span>Website hiá»ƒn thá»‹ nÃºt AI</span>
             <input value={frontendBase} onChange={event => setFrontendBase(event.target.value)} />
-            <small>Test local dùng http://localhost:5173.</small>
+            <small>Test local dÃ¹ng http://localhost:5173.</small>
           </label>
 
           <div className={styles.serviceField}>
             <div className={styles.serviceLabelRow}>
-              <span>Dịch vụ đã đăng ký</span>
+              <span>Dá»‹ch vá»¥ Ä‘Ã£ Ä‘Äƒng kÃ½</span>
               <button type="button" onClick={() => setShowServiceCode(value => !value)}>
-                {showServiceCode ? 'Ẩn mã' : 'Hiện mã'}
+                {showServiceCode ? 'áº¨n mÃ£' : 'Hiá»‡n mÃ£'}
               </button>
             </div>
 
@@ -575,18 +575,18 @@ export default function PartnerApiKeysPage() {
             )}
 
             {showServiceCode && (
-              <small>Mã đang dùng: <b>{selectedService.code}</b></small>
+              <small>MÃ£ Ä‘ang dÃ¹ng: <b>{selectedService.code}</b></small>
             )}
 
             {!showServiceCode && (
-              <small>Không cho nhập tay để tránh chọn sai dịch vụ.</small>
+              <small>KhÃ´ng cho nháº­p tay Ä‘á»ƒ trÃ¡nh chá»n sai dá»‹ch vá»¥.</small>
             )}
           </div>
 
           <label className={styles.field}>
-            <span>Tên nút AI</span>
+            <span>TÃªn nÃºt AI</span>
             <input value={embedTitle} onChange={event => setEmbedTitle(event.target.value)} />
-            <small>Nên đặt ngắn, dễ hiểu và có tên thương hiệu.</small>
+            <small>NÃªn Ä‘áº·t ngáº¯n, dá»… hiá»ƒu vÃ  cÃ³ tÃªn thÆ°Æ¡ng hiá»‡u.</small>
           </label>
         </div>
       </section>
@@ -595,28 +595,28 @@ export default function PartnerApiKeysPage() {
         <article className={styles.stepCard}>
           <div className={styles.stepNumber}>1</div>
           <div>
-            <h3>Gửi review về hệ thống</h3>
-            <p>Website hoặc CRM của đối tác gửi review theo mẫu. Hệ thống sẽ kiểm tra khóa, quota và mã dịch vụ trước khi lưu.</p>
+            <h3>Gá»­i review vá» há»‡ thá»‘ng</h3>
+            <p>Website hoáº·c CRM cá»§a Ä‘á»‘i tÃ¡c gá»­i review theo máº«u. Há»‡ thá»‘ng sáº½ kiá»ƒm tra khÃ³a, quota vÃ  mÃ£ dá»‹ch vá»¥ trÆ°á»›c khi lÆ°u.</p>
           </div>
 
           <div className={styles.actionRow}>
             <button type="button" className={styles.primaryBtn} onClick={sendSampleReviews} disabled={importing}>
-              {importing ? 'Đang gửi...' : 'Gửi thử review mẫu'}
+              {importing ? 'Äang gá»­i...' : 'Gá»­i thá»­ review máº«u'}
             </button>
             <button type="button" className={styles.secondaryBtn} onClick={() => showSnippet('importJson')}>
-              {copiedKey === 'importJson' ? 'Đã copy' : 'Copy mẫu JSON'}
+              {copiedKey === 'importJson' ? 'ÄÃ£ copy' : 'Copy máº«u JSON'}
             </button>
             <button type="button" className={styles.secondaryBtn} onClick={() => showSnippet('importCurl')}>
-              {copiedKey === 'importCurl' ? 'Đã copy' : 'Copy lệnh API'}
+              {copiedKey === 'importCurl' ? 'ÄÃ£ copy' : 'Copy lá»‡nh API'}
             </button>
           </div>
 
           {importResult && (
             <div className={styles.resultPanel}>
               <div className={styles.resultMeta}>
-                <span>Phản hồi khi gửi review mẫu</span>
+                <span>Pháº£n há»“i khi gá»­i review máº«u</span>
                 <button type="button" onClick={() => setShowImportData(value => !value)}>
-                  {showImportData ? 'Ẩn dữ liệu' : 'Xem dữ liệu'}
+                  {showImportData ? 'áº¨n dá»¯ liá»‡u' : 'Xem dá»¯ liá»‡u'}
                 </button>
               </div>
 
@@ -632,25 +632,25 @@ export default function PartnerApiKeysPage() {
         <article className={styles.stepCard}>
           <div className={styles.stepNumber}>2</div>
           <div>
-            <h3>Kiểm tra AI tóm tắt</h3>
-            <p>AI đọc review của dịch vụ đã chọn và trả về dữ liệu tóm tắt dạng JSON để kiểm tra trước khi gắn lên website.</p>
+            <h3>Kiá»ƒm tra AI tÃ³m táº¯t</h3>
+            <p>AI Ä‘á»c review cá»§a dá»‹ch vá»¥ Ä‘Ã£ chá»n vÃ  tráº£ vá» dá»¯ liá»‡u tÃ³m táº¯t dáº¡ng JSON Ä‘á»ƒ kiá»ƒm tra trÆ°á»›c khi gáº¯n lÃªn website.</p>
           </div>
 
           <div className={styles.actionRow}>
             <button type="button" className={styles.primaryBtn} onClick={checkSummary} disabled={checking}>
-              {checking ? 'Đang kiểm tra...' : 'Kiểm tra AI'}
+              {checking ? 'Äang kiá»ƒm tra...' : 'Kiá»ƒm tra AI'}
             </button>
             <button type="button" className={styles.secondaryBtn} onClick={() => showSnippet('summaryCurl')}>
-              {copiedKey === 'summaryCurl' ? 'Đã copy' : 'Copy lệnh test'}
+              {copiedKey === 'summaryCurl' ? 'ÄÃ£ copy' : 'Copy lá»‡nh test'}
             </button>
           </div>
 
           {summaryResult && (
             <div className={styles.resultPanel}>
               <div className={styles.resultMeta}>
-                <span>Phản hồi khi kiểm tra AI tóm tắt</span>
+                <span>Pháº£n há»“i khi kiá»ƒm tra AI tÃ³m táº¯t</span>
                 <button type="button" onClick={() => setShowSummaryData(value => !value)}>
-                  {showSummaryData ? 'Ẩn dữ liệu' : 'Xem dữ liệu'}
+                  {showSummaryData ? 'áº¨n dá»¯ liá»‡u' : 'Xem dá»¯ liá»‡u'}
                 </button>
               </div>
 
@@ -666,16 +666,16 @@ export default function PartnerApiKeysPage() {
         <article className={styles.stepCard}>
           <div className={styles.stepNumber}>3</div>
           <div>
-            <h3>Gắn nút AI lên website</h3>
-            <p>Copy mã nhúng và gửi cho người phụ trách website. Khách truy cập sẽ thấy nút AI ở góc phải dưới.</p>
+            <h3>Gáº¯n nÃºt AI lÃªn website</h3>
+            <p>Copy mÃ£ nhÃºng vÃ  gá»­i cho ngÆ°á»i phá»¥ trÃ¡ch website. KhÃ¡ch truy cáº­p sáº½ tháº¥y nÃºt AI á»Ÿ gÃ³c pháº£i dÆ°á»›i.</p>
           </div>
 
           <div className={styles.actionRow}>
             <button type="button" className={styles.primaryBtn} onClick={() => showSnippet('embedCode')}>
-              {copiedKey === 'embedCode' ? 'Đã copy' : 'Copy mã gắn web'}
+              {copiedKey === 'embedCode' ? 'ÄÃ£ copy' : 'Copy mÃ£ gáº¯n web'}
             </button>
             <button type="button" className={styles.secondaryBtn} onClick={() => showSnippet('testHtml')}>
-              {copiedKey === 'testHtml' ? 'Đã copy' : 'Copy file test'}
+              {copiedKey === 'testHtml' ? 'ÄÃ£ copy' : 'Copy file test'}
             </button>
           </div>
         </article>
@@ -691,14 +691,14 @@ export default function PartnerApiKeysPage() {
         <section className={styles.snippetPanel}>
           <div className={styles.snippetHead}>
             <div>
-              <span>Mã dành cho kỹ thuật</span>
+              <span>MÃ£ dÃ nh cho ká»¹ thuáº­t</span>
               <h3>{snippets[activeSnippet]?.title}</h3>
             </div>
             <div className={styles.snippetActions}>
               <button type="button" onClick={() => copyText(snippets[activeSnippet]?.value, activeSnippet)}>
-                {copiedKey === activeSnippet ? 'Đã copy' : 'Copy lại'}
+                {copiedKey === activeSnippet ? 'ÄÃ£ copy' : 'Copy láº¡i'}
               </button>
-              <button type="button" onClick={() => setActiveSnippet(null)}>Ẩn</button>
+              <button type="button" onClick={() => setActiveSnippet(null)}>áº¨n</button>
             </div>
           </div>
 
@@ -709,15 +709,15 @@ export default function PartnerApiKeysPage() {
       )}
 
       <section className={styles.helpBar}>
-        <span><b>401</b> Khóa sai hoặc chưa được cấp.</span>
-        <span><b>403</b> Khóa không có quyền với mã dịch vụ.</span>
-        <span><b>429</b> Quota đã hết, cần gia hạn hoặc nâng gói.</span>
+        <span><b>401</b> KhÃ³a sai hoáº·c chÆ°a Ä‘Æ°á»£c cáº¥p.</span>
+        <span><b>403</b> KhÃ³a khÃ´ng cÃ³ quyá»n vá»›i mÃ£ dá»‹ch vá»¥.</span>
+        <span><b>429</b> Quota Ä‘Ã£ háº¿t, cáº§n gia háº¡n hoáº·c nÃ¢ng gÃ³i.</span>
       </section>
 
       {error && (
         <div className={styles.errorBanner}>
           {error}
-          <button type="button" onClick={() => setError(null)} aria-label="Đóng">×</button>
+          <button type="button" onClick={() => setError(null)} aria-label="ÄÃ³ng">Ã—</button>
         </div>
       )}
 
@@ -731,15 +731,15 @@ export default function PartnerApiKeysPage() {
               </svg>
             </div>
 
-            <h3>Tạo lại khóa API?</h3>
+            <h3>Táº¡o láº¡i khÃ³a API?</h3>
             <p>
-              Khóa cũ sẽ ngừng hoạt động ngay. Nếu website đang dùng khóa này,
-              đối tác cần cập nhật lại khóa mới sau khi tạo.
+              KhÃ³a cÅ© sáº½ ngá»«ng hoáº¡t Ä‘á»™ng ngay. Náº¿u website Ä‘ang dÃ¹ng khÃ³a nÃ y,
+              Ä‘á»‘i tÃ¡c cáº§n cáº­p nháº­t láº¡i khÃ³a má»›i sau khi táº¡o.
             </p>
 
             <div className={styles.modalActions}>
-              <button type="button" className={styles.cancelBtn} onClick={() => setShowConfirm(false)}>Hủy</button>
-              <button type="button" className={styles.confirmBtn} onClick={doRegenerate}>Tạo khóa mới</button>
+              <button type="button" className={styles.cancelBtn} onClick={() => setShowConfirm(false)}>Há»§y</button>
+              <button type="button" className={styles.confirmBtn} onClick={doRegenerate}>Táº¡o khÃ³a má»›i</button>
             </div>
           </div>
         </div>
@@ -747,3 +747,4 @@ export default function PartnerApiKeysPage() {
     </div>
   );
 }
+
