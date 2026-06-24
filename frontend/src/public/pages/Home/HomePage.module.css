@@ -950,3 +950,229 @@
     min-height: auto;
   }
 }
+@media (max-width: 768px) {
+  .homePage,
+  .page,
+  .home,
+  .main {
+    width: 100%;
+    overflow-x: hidden;
+  }
+
+  .hero,
+  .heroSection,
+  .heroWrap,
+  .heroContainer {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 18px;
+    padding: 22px 14px 18px;
+    text-align: left;
+  }
+
+  .heroContent,
+  .heroText,
+  .heroLeft {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .heroBadge,
+  .eyebrow,
+  .badge {
+    font-size: 10.5px;
+    padding: 7px 10px;
+    border-radius: 999px;
+    max-width: 100%;
+    line-height: 1.35;
+  }
+
+  .heroTitle,
+  .title,
+  .mainTitle {
+    font-size: 28px;
+    line-height: 1.13;
+    letter-spacing: -0.035em;
+    margin: 10px 0;
+  }
+
+  .heroSubtitle,
+  .subtitle,
+  .description,
+  .heroDescription {
+    font-size: 14px;
+    line-height: 1.6;
+    margin-top: 8px;
+    max-width: 100%;
+  }
+
+  .heroActions,
+  .actions,
+  .buttonGroup,
+  .ctaGroup {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 10px;
+    width: 100%;
+    margin-top: 16px;
+  }
+
+  .heroActions a,
+  .actions a,
+  .buttonGroup a,
+  .ctaGroup a,
+  .heroActions button,
+  .actions button,
+  .buttonGroup button,
+  .ctaGroup button {
+    width: 100%;
+    min-height: 46px;
+    justify-content: center;
+    font-size: 14px;
+    border-radius: 14px;
+  }
+
+  .heroImage,
+  .heroVisual,
+  .visual,
+  .heroRight,
+  .mockup,
+  .previewCard {
+    width: 100%;
+    max-width: 100%;
+  }
+
+  .heroImage img,
+  .heroVisual img,
+  .visual img,
+  .mockup img,
+  .previewCard img {
+    width: 100%;
+    height: auto;
+    max-height: 260px;
+    object-fit: cover;
+    border-radius: 18px;
+  }
+
+  .statsGrid,
+  .featureGrid,
+  .featuresGrid,
+  .categoryGrid,
+  .serviceGrid,
+  .cardsGrid,
+  .reviewGrid,
+  .pricingGrid {
+    display: grid;
+    grid-template-columns: 1fr !important;
+    gap: 14px;
+  }
+
+  .statCard,
+  .featureCard,
+  .categoryCard,
+  .serviceCard,
+  .reviewCard,
+  .pricingCard,
+  .card {
+    width: 100%;
+    padding: 16px;
+    border-radius: 18px;
+  }
+
+  .section,
+  .sectionBlock,
+  .features,
+  .categories,
+  .services,
+  .reviews,
+  .pricing,
+  .whyChoose {
+    padding: 28px 14px;
+  }
+
+  .sectionHeader,
+  .sectionTitleWrap {
+    text-align: left;
+    margin-bottom: 16px;
+  }
+
+  .sectionTitle,
+  .blockTitle {
+    font-size: 23px;
+    line-height: 1.22;
+    letter-spacing: -0.025em;
+  }
+
+  .sectionSubtitle,
+  .blockSubtitle {
+    font-size: 14px;
+    line-height: 1.6;
+  }
+
+  .floatingCard,
+  .decor,
+  .blob,
+  .shape,
+  .backgroundDecor,
+  .orb {
+    display: none !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .hero,
+  .heroSection,
+  .heroWrap,
+  .heroContainer {
+    padding: 18px 12px 14px;
+  }
+
+  .heroTitle,
+  .title,
+  .mainTitle {
+    font-size: 25px;
+    line-height: 1.16;
+  }
+
+  .heroSubtitle,
+  .subtitle,
+  .description,
+  .heroDescription {
+    font-size: 13.5px;
+  }
+
+  .section,
+  .sectionBlock,
+  .features,
+  .categories,
+  .services,
+  .reviews,
+  .pricing,
+  .whyChoose {
+    padding: 24px 12px;
+  }
+
+  .sectionTitle,
+  .blockTitle {
+    font-size: 21px;
+  }
+
+  .statCard,
+  .featureCard,
+  .categoryCard,
+  .serviceCard,
+  .reviewCard,
+  .pricingCard,
+  .card {
+    padding: 14px;
+    border-radius: 16px;
+  }
+
+  .heroImage img,
+  .heroVisual img,
+  .visual img,
+  .mockup img,
+  .previewCard img {
+    max-height: 220px;
+  }
+}
