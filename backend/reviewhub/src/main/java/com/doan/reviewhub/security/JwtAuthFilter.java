@@ -31,6 +31,13 @@ public class JwtAuthFilter extends OncePerRequestFilter {
     ) throws ServletException, IOException {
 
         String path = request.getServletPath();
+        String method = request.getMethod();
+
+        // Cho phép preflight CORS đi qua, tránh lỗi OPTIONS 403 từ Cloudflare Pages
+        if ("OPTIONS".equalsIgnoreCase(method)) {
+            chain.doFilter(request, response);
+            return;
+        }
 
         /*
          * KHÔNG bỏ qua /api/auth/me.
@@ -46,7 +53,10 @@ public class JwtAuthFilter extends OncePerRequestFilter {
         if (
                 publicAuthRoute ||
                 path.equals("/api/health") ||
-                path.equals("/api/operators") ||
+                path.equals("/") ||
+                path.equals("/error") ||
+                path.equals("/favicon.ico") ||
+                path.startsWith("/api/operators") ||
                 path.startsWith("/api/plans") ||
                 path.startsWith("/api/ai/") ||
                 path.startsWith("/api/v1/")
