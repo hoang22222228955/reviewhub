@@ -83,7 +83,7 @@ const SERVICE_META = {
     loadMoreText: 'Xem thêm nhà xe',
     sourceLabel: 'Nhà xe',
     sourceFallback: 'Không đọc được API nhà xe',
-    imageInfo: 'public/anhxe/1-50.jpg',
+    imageInfo: 'public/anhxe/1-50.webp',
     imageFolder: '/anhxe',
     imageTotal: 50,
     defaultType: 'Nhà xe',
@@ -120,7 +120,7 @@ const SERVICE_META = {
     loadMoreText: 'Xem thêm khách sạn',
     sourceLabel: 'Khách sạn',
     sourceFallback: 'Không đọc được API khách sạn',
-    imageInfo: 'public/anhkhachsan/1-50.jpg',
+    imageInfo: 'public/anhkhachsan/1-50.webp',
     imageFolder: '/anhkhachsan',
     imageTotal: 50,
     defaultType: 'Khách sạn',
@@ -157,7 +157,7 @@ const SERVICE_META = {
     loadMoreText: 'Xem thêm hãng bay',
     sourceLabel: 'Hãng bay',
     sourceFallback: 'Không đọc được API hãng bay',
-    imageInfo: 'public/anhmaybay/1-50.jpg',
+    imageInfo: 'public/anhmaybay/1-50.webp',
     imageFolder: '/anhmaybay',
     imageTotal: 50,
     defaultType: 'Hãng bay',
@@ -194,7 +194,7 @@ const SERVICE_META = {
     loadMoreText: 'Xem thêm tuyến tàu',
     sourceLabel: 'Tuyến tàu',
     sourceFallback: 'Không đọc được API tàu hỏa',
-    imageInfo: 'public/anhtauhoa/1-50.jpg',
+    imageInfo: 'public/anhtauhoa/1-50.webp',
     imageFolder: '/anhtauhoa',
     imageTotal: 50,
     defaultType: 'Dịch vụ đường sắt',
@@ -231,7 +231,7 @@ const SERVICE_META = {
     loadMoreText: 'Xem thêm tour',
     sourceLabel: 'Tour',
     sourceFallback: 'Không đọc được API tour',
-    imageInfo: 'public/anhtour/1-50.jpg',
+    imageInfo: 'public/anhtour/1-50.webp',
     imageFolder: '/anhtour',
     imageTotal: 50,
     defaultType: 'Tour du lịch',
@@ -268,7 +268,7 @@ const SERVICE_META = {
     loadMoreText: 'Xem thêm dịch vụ',
     sourceLabel: 'Dịch vụ',
     sourceFallback: 'Không đọc được API dịch vụ',
-    imageInfo: 'public/anhdichvu/1-50.jpg',
+    imageInfo: 'public/anhdichvu/1-50.webp',
     imageFolder: '/anhdichvu',
     imageFolderAlt: '/anhdichvukhac',
     imageTotal: 50,
@@ -336,7 +336,7 @@ function localOperatorImage(index, slug = 'nha-xe', code = '') {
   const number = getImageNumberFromCode(code, index);
   const safeNumber = ((number - 1) % total) + 1;
 
-  return `${meta.imageFolder}/${safeNumber}.jpg`;
+  return `${meta.imageFolder}/${safeNumber}.webp`;
 }
 
 function localOperatorImageAlt(index, slug = 'nha-xe', code = '') {
@@ -347,7 +347,7 @@ function localOperatorImageAlt(index, slug = 'nha-xe', code = '') {
   const number = getImageNumberFromCode(code, index);
   const safeNumber = ((number - 1) % total) + 1;
 
-  return `${meta.imageFolderAlt}/${safeNumber}.jpg`;
+  return `${meta.imageFolderAlt}/${safeNumber}.webp`;
 }
 
 function getCodePrefixBySlug(slug) {
@@ -960,7 +960,7 @@ export default function ServiceCategoryPage() {
 
           <div className={styles.heroArtwork} aria-hidden="true">
             <img
-              src="/nen.jpg"
+              src="/nen.webp"
               alt=""
               onError={(event) => {
                 event.currentTarget.style.display = 'none';
