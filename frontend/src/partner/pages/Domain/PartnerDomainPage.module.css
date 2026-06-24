@@ -1,0 +1,211 @@
+.page {
+  padding: 0 0 32px;
+  color: #253047;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+/* ─── Hero ─────────────────────────────────────────────────────────── */
+.hero {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 28px 28px 24px;
+  background: linear-gradient(135deg, #eef4ff 0%, #f0fff4 100%);
+  border-radius: 0 0 18px 18px;
+  box-shadow: 0 1px 0 rgba(22,28,45,.05), 0 8px 24px rgba(34,197,94,.07);
+  margin-bottom: 24px;
+}
+.heroInner { flex: 1 }
+.heroTitle { margin: 0 0 6px; font-size: 1.45rem; font-weight: 700; color: #1a2035 }
+.heroSub { margin: 0; font-size: .875rem; color: #64748b; max-width: 580px; line-height: 1.55 }
+.heroBadge {
+  flex-shrink: 0;
+  padding: 5px 14px;
+  border-radius: 99px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  font-size: .75rem;
+  font-weight: 600;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+/* ─── Sections ─────────────────────────────────────────────────────── */
+.section {
+  margin: 0 24px 20px;
+  padding: 20px 22px;
+  background: #fff;
+  border-radius: 14px;
+  border: 1.5px solid rgba(0,0,0,.06);
+  box-shadow: 0 2px 8px rgba(31,42,75,.04);
+}
+.sectionTitle {
+  margin: 0 0 16px;
+  font-size: 1rem;
+  font-weight: 700;
+  color: #1a2035;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.count {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 22px;
+  height: 22px;
+  padding: 0 6px;
+  border-radius: 99px;
+  background: #f1f5f9;
+  font-size: .78rem;
+  font-weight: 700;
+  color: #475569;
+}
+
+/* ─── Add Form ─────────────────────────────────────────────────────── */
+.addForm {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+}
+.inputWrap { flex: 1 }
+.input {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 10px 14px;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  font-size: .9rem;
+  color: #1a2035;
+  background: #f8fafc;
+  outline: none;
+  transition: border-color .15s, box-shadow .15s;
+}
+.input:focus { border-color: #22c55e; box-shadow: 0 0 0 3px rgba(34,197,94,.12); background: #fff }
+.input:disabled { opacity: .6 }
+.addBtn {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 10px;
+  background: linear-gradient(135deg, #22c55e, #16a34a);
+  color: #fff;
+  font-size: .875rem;
+  font-weight: 600;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity .15s;
+}
+.addBtn:disabled { opacity: .55; cursor: not-allowed }
+.addBtn:hover:not(:disabled) { opacity: .88 }
+.addError {
+  margin: 8px 0 0;
+  font-size: .83rem;
+  color: #dc2626;
+}
+.hint {
+  margin: 10px 0 0;
+  font-size: .8rem;
+  color: #94a3b8;
+}
+.hint code {
+  background: #f1f5f9;
+  padding: 1px 5px;
+  border-radius: 4px;
+  font-size: .78rem;
+}
+
+/* ─── Domain List ──────────────────────────────────────────────────── */
+.domainList {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.domainRow {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 12px 14px;
+  border-radius: 10px;
+  background: #f8fafc;
+  border: 1.5px solid #f1f5f9;
+  transition: border-color .15s;
+}
+.domainRow:hover { border-color: #e2e8f0 }
+.domainIcon {
+  flex-shrink: 0;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  background: #dcfce7;
+  color: #16a34a;
+}
+.domainIcon svg { width: 16px; height: 16px; stroke: #16a34a; stroke-width: 1.5 }
+.domainName {
+  flex: 1;
+  font-size: .9rem;
+  font-weight: 600;
+  color: #1a2035;
+  word-break: break-all;
+}
+.domainDate {
+  font-size: .78rem;
+  color: #94a3b8;
+  white-space: nowrap;
+}
+.deleteBtn {
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  padding: 6px 12px;
+  border: 1.5px solid #fca5a5;
+  border-radius: 8px;
+  background: #fff;
+  color: #dc2626;
+  font-size: .78rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background .15s, color .15s;
+  white-space: nowrap;
+}
+.deleteBtn svg { width: 14px; height: 14px; stroke: currentColor; stroke-width: 1.5 }
+.deleteBtn:hover { background: #fef2f2; color: #b91c1c }
+
+/* ─── States ───────────────────────────────────────────────────────── */
+.emptyState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  padding: 40px 24px;
+  color: #94a3b8;
+  font-size: .875rem;
+  text-align: center;
+}
+.emptyIcon {
+  width: 40px;
+  height: 40px;
+  stroke: #cbd5e1;
+  stroke-width: 1.5;
+}
+.spinner {
+  width: 28px;
+  height: 28px;
+  border: 3px solid #e2e8f0;
+  border-top-color: #22c55e;
+  border-radius: 50%;
+  animation: spin .7s linear infinite;
+}
+@keyframes spin { to { transform: rotate(360deg) } }
+.errorBox {
+  padding: 12px 16px;
+  background: #fef2f2;
+  border: 1.5px solid #fca5a5;
+  border-radius: 10px;
+  color: #dc2626;
+  font-size: .875rem;
+}

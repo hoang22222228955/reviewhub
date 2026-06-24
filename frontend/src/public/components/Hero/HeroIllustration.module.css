@@ -1,0 +1,252 @@
+.stage {
+  position: relative;
+  min-height: 560px;
+  display: grid;
+  place-items: center;
+}
+
+.desktop {
+  width: min(620px, 100%);
+  position: relative;
+}
+
+.screen {
+  border-radius: 28px;
+  background: linear-gradient(180deg, #ffffff, #faf7ff);
+  border: 14px solid #151515;
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+.topbar,
+.topbarSmall {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  padding: 14px 18px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #fff, #faf8ff);
+}
+
+.brand {
+  font-weight: 900;
+  color: #29224f;
+}
+
+.search {
+  flex: 1;
+  max-width: 260px;
+  padding: 10px 14px;
+  border-radius: 12px;
+  background: #f4efff;
+  color: #7a679d;
+  font-size: 13px;
+}
+
+.hero {
+  display: grid;
+  grid-template-columns: 1.1fr .9fr;
+  gap: 18px;
+  padding: 24px;
+  align-items: center;
+}
+
+.hero h3,
+.laptopTitle {
+  margin: 0;
+  font-size: clamp(30px, 3vw, 44px);
+  line-height: 1.05;
+  letter-spacing: -0.04em;
+  color: #2e2554;
+}
+
+.hero p {
+  margin: 12px 0 0;
+  color: #5e5d79;
+  line-height: 1.8;
+}
+
+.avatarBlock {
+  position: relative;
+  min-height: 210px;
+}
+
+.avatarGlow {
+  position: absolute;
+  right: 22px;
+  top: 48px;
+  width: 140px;
+  height: 140px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(160, 118, 255, .42), transparent 68%);
+}
+
+.avatarCard {
+  position: absolute;
+  right: 0;
+  top: 18px;
+  width: 180px;
+  padding: 16px;
+  border-radius: 18px;
+  background: white;
+  border: 1px solid var(--border);
+  box-shadow: var(--shadow-sm);
+}
+
+.miniBadge {
+  display: inline-flex;
+  padding: 8px 10px;
+  border-radius: 999px;
+  background: #ede4ff;
+  color: #6f42ff;
+  font-size: 12px;
+  font-weight: 900;
+}
+
+.metric {
+  margin-top: 10px;
+  color: #4f5a75;
+  font-weight: 700;
+}
+
+.brandStrip {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 10px;
+  padding: 0 24px 22px;
+}
+
+.brandStrip span {
+  padding: 12px;
+  border-radius: 14px;
+  background: #f5efff;
+  text-align: center;
+  color: #65518f;
+  font-weight: 800;
+  font-size: 13px;
+}
+
+.desktopBase {
+  width: 180px;
+  height: 12px;
+  border-radius: 999px;
+  background: #161616;
+  margin: 10px auto 0;
+}
+
+.laptop {
+  position: absolute;
+  right: 12px;
+  bottom: 20px;
+  width: min(420px, 72%);
+}
+
+.laptop .screen {
+  border-width: 10px;
+}
+
+.laptopHero {
+  display: grid;
+  gap: 14px;
+  padding: 18px;
+}
+
+.chartCard {
+  padding: 14px;
+  border-radius: 18px;
+  background: #f7f3ff;
+  border: 1px solid #eadfff;
+}
+
+.chartSvg {
+  width: 100%;
+  height: 120px;
+}
+
+.tablet,
+.phone {
+  position: absolute;
+  background: #181818;
+  box-shadow: var(--shadow-lg);
+}
+
+.tablet {
+  left: -18px;
+  bottom: 16px;
+  width: 160px;
+  border-radius: 22px;
+  padding: 10px;
+}
+
+.tabletScreen {
+  background: white;
+  border-radius: 14px;
+  min-height: 190px;
+  padding: 12px;
+  display: grid;
+  gap: 12px;
+}
+
+.tabletCard {
+  border-radius: 12px;
+  height: 68px;
+  background: linear-gradient(135deg, #efe6ff, #f8fbff);
+  border: 1px solid var(--border);
+}
+
+.phone {
+  left: 142px;
+  bottom: 0;
+  width: 88px;
+  border-radius: 24px;
+  padding: 8px;
+}
+
+.phoneScreen {
+  background: white;
+  border-radius: 16px;
+  min-height: 160px;
+  padding: 12px 10px;
+  display: grid;
+  gap: 10px;
+}
+
+.phoneBar,
+.phoneTile {
+  border-radius: 10px;
+  background: #f0f5ff;
+  border: 1px solid var(--border);
+}
+
+.phoneBar { height: 20px; }
+.phoneTile { height: 28px; }
+
+@media (max-width: 1100px) {
+  .stage {
+    min-height: 500px;
+  }
+}
+
+@media (max-width: 760px) {
+  .stage {
+    min-height: 420px;
+  }
+
+  .tablet,
+  .phone {
+    display: none;
+  }
+
+  .laptop {
+    position: relative;
+    right: auto;
+    bottom: auto;
+    width: 100%;
+    margin-top: 18px;
+  }
+
+  .hero {
+    grid-template-columns: 1fr;
+  }
+}

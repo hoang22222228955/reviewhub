@@ -1,0 +1,270 @@
+/* src/admin/components/AdminTopbar/AdminTopbar.module.css */
+
+.topbar {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 22px;
+  width: 100%;
+  min-height: 112px;
+  padding: 18px 24px;
+  border-radius: 28px;
+  overflow: hidden;
+  isolation: isolate;
+  background:
+    radial-gradient(circle at 8% 0%, rgba(99, 102, 241, .10), transparent 30%),
+    radial-gradient(circle at 92% 12%, rgba(14, 165, 233, .08), transparent 28%),
+    linear-gradient(135deg, rgba(255, 255, 255, .985), rgba(248, 250, 252, .95));
+  border: 1px solid rgba(226, 232, 240, .88);
+  box-shadow:
+    0 14px 38px rgba(15, 23, 42, .052),
+    inset 0 1px 0 rgba(255, 255, 255, .88);
+  backdrop-filter: blur(16px);
+}
+
+.topbar::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: -2;
+  background-image:
+    linear-gradient(rgba(99, 102, 241, .034) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(99, 102, 241, .03) 1px, transparent 1px);
+  background-size: 42px 42px;
+  mask-image: linear-gradient(120deg, rgba(0,0,0,.34), transparent 60%);
+  pointer-events: none;
+}
+
+.topbar::after {
+  content: "";
+  position: absolute;
+  right: 308px;
+  bottom: -96px;
+  z-index: -1;
+  width: 170px;
+  height: 170px;
+  border-radius: 999px;
+  background: radial-gradient(circle, rgba(79, 70, 229, .08), transparent 70%);
+  pointer-events: none;
+}
+
+.content {
+  min-width: 0;
+  display: grid;
+  align-content: center;
+}
+
+.eyebrow {
+  width: fit-content;
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 27px;
+  padding: 0 11px;
+  border-radius: 999px;
+  color: #4f46e5;
+  background: rgba(99, 102, 241, .075);
+  border: 1px solid rgba(99, 102, 241, .14);
+  font-size: 10.2px;
+  line-height: 1;
+  font-weight: 620;
+  letter-spacing: .085em;
+  text-transform: uppercase;
+}
+
+.eyebrow::before {
+  content: "";
+  width: 6px;
+  height: 6px;
+  border-radius: 999px;
+  background: #4f46e5;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, .10);
+}
+
+.topbar h1 {
+  margin: 10px 0 0;
+  color: #0f172a;
+  font-size: clamp(24px, 2.25vw, 31px);
+  line-height: 1.08;
+  font-weight: 660;
+  letter-spacing: -.04em;
+}
+
+.topbar p {
+  max-width: 760px;
+  margin: 8px 0 0;
+  color: #627086;
+  font-size: 13px;
+  line-height: 1.55;
+  font-weight: 420;
+}
+
+/* ===== GIỮ NGUYÊN CẤU TRÚC KHỐI TRONG ẢNH, CHỈ LÀM GỌN UI ===== */
+
+.actions {
+  display: flex;
+  align-items: stretch;
+  gap: 0;
+  flex: 0 0 auto;
+  overflow: hidden;
+  border-radius: 22px;
+  background:
+    linear-gradient(135deg, rgba(255, 255, 255, .985), rgba(247, 250, 255, .94));
+  border: 1px solid rgba(226, 232, 240, .88);
+  box-shadow:
+    0 14px 30px rgba(15, 23, 42, .058),
+    inset 0 1px 0 rgba(255, 255, 255, .95);
+}
+
+.homeLink {
+  min-height: 58px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  padding: 0 20px;
+  border-right: 1px solid rgba(226, 232, 240, .92);
+  background: rgba(255, 255, 255, .34);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 540;
+  letter-spacing: -.01em;
+  text-decoration: none;
+  white-space: nowrap;
+  transition:
+    background .18s ease,
+    color .18s ease;
+}
+
+.homeLink svg {
+  width: 15px;
+  height: 15px;
+  color: #475569;
+}
+
+.homeLink:hover {
+  background: rgba(99, 102, 241, .055);
+  color: #2563eb;
+}
+
+.homeLink:hover svg {
+  color: #2563eb;
+}
+
+.accountCard {
+  min-height: 58px;
+  min-width: 224px;
+  display: grid;
+  grid-template-columns: 42px minmax(0, 1fr);
+  align-items: center;
+  gap: 10px;
+  padding: 8px 13px;
+  text-decoration: none;
+  color: inherit;
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .96), rgba(247, 249, 255, .92));
+  transition:
+    background .18s ease,
+    transform .18s ease;
+}
+
+.accountCard:hover {
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, .99), rgba(238, 242, 255, .92));
+}
+
+.accountAvatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 16px;
+  display: grid;
+  place-items: center;
+  background:
+    linear-gradient(135deg, #4f6eff, #7657ff);
+  color: #ffffff;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow:
+    0 10px 22px rgba(79, 110, 255, .20);
+}
+
+.accountInfo {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.accountInfo strong {
+  color: #12203a;
+  font-size: 13.5px;
+  line-height: 1.2;
+  font-weight: 680;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.accountInfo span {
+  color: rgba(18, 32, 58, .58);
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 500;
+}
+
+/* ===== RESPONSIVE ===== */
+
+@media (max-width: 860px) {
+  .topbar {
+    flex-direction: column;
+    align-items: stretch;
+    min-height: auto;
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .actions {
+    width: 100%;
+  }
+
+  .homeLink {
+    flex: 0 0 auto;
+  }
+
+  .accountCard {
+    flex: 1;
+    min-width: 0;
+  }
+}
+
+@media (max-width: 560px) {
+  .topbar {
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .topbar h1 {
+    font-size: 27px;
+  }
+
+  .topbar p {
+    font-size: 12.8px;
+  }
+
+  .actions {
+    display: grid;
+    grid-template-columns: 1fr;
+    border-radius: 18px;
+  }
+
+  .homeLink {
+    width: 100%;
+    border-right: 0;
+    border-bottom: 1px solid rgba(226, 232, 240, .9);
+  }
+
+  .accountCard {
+    width: 100%;
+  }
+}

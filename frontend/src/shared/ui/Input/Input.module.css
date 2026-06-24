@@ -1,0 +1,42 @@
+.wrapper {
+  display: grid;
+  gap: 8px;
+}
+
+.label {
+  color: var(--text-strong);
+  font-weight: 700;
+}
+
+.input {
+  width: 100%;
+  padding: 14px 16px;
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  background: white;
+  color: var(--text-strong);
+  outline: none;
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.input:focus {
+  border-color: rgba(47, 99, 255, .45);
+  box-shadow: 0 0 0 4px rgba(47, 99, 255, .1);
+}
+
+.textarea {
+  min-height: 140px;
+  resize: vertical;
+}
+
+.helper {
+  color: var(--text-soft);
+  font-size: 13px;
+  line-height: 1.6;
+}
+
+.error {
+  color: var(--danger);
+  font-size: 13px;
+  font-weight: 700;
+}

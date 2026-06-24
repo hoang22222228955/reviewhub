@@ -1,0 +1,250 @@
+.panel {
+  width: 100%;
+  max-width: 420px;
+  display: grid;
+  gap: 18px;
+  align-content: start;
+  padding: 22px;
+  border-radius: 18px;
+  background: #ffffff;
+  border: 1px solid #e8edf3;
+  box-shadow: 0 8px 24px rgba(15, 23, 42, 0.035);
+  color: #273449;
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+}
+
+.header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 14px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #edf1f6;
+}
+
+.kicker {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.header h3 {
+  margin: 10px 0 0;
+  color: #111827;
+  font-size: 18px;
+  line-height: 1.25;
+  font-weight: 590;
+  letter-spacing: -.025em;
+}
+
+.header p {
+  margin: 7px 0 0;
+  color: #64748b;
+  font-size: 12.4px;
+  line-height: 1.65;
+  font-weight: 400;
+}
+
+.status {
+  height: 27px;
+  display: inline-flex;
+  align-items: center;
+  padding: 0 10px;
+  border-radius: 999px;
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #166534;
+  font-size: 11px;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.scoreBlock {
+  display: grid;
+  gap: 16px;
+  padding: 16px;
+  border-radius: 14px;
+  background: #111827;
+}
+
+.scoreBlock span {
+  color: rgba(255,255,255,.62);
+  font-size: 11.5px;
+  font-weight: 400;
+}
+
+.scoreBlock strong {
+  display: block;
+  margin-top: 5px;
+  color: #ffffff;
+  font-size: 34px;
+  line-height: 1;
+  font-weight: 580;
+  letter-spacing: -.04em;
+}
+
+.scoreBlock small {
+  display: block;
+  margin-top: 6px;
+  color: rgba(255,255,255,.72);
+  font-size: 11.5px;
+  font-weight: 400;
+}
+
+.progressWrap {
+  display: grid;
+  gap: 8px;
+}
+
+.progressWrap span {
+  color: rgba(255,255,255,.8);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.track {
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: rgba(255,255,255,.13);
+}
+
+.fill {
+  height: 100%;
+  border-radius: inherit;
+  background: #60a5fa;
+}
+
+.metaList {
+  display: grid;
+  gap: 0;
+  margin: 0;
+  border: 1px solid #edf1f6;
+  border-radius: 14px;
+  overflow: hidden;
+}
+
+.metaList div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 46px;
+  padding: 0 13px;
+  background: #ffffff;
+}
+
+.metaList div + div {
+  border-top: 1px solid #edf1f6;
+}
+
+.metaList dt {
+  color: #64748b;
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.metaList dd {
+  margin: 0;
+  color: #111827;
+  font-size: 12.5px;
+  font-weight: 520;
+  text-align: right;
+}
+
+.comment {
+  padding: 15px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #edf1f6;
+}
+
+.comment span {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 520;
+}
+
+.comment p {
+  margin: 8px 0 0;
+  color: #475569;
+  font-size: 12.8px;
+  line-height: 1.72;
+  font-weight: 400;
+}
+
+.imagePreview {
+  display: grid;
+  gap: 10px;
+  padding: 15px;
+  border-radius: 14px;
+  background: #f8fafc;
+  border: 1px solid #edf1f6;
+}
+
+.imagePreview > div {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.imagePreview span {
+  color: #111827;
+  font-size: 12px;
+  font-weight: 520;
+}
+
+.imagePreview small {
+  color: #64748b;
+  font-size: 11.2px;
+  font-weight: 400;
+}
+
+.imagePreview img {
+  width: 100%;
+  height: 190px;
+  display: block;
+  object-fit: cover;
+  border-radius: 12px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.empty {
+  display: grid;
+  gap: 8px;
+}
+
+.empty span {
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.empty h3 {
+  margin: 0;
+  color: #111827;
+  font-size: 18px;
+  font-weight: 590;
+  letter-spacing: -.025em;
+}
+
+.empty p {
+  margin: 0;
+  color: #64748b;
+  font-size: 12.8px;
+  line-height: 1.7;
+}
+
+@media (max-width: 1100px) {
+  .panel {
+    max-width: none;
+  }
+}

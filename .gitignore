@@ -1,0 +1,45 @@
+# Frontend
+frontend/node_modules/
+frontend/dist/
+frontend/build/
+
+# Backend
+backend/target/
+*.class
+
+# Env / secrets
+.env
+.env.*
+frontend/.env
+backend/.env
+backend/src/main/resources/application-secret.properties
+
+# Logs
+*.log
+logs/
+
+# Editor
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+Thumbs.db
+
+# File nen / backup
+*.zip
+*.rar
+*.7z
+*.bak
+# Chrome crawler profiles / cache
+scripts/chrome_profile_gmaps_native/
+scripts/chrome_profile_google_maps/
+scripts/**/Cache/
+scripts/**/Code Cache/
+scripts/**/GPUCache/
+scripts/**/GrShaderCache/
+scripts/**/BrowserMetrics/
+scripts/**/*.tflite
+scripts/**/*.pma
+# Windows shortcuts
+*.lnk

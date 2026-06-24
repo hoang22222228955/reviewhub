@@ -1,0 +1,39 @@
+====================================
+NHÀ XE ĐANG CRAWL
+Search keyword : nhà xe Dũng Lệ
+Operator code  : PT-046
+Target code    : BUS-046-001
+Target name    : Dũng Lệ
+MAX REVIEWS    : 200
+Moderation     : pending_review
+Visibility     : public
+====================================
+Đang tìm địa điểm...
+Đang chọn kết quả có nhiều bài đánh giá nhất...
+Không tìm thấy kết quả phù hợp
+Đang mở tab Bài đánh giá...
+Đang crawl reviews...
+
+Scroll 1: 10 reviews
+Scroll 2: 10 reviews
+Scroll 3: 10 reviews
+Scroll 4: 10 reviews
+Scroll 5: 10 reviews
+Scroll 6: 10 reviews
+Scroll 7: 10 reviews
+Scroll 8: 10 reviews
+Scroll 9: 10 reviews
+
+Không còn review mới.
+
+====================================
+Đã tạo file TXT:
+d:\reviewhub-api-platform-main\reviewhub-api-platform-main\scripts\google_maps_reviews.txt
+Tổng review unique: 10
+Status: pending_review
+Visibility: hidden
+====================================
+
+====================================
+TOTAL SAVED: 10
+====================================

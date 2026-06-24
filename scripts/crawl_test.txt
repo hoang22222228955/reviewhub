@@ -1,0 +1,10 @@
+Traceback (most recent call last):
+  File "d:\reviewhub-api-platform-main\reviewhub-api-platform-main\scripts\crawl_google_maps_reviews_to_txt.py", line 101, in <module>
+    selected_operator = find_operator(
+        SEARCH_KEYWORD
+    )
+  File "d:\reviewhub-api-platform-main\reviewhub-api-platform-main\scripts\crawl_google_maps_reviews_to_txt.py", line 96, in find_operator
+    raise Exception(
+        f"Không tìm thấy nhà xe '{search_keyword}'"
+    )
+Exception: Không tìm thấy nhà xe 'test nha xe'

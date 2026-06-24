@@ -1,0 +1,1780 @@
+/* src/partner/components/PartnerChatWidget/PartnerChatWidget.module.css */
+
+.wrapper {
+  position: fixed;
+  right: 28px;
+  bottom: 28px;
+  z-index: 9999;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.fab {
+  position: relative;
+  width: 66px;
+  height: 66px;
+  border: 0;
+  border-radius: 24px;
+  cursor: pointer;
+  color: #fff;
+  background: linear-gradient(135deg, #14b8a6, #2563eb);
+  box-shadow:
+    0 20px 45px rgba(37, 99, 235, .28),
+    0 8px 22px rgba(20, 184, 166, .18);
+  display: grid;
+  place-items: center;
+  overflow: visible;
+  transition: transform .18s ease, box-shadow .18s ease;
+}
+
+.fab:hover {
+  transform: translateY(-2px) scale(1.04);
+  box-shadow:
+    0 24px 52px rgba(37, 99, 235, .34),
+    0 10px 24px rgba(20, 184, 166, .22);
+}
+
+.fabOpen {
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  box-shadow: 0 18px 42px rgba(239, 68, 68, .30);
+}
+
+.botIcon {
+  position: relative;
+  z-index: 2;
+  font-weight: 900;
+  font-size: 18px;
+}
+
+.closeIcon {
+  position: relative;
+  z-index: 2;
+  font-size: 30px;
+  line-height: 1;
+}
+
+.pulse {
+  position: absolute;
+  inset: -6px;
+  border-radius: 28px;
+  background: rgba(20, 184, 166, .24);
+  animation: pulse 1.6s infinite;
+  pointer-events: none;
+}
+
+@keyframes pulse {
+  0% { transform: scale(.9); opacity: .7; }
+  100% { transform: scale(1.25); opacity: 0; }
+}
+
+.fabBadge {
+  position: absolute;
+  top: -6px;
+  right: -6px;
+  z-index: 3;
+  min-width: 22px;
+  height: 22px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 5px;
+  border-radius: 999px;
+  border: 2px solid #fff;
+  background: #ef4444;
+  color: #fff;
+  font-size: 11px;
+  font-weight: 800;
+  box-shadow: 0 8px 18px rgba(239, 68, 68, .35);
+}
+
+.panel {
+  width: 420px;
+  height: 680px;
+  max-height: calc(100vh - 90px);
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 12px;
+  border-radius: 24px;
+  background: #fff;
+  border: 1px solid rgba(226, 232, 240, .92);
+  box-shadow:
+    0 24px 70px rgba(15, 23, 42, .20),
+    0 4px 14px rgba(15, 23, 42, .06);
+  animation: slideUp .2s ease;
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.header {
+  flex-shrink: 0;
+  min-height: 58px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 13px 15px;
+  color: #fff;
+  background:
+    radial-gradient(circle at 92% 16%, rgba(255,255,255,.22), transparent 30%),
+    linear-gradient(135deg, #0f766e, #2563eb);
+}
+
+.headerText {
+  flex: 1;
+  min-width: 0;
+  display: grid;
+  gap: 2px;
+}
+
+.headerText strong {
+  font-size: 15px;
+  line-height: 1.2;
+  font-weight: 730;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.headerText span {
+  color: rgba(255,255,255,.82);
+  font-size: 11.5px;
+  line-height: 1.25;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.backBtn,
+.closeBtn {
+  flex: 0 0 auto;
+  width: 31px;
+  height: 31px;
+  display: grid;
+  place-items: center;
+  border: 0;
+  border-radius: 10px;
+  background: rgba(255,255,255,.16);
+  color: #fff;
+  cursor: pointer;
+}
+
+.backBtn:hover,
+.closeBtn:hover {
+  background: rgba(255,255,255,.27);
+}
+
+.roomList {
+  flex: 1;
+  overflow-y: auto;
+  padding: 12px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(20,184,166,.06), transparent 30%),
+    linear-gradient(180deg, #f8fafc, #f5f7fb);
+}
+
+.roomItem {
+  position: relative;
+  width: 100%;
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  padding: 14px;
+  border: 1px solid #e2e8f0;
+  border-radius: 18px;
+  background: #fff;
+  cursor: pointer;
+  text-align: left;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, .045);
+  transition: transform .16s ease, border-color .16s ease, box-shadow .16s ease;
+}
+
+.roomItem + .roomItem {
+  margin-top: 10px;
+}
+
+.roomItem:hover {
+  transform: translateY(-1px);
+  border-color: rgba(20, 184, 166, .28);
+  box-shadow: 0 12px 26px rgba(37, 99, 235, .08);
+}
+
+.roomItem.support::before,
+.roomItem.ai::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 14%;
+  width: 4px;
+  height: 72%;
+  border-radius: 999px;
+}
+
+.roomItem.support::before {
+  background: linear-gradient(180deg, #60a5fa, #2563eb);
+}
+
+.roomItem.ai::before {
+  background: linear-gradient(180deg, #14b8a6, #2563eb);
+}
+
+.roomAvatar {
+  width: 42px;
+  height: 42px;
+  flex: 0 0 42px;
+  display: grid;
+  place-items: center;
+  border-radius: 15px;
+  color: #fff;
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.support .roomAvatar {
+  background: linear-gradient(135deg, #60a5fa, #2563eb);
+  box-shadow: 0 8px 18px rgba(37, 99, 235, .18);
+}
+
+.ai .roomAvatar {
+  background: linear-gradient(135deg, #14b8a6, #2563eb);
+  box-shadow: 0 8px 18px rgba(20, 184, 166, .18);
+}
+
+.roomContent {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.roomContent strong {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  min-width: 0;
+  color: #172033;
+  font-size: 13.6px;
+  line-height: 1.2;
+  font-weight: 720;
+}
+
+.roomContent em,
+.roomContent b {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 999px;
+  font-style: normal;
+  line-height: 1;
+}
+
+.roomContent em {
+  height: 20px;
+  padding: 0 8px;
+  color: #0f766e;
+  background: #ccfbf1;
+  font-size: 10.2px;
+  font-weight: 780;
+}
+
+.roomContent b {
+  min-width: 20px;
+  height: 20px;
+  padding: 0 6px;
+  color: #fff;
+  background: #ef4444;
+  font-size: 10.5px;
+  font-weight: 800;
+}
+
+.roomContent small {
+  color: #64748b;
+  font-size: 11.8px;
+  line-height: 1.35;
+  font-weight: 450;
+}
+
+.roomContent i {
+  color: #94a3b8;
+  font-size: 11.5px;
+  line-height: 1.4;
+  font-style: normal;
+}
+
+.lockedAiNote {
+  margin-top: 12px;
+  padding: 12px 13px;
+  border-radius: 14px;
+  color: #64748b;
+  background: rgba(255,255,255,.78);
+  border: 1px dashed #cbd5e1;
+  font-size: 12px;
+  line-height: 1.55;
+}
+
+.messages {
+  flex: 1;
+  overflow-y: auto;
+  padding: 13px 12px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(20,184,166,.055), transparent 28%),
+    linear-gradient(180deg, #f7fafc, #f5f7fb);
+}
+
+.emptyChat {
+  padding: 24px 16px;
+  color: #94a3b8;
+  text-align: center;
+  font-size: 13px;
+}
+
+.msgRow {
+  display: flex;
+  align-items: flex-end;
+  gap: 6px;
+}
+
+.mine {
+  flex-direction: row-reverse;
+}
+
+.theirs {
+  flex-direction: row;
+}
+
+.avatar {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  color: #fff;
+  background: linear-gradient(135deg, #14b8a6, #2563eb);
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.bubbleWrap {
+  max-width: 78%;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+.mine .bubbleWrap {
+  align-items: flex-end;
+}
+
+.theirs .bubbleWrap {
+  align-items: flex-start;
+}
+
+.bubble {
+  max-width: 100%;
+  padding: 9px 12px;
+  border-radius: 16px;
+  font-size: 13.4px;
+  line-height: 1.48;
+  word-break: break-word;
+}
+
+.bubbleMine {
+  color: #fff;
+  background: linear-gradient(135deg, #0f766e, #2563eb);
+  border-bottom-right-radius: 5px;
+}
+
+.bubbleTheirs {
+  color: #172033;
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-bottom-left-radius: 5px;
+}
+
+.time {
+  margin-top: 3px;
+  padding: 0 2px;
+  color: #94a3b8;
+  font-size: 10.8px;
+}
+
+.quickReplies {
+  flex-shrink: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid #edf2f7;
+  background: #fff;
+}
+
+.quickReplies button {
+  min-height: 31px;
+  padding: 0 12px;
+  border: 1px solid rgba(20, 184, 166, .16);
+  border-radius: 999px;
+  background: #f0fdfa;
+  color: #0f766e;
+  cursor: pointer;
+  font-size: 11.8px;
+  line-height: 1;
+  font-weight: 650;
+}
+
+.quickReplies button:hover {
+  background: #ccfbf1;
+}
+
+.inputRow {
+  flex-shrink: 0;
+  display: flex;
+  gap: 8px;
+  padding: 10px 12px;
+  border-top: 1px solid #e2e8f0;
+  background: #fff;
+}
+
+.input {
+  flex: 1;
+  min-width: 0;
+  height: 42px;
+  border: 1px solid #dbe4f0;
+  border-radius: 14px;
+  outline: 0;
+  padding: 0 13px;
+  color: #172033;
+  font-size: 13px;
+  font-family: inherit;
+}
+
+.input:focus {
+  border-color: rgba(20, 184, 166, .48);
+  box-shadow: 0 0 0 4px rgba(20, 184, 166, .10);
+}
+
+.sendBtn {
+  min-width: 58px;
+  height: 42px;
+  border: 0;
+  border-radius: 14px;
+  color: #fff;
+  background: linear-gradient(135deg, #14b8a6, #2563eb);
+  cursor: pointer;
+  font-size: 12.6px;
+  font-weight: 720;
+}
+
+.sendBtn:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+}
+
+/* Markdown */
+.bubbleTheirs h1,
+.bubbleTheirs h2,
+.bubbleTheirs h3 {
+  margin: 4px 0 8px;
+  color: #0f172a;
+  line-height: 1.2;
+}
+
+.bubbleTheirs h1 { font-size: 18px; }
+.bubbleTheirs h2 { font-size: 16px; }
+.bubbleTheirs h3 { font-size: 14px; }
+
+.bubbleTheirs p {
+  margin: 5px 0;
+}
+
+.bubbleTheirs ul,
+.bubbleTheirs ol {
+  margin: 6px 0;
+  padding-left: 20px;
+}
+
+.bubbleTheirs li {
+  margin: 3px 0;
+}
+
+.bubbleTheirs table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 8px 0;
+  font-size: 12px;
+}
+
+.bubbleTheirs th,
+.bubbleTheirs td {
+  border: 1px solid #e2e8f0;
+  padding: 6px 7px;
+  text-align: left;
+}
+
+.bubbleTheirs th {
+  background: #f8fafc;
+}
+
+.bubbleTheirs code {
+  padding: 2px 5px;
+  border-radius: 6px;
+  background: #f1f5f9;
+  color: #0f766e;
+  font-size: 12px;
+}
+
+@media (max-width: 560px) {
+  .wrapper {
+    right: 16px;
+    bottom: 16px;
+  }
+
+  .panel {
+    width: calc(100vw - 24px);
+    height: min(680px, calc(100vh - 24px));
+    border-radius: 22px;
+  }
+}
+
+/* ===== PATCH: nhiều câu hỏi nhanh cho Partner AI ===== */
+.quickReplies {
+  max-height: 112px;
+  overflow-y: auto;
+  scrollbar-width: thin;
+}
+
+.quickReplies button {
+  white-space: nowrap;
+}
+
+.roomItem.ai .roomContent i {
+  color: #0f766e;
+}
+
+/* ===== PATCH: Partner AI quick replies richer but elegant ===== */
+.quickReplies {
+  max-height: 126px;
+  overflow-y: auto;
+  align-content: flex-start;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.96)) !important;
+}
+
+.quickReplies button {
+  min-height: 30px !important;
+  padding: 0 11px !important;
+  color: #0f766e !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(20, 184, 166, .18) !important;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, .035);
+  font-size: 11.5px !important;
+  font-weight: 560 !important;
+  white-space: nowrap;
+}
+
+.quickReplies button:hover {
+  background: #f0fdfa !important;
+  border-color: rgba(20, 184, 166, .32) !important;
+}
+
+.bubble {
+  font-size: 13.2px !important;
+  line-height: 1.5 !important;
+}
+
+.bubbleTheirs h1 {
+  font-size: 17px !important;
+  font-weight: 650 !important;
+}
+
+.bubbleTheirs h2 {
+  font-size: 15px !important;
+  font-weight: 620 !important;
+}
+
+.bubbleTheirs h3 {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+}
+
+.roomContent strong {
+  font-weight: 650 !important;
+}
+
+.roomContent i,
+.roomContent small {
+  font-weight: 420 !important;
+}
+
+/* ===== PATCH: visual review chart inside Partner AI chat ===== */
+.quickReplies {
+  max-height: 128px;
+  overflow-y: auto;
+  align-content: flex-start;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.96)) !important;
+}
+
+.quickReplies button {
+  min-height: 30px !important;
+  padding: 0 11px !important;
+  color: #0f766e !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(20, 184, 166, .18) !important;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, .035);
+  font-size: 11.5px !important;
+  font-weight: 560 !important;
+  white-space: nowrap;
+}
+
+.quickReplies button:hover {
+  background: #f0fdfa !important;
+  border-color: rgba(20, 184, 166, .32) !important;
+}
+
+.theirs .bubbleWrap:has(.chartCard) {
+  max-width: 92%;
+}
+
+.bubble:has(.chartCard) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.chartCard {
+  width: min(310px, 100%);
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, .95);
+  background:
+    radial-gradient(circle at 12% 0%, rgba(20, 184, 166, .08), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
+}
+
+.chartHeader {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  padding: 14px 15px 10px;
+}
+
+.chartHeader strong {
+  display: block;
+  color: #101828;
+  font-size: 14px;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -.015em;
+}
+
+.chartHeader span {
+  display: block;
+  margin-top: 3px;
+  color: #667085;
+  font-size: 11.5px;
+  line-height: 1.35;
+  font-weight: 420;
+}
+
+.chartHeader b {
+  display: inline-flex;
+  align-items: baseline;
+  gap: 2px;
+  color: #101828;
+  font-size: 22px;
+  line-height: 1;
+  font-weight: 620;
+  letter-spacing: -.04em;
+}
+
+.chartHeader b small {
+  color: #7a8799;
+  font-size: 11px;
+  font-weight: 460;
+}
+
+.chartBody {
+  display: grid;
+  grid-template-columns: 106px minmax(0, 1fr);
+  gap: 13px;
+  align-items: center;
+  padding: 4px 15px 12px;
+}
+
+.chartDonut {
+  width: 104px;
+  height: 104px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  box-shadow:
+    inset 0 0 0 1px rgba(255,255,255,.75),
+    0 10px 22px rgba(20, 184, 166, .08);
+}
+
+.chartDonut > div {
+  width: 72px;
+  height: 72px;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  border-radius: 999px;
+  background: #fff;
+  box-shadow: inset 0 0 0 1px #eef2f7;
+}
+
+.chartDonut strong {
+  color: #111827;
+  font-size: 23px;
+  line-height: .92;
+  font-weight: 610;
+  letter-spacing: -.04em;
+}
+
+.chartDonut span {
+  color: #344054;
+  font-size: 10.5px;
+  line-height: 1;
+  font-weight: 500;
+}
+
+.chartDonut small {
+  margin-top: 2px;
+  color: #7a8799;
+  font-size: 9.8px;
+  line-height: 1;
+  font-weight: 420;
+}
+
+.chartBars {
+  display: grid;
+  gap: 8px;
+}
+
+.chartBarRow {
+  display: grid;
+  grid-template-columns: 38px minmax(0, 1fr) 26px;
+  align-items: center;
+  gap: 7px;
+}
+
+.chartBarRow label,
+.chartBarRow em {
+  color: #667085;
+  font-size: 10.8px;
+  line-height: 1;
+  font-style: normal;
+  font-weight: 460;
+}
+
+.chartBarRow em {
+  text-align: right;
+  color: #344054;
+  font-weight: 560;
+}
+
+.chartBarRow i {
+  display: block;
+  height: 7px;
+  overflow: hidden;
+  border-radius: 999px;
+  background: #edf2f7;
+}
+
+.chartBarRow i span {
+  display: block;
+  height: 100%;
+  min-width: 3px;
+  border-radius: inherit;
+  background: linear-gradient(90deg, #14b8a6, #2563eb);
+}
+
+.chartSummary {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 8px;
+  padding: 0 15px 14px;
+}
+
+.chartSummary div {
+  min-height: 58px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 9px;
+  border-radius: 14px;
+  border: 1px solid #e4e7ec;
+  background: #ffffff;
+}
+
+.chartSummary span {
+  color: #667085;
+  font-size: 10.5px;
+  line-height: 1.2;
+  font-weight: 460;
+}
+
+.chartSummary strong {
+  color: #344054;
+  font-size: 18px;
+  line-height: 1;
+  font-weight: 620;
+}
+
+.chartSummary small {
+  color: #98a2b3;
+  font-size: 10px;
+  line-height: 1;
+  font-weight: 420;
+}
+
+.goodText {
+  color: #079455 !important;
+}
+
+.badText {
+  color: #dc2626 !important;
+}
+
+.chartInsightGrid {
+  display: grid;
+  gap: 9px;
+  padding: 0 15px 15px;
+}
+
+.chartInsightGrid section {
+  padding: 11px 12px;
+  border-radius: 14px;
+  border: 1px solid #edf2f7;
+  background: rgba(255,255,255,.86);
+}
+
+.chartInsightGrid section strong {
+  display: block;
+  color: #172033;
+  font-size: 12.4px;
+  line-height: 1.25;
+  font-weight: 610;
+  margin-bottom: 6px;
+}
+
+.chartInsightGrid ul {
+  margin: 0;
+  padding-left: 17px;
+}
+
+.chartInsightGrid li,
+.chartInsightGrid p {
+  margin: 3px 0;
+  color: #475569;
+  font-size: 11.7px;
+  line-height: 1.48;
+  font-weight: 420;
+}
+
+.bubble {
+  font-size: 13.2px !important;
+  line-height: 1.5 !important;
+}
+
+.bubbleTheirs h1 {
+  font-size: 17px !important;
+  font-weight: 650 !important;
+}
+
+.bubbleTheirs h2 {
+  font-size: 15px !important;
+  font-weight: 620 !important;
+}
+
+.bubbleTheirs h3 {
+  font-size: 13.5px !important;
+  font-weight: 600 !important;
+}
+
+/* ===== PATCH V2: tách riêng Xuất biểu đồ và AI phân tích ===== */
+.analysisCard {
+  width: min(310px, 100%);
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, .95);
+  background:
+    radial-gradient(circle at 10% 0%, rgba(124, 58, 237, .07), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 14px 34px rgba(15, 23, 42, .08);
+}
+
+.analysisHeader {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 15px 11px;
+  border-bottom: 1px solid #edf2f7;
+}
+
+.analysisIcon {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 13px;
+  color: #6d4cff;
+  background: linear-gradient(135deg, rgba(124, 58, 237, .10), rgba(59, 130, 246, .08));
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.analysisHeader strong {
+  display: block;
+  color: #101828;
+  font-size: 14px;
+  line-height: 1.22;
+  font-weight: 650;
+  letter-spacing: -.015em;
+}
+
+.analysisHeader small {
+  display: block;
+  margin-top: 2px;
+  color: #667085;
+  font-size: 11.2px;
+  line-height: 1.35;
+  font-weight: 420;
+}
+
+.analysisStats {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 8px;
+  padding: 12px 14px;
+}
+
+.analysisStats div {
+  min-height: 58px;
+  display: grid;
+  align-content: center;
+  gap: 3px;
+  padding: 9px 10px;
+  border-radius: 14px;
+  border: 1px solid #e4e7ec;
+  background: #fff;
+}
+
+.analysisStats span {
+  color: #667085;
+  font-size: 10.7px;
+  line-height: 1.2;
+  font-weight: 460;
+}
+
+.analysisStats strong {
+  color: #172033;
+  font-size: 19px;
+  line-height: 1;
+  font-weight: 620;
+}
+
+.analysisStats small {
+  color: #98a2b3;
+  font-size: 10px;
+  line-height: 1.2;
+  font-weight: 420;
+}
+
+.analysisSections {
+  display: grid;
+  gap: 8px;
+  padding: 0 14px 14px;
+}
+
+.analysisSections section {
+  padding: 11px 12px;
+  border: 1px solid #edf2f7;
+  border-radius: 14px;
+  background: rgba(255, 255, 255, .92);
+}
+
+.analysisSections h4 {
+  margin: 0 0 6px;
+  color: #172033;
+  font-size: 12.5px;
+  line-height: 1.25;
+  font-weight: 610;
+}
+
+.analysisSections ul {
+  margin: 0;
+  padding-left: 17px;
+}
+
+.analysisSections li,
+.analysisSections p {
+  margin: 3px 0;
+  color: #475569;
+  font-size: 11.7px;
+  line-height: 1.48;
+  font-weight: 420;
+}
+
+/* Chat bubble chứa card thì bỏ nền mặc định để card nhìn như ảnh xuất riêng */
+.bubble:has(.analysisCard),
+.bubble:has(.chartCard) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.theirs .bubbleWrap:has(.analysisCard),
+.theirs .bubbleWrap:has(.chartCard) {
+  max-width: 92%;
+}
+
+/* ===== PATCH: direct chart/analysis quick button ===== */
+.quickReplies button:disabled {
+  opacity: .55;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
+/* ===== PATCH: Partner AI menu kiểu Zalo, chọn mục là tự hỏi và trả lời ===== */
+.menuCard {
+  width: min(318px, 100%);
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, .96);
+  background: #ffffff;
+  box-shadow: 0 12px 28px rgba(15, 23, 42, .07);
+}
+
+.menuHead {
+  padding: 13px 14px 11px;
+  border-bottom: 1px solid #edf2f7;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(20, 184, 166, .07), transparent 30%),
+    linear-gradient(180deg, #ffffff, #fbfdff);
+}
+
+.menuHead strong {
+  display: block;
+  color: #172033;
+  font-size: 13.5px;
+  line-height: 1.25;
+  font-weight: 640;
+  letter-spacing: -.01em;
+}
+
+.menuHead span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 11.6px;
+  line-height: 1.45;
+  font-weight: 420;
+}
+
+.menuList {
+  display: grid;
+}
+
+.menuItem {
+  width: 100%;
+  min-height: 56px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 20px;
+  align-items: center;
+  gap: 10px;
+  padding: 11px 13px 11px 14px;
+  border: 0;
+  border-bottom: 1px solid #edf2f7;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition: background .16s ease, transform .16s ease;
+}
+
+.menuItem:last-child {
+  border-bottom: 0;
+}
+
+.menuItem:hover {
+  background: #f8fbff;
+}
+
+.menuItem span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.menuItem strong {
+  color: #172033;
+  font-size: 13px;
+  line-height: 1.22;
+  font-weight: 590;
+  letter-spacing: -.006em;
+}
+
+.menuItem small {
+  color: #7a8799;
+  font-size: 11.3px;
+  line-height: 1.36;
+  font-weight: 410;
+}
+
+.menuItem i {
+  width: 20px;
+  height: 20px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #64748b;
+  background: #f1f5f9;
+  font-size: 18px;
+  line-height: 1;
+  font-style: normal;
+}
+
+.menuItem:hover i {
+  color: #0f766e;
+  background: #ecfdf5;
+}
+
+.bubble:has(.menuCard) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.theirs .bubbleWrap:has(.menuCard) {
+  max-width: 94%;
+}
+
+.quickReplies {
+  max-height: none !important;
+  overflow: visible !important;
+}
+
+.quickReplies button {
+  min-height: 31px !important;
+  padding: 0 12px !important;
+  border-radius: 999px !important;
+  background: #ffffff !important;
+  border: 1px solid rgba(20, 184, 166, .18) !important;
+  color: #0f766e !important;
+  font-size: 11.8px !important;
+  font-weight: 560 !important;
+  box-shadow: 0 5px 12px rgba(15, 23, 42, .035);
+}
+
+.quickReplies button:hover {
+  background: #f0fdfa !important;
+}
+
+/* ===== PATCH V2: menu Partner AI gọn hơn, không kéo dài 1 cột ===== */
+.menuCard {
+  width: min(318px, 100%);
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, .96);
+  background:
+    radial-gradient(circle at 8% 0%, rgba(20, 184, 166, .06), transparent 34%),
+    linear-gradient(180deg, #ffffff 0%, #f8fbff 100%);
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .075);
+}
+
+.menuHead {
+  padding: 13px 14px 11px;
+  border-bottom: 1px solid #eef2f7;
+  background: rgba(255, 255, 255, .72);
+}
+
+.menuHead strong {
+  display: block;
+  color: #172033;
+  font-size: 13.6px;
+  line-height: 1.25;
+  font-weight: 640;
+  letter-spacing: -.01em;
+}
+
+.menuHead span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 11.5px;
+  line-height: 1.42;
+  font-weight: 420;
+}
+
+.menuList {
+  display: none !important;
+}
+
+.menuGrid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 9px;
+  padding: 12px;
+}
+
+.menuTile {
+  min-height: 68px;
+  display: grid;
+  align-content: center;
+  gap: 5px;
+  padding: 10px 11px;
+  border: 1px solid rgba(226, 232, 240, .95);
+  border-radius: 15px;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.98), rgba(248,250,252,.92));
+  text-align: left;
+  cursor: pointer;
+  box-shadow: 0 7px 16px rgba(15, 23, 42, .035);
+  transition:
+    transform .16s ease,
+    border-color .16s ease,
+    background .16s ease,
+    box-shadow .16s ease;
+}
+
+.menuTile:hover {
+  transform: translateY(-1px);
+  border-color: rgba(20, 184, 166, .28);
+  background:
+    linear-gradient(180deg, #ffffff, #f0fdfa);
+  box-shadow: 0 10px 20px rgba(20, 184, 166, .075);
+}
+
+.menuTile strong {
+  color: #172033;
+  font-size: 12.5px;
+  line-height: 1.22;
+  font-weight: 610;
+  letter-spacing: -.006em;
+}
+
+.menuTile small {
+  color: #7a8799;
+  font-size: 10.8px;
+  line-height: 1.25;
+  font-weight: 410;
+}
+
+.menuMore {
+  display: grid;
+  gap: 9px;
+  padding: 0 12px 13px;
+}
+
+.menuMore > span {
+  color: #98a2b3;
+  font-size: 10.5px;
+  line-height: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.menuMore > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.menuMore button {
+  min-height: 28px;
+  padding: 0 10px;
+  border-radius: 999px;
+  border: 1px solid rgba(20, 184, 166, .16);
+  background: #ffffff;
+  color: #0f766e;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 540;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, .025);
+}
+
+.menuMore button:hover {
+  background: #f0fdfa;
+}
+
+.bubble:has(.menuCard) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.theirs .bubbleWrap:has(.menuCard) {
+  max-width: 94%;
+}
+
+/* ===== PATCH V3: menu Partner AI dạng bảng cũ, gọn hơn ===== */
+.menuCard {
+  width: min(318px, 100%);
+  overflow: hidden;
+  border-radius: 20px;
+  border: 1px solid rgba(226, 232, 240, .96);
+  background: #ffffff;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .075);
+}
+
+.menuHead {
+  padding: 13px 14px 11px;
+  border-bottom: 1px solid #edf2f7;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(20, 184, 166, .065), transparent 30%),
+    linear-gradient(180deg, #ffffff, #fbfdff);
+}
+
+.menuHead strong {
+  display: block;
+  color: #172033;
+  font-size: 13.6px;
+  line-height: 1.25;
+  font-weight: 640;
+  letter-spacing: -.01em;
+}
+
+.menuHead span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 11.5px;
+  line-height: 1.42;
+  font-weight: 420;
+}
+
+.menuGrid,
+.menuMore {
+  display: none !important;
+}
+
+.menuList {
+  display: grid !important;
+  background: #ffffff;
+}
+
+.menuItem {
+  width: 100%;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px 10px 14px;
+  border: 0;
+  border-bottom: 1px solid #edf2f7;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+  transition:
+    background .16s ease,
+    transform .16s ease;
+}
+
+.menuItem:last-child {
+  border-bottom: 0;
+}
+
+.menuItem:hover {
+  background: #f8fbff;
+}
+
+.menuItem span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.menuItem strong {
+  color: #172033;
+  font-size: 13px;
+  line-height: 1.22;
+  font-weight: 600;
+  letter-spacing: -.006em;
+}
+
+.menuItem small {
+  color: #7a8799;
+  font-size: 11.3px;
+  line-height: 1.35;
+  font-weight: 410;
+}
+
+.menuItem i {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #64748b;
+  background: #f1f5f9;
+  font-size: 18px;
+  line-height: 1;
+  font-style: normal;
+  font-weight: 400;
+}
+
+.menuItem:hover i {
+  color: #0f766e;
+  background: #ecfdf5;
+}
+
+.menuChipArea {
+  display: grid;
+  gap: 8px;
+  padding: 10px 12px 12px;
+  border-top: 1px solid #edf2f7;
+  background:
+    linear-gradient(180deg, rgba(248,250,252,.75), rgba(255,255,255,.95));
+}
+
+.menuChipArea > span {
+  color: #98a2b3;
+  font-size: 10.5px;
+  line-height: 1;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: .06em;
+}
+
+.menuChipArea > div {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.menuChipArea button {
+  min-height: 28px;
+  padding: 0 10px;
+  border: 1px solid rgba(20, 184, 166, .16);
+  border-radius: 999px;
+  background: #ffffff;
+  color: #0f766e;
+  cursor: pointer;
+  font-size: 11px;
+  line-height: 1;
+  font-weight: 540;
+  box-shadow: 0 4px 10px rgba(15, 23, 42, .025);
+  transition:
+    background .16s ease,
+    border-color .16s ease,
+    transform .16s ease;
+}
+
+.menuChipArea button:hover {
+  transform: translateY(-1px);
+  background: #f0fdfa;
+  border-color: rgba(20, 184, 166, .28);
+}
+
+.bubble:has(.menuCard) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.theirs .bubbleWrap:has(.menuCard) {
+  max-width: 94%;
+}
+
+/* ===== PATCH: Partner AI chat uses filtered reviews from ReviewQuery ===== */
+.analysisCard {
+  border-color: rgba(196, 181, 253, .64) !important;
+  background:
+    radial-gradient(circle at 12% 0%, rgba(124, 58, 237, .065), transparent 30%),
+    linear-gradient(180deg, #ffffff 0%, #fbfdff 100%) !important;
+}
+
+.analysisHeader {
+  background: rgba(255, 255, 255, .72);
+}
+
+.analysisHeader small {
+  color: #667085 !important;
+  font-weight: 420 !important;
+}
+
+.analysisSections li,
+.analysisSections p {
+  color: #344054 !important;
+  font-weight: 420 !important;
+}
+
+.chartCard {
+  border-color: rgba(196, 181, 253, .52) !important;
+}
+
+/* ===== PATCH: dùng đúng biểu đồ PartnerReviewQueryPage trong chat + chọn phạm vi nhiều dịch vụ ===== */
+.chatReviewAnalyticsCard {
+  width: min(360px, 100%);
+  padding: 18px !important;
+  border-radius: 22px !important;
+  box-shadow: 0 14px 34px rgba(15, 23, 42, .08) !important;
+}
+
+.chatReviewAnalyticsCard select {
+  pointer-events: none;
+  opacity: .92;
+}
+
+.chartNeutralNote {
+  margin: 10px 0 0;
+  color: #64748b;
+  font-size: 11.5px;
+  line-height: 1.45;
+  font-weight: 430;
+}
+
+.bubble:has(.chatReviewAnalyticsCard),
+.bubble:has(.scopeChoiceCard) {
+  padding: 0 !important;
+  background: transparent !important;
+  border: 0 !important;
+  box-shadow: none !important;
+}
+
+.theirs .bubbleWrap:has(.chatReviewAnalyticsCard),
+.theirs .bubbleWrap:has(.scopeChoiceCard) {
+  max-width: 96%;
+}
+
+.scopeChoiceCard {
+  width: min(318px, 100%);
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, .96);
+  background: #ffffff;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .075);
+}
+
+.scopeChoiceHead {
+  padding: 13px 14px 11px;
+  border-bottom: 1px solid #edf2f7;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(20, 184, 166, .065), transparent 30%),
+    linear-gradient(180deg, #ffffff, #fbfdff);
+}
+
+.scopeChoiceHead strong {
+  display: block;
+  color: #172033;
+  font-size: 13.6px;
+  line-height: 1.25;
+  font-weight: 640;
+  letter-spacing: -.01em;
+}
+
+.scopeChoiceHead span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 11.5px;
+  line-height: 1.42;
+  font-weight: 420;
+}
+
+.scopeChoiceList {
+  display: grid;
+  background: #ffffff;
+}
+
+.scopeChoiceList button {
+  width: 100%;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px 10px 14px;
+  border: 0;
+  border-bottom: 1px solid #edf2f7;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scopeChoiceList button:last-child {
+  border-bottom: 0;
+}
+
+.scopeChoiceList button:hover {
+  background: #f8fbff;
+}
+
+.scopeChoiceList span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.scopeChoiceList strong {
+  color: #172033;
+  font-size: 13px;
+  line-height: 1.22;
+  font-weight: 600;
+}
+
+.scopeChoiceList small {
+  color: #7a8799;
+  font-size: 11.3px;
+  line-height: 1.35;
+  font-weight: 410;
+}
+
+.scopeChoiceList i {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #64748b;
+  background: #f1f5f9;
+  font-size: 18px;
+  line-height: 1;
+  font-style: normal;
+}
+
+.scopeChoiceList button:hover i {
+  color: #0f766e;
+  background: #ecfdf5;
+}
+
+/* ===== FINAL PATCH: scope chooser preserved after account cache fix ===== */
+.scopeChoiceCard {
+  width: min(318px, 100%);
+  overflow: hidden;
+  border-radius: 18px;
+  border: 1px solid rgba(226, 232, 240, .96);
+  background: #ffffff;
+  box-shadow: 0 14px 30px rgba(15, 23, 42, .075);
+}
+
+.scopeChoiceHead {
+  padding: 13px 14px 11px;
+  border-bottom: 1px solid #edf2f7;
+  background:
+    radial-gradient(circle at 10% 0%, rgba(20, 184, 166, .065), transparent 30%),
+    linear-gradient(180deg, #ffffff, #fbfdff);
+}
+
+.scopeChoiceHead strong {
+  display: block;
+  color: #172033;
+  font-size: 13.6px;
+  line-height: 1.25;
+  font-weight: 640;
+  letter-spacing: -.01em;
+}
+
+.scopeChoiceHead span {
+  display: block;
+  margin-top: 4px;
+  color: #667085;
+  font-size: 11.5px;
+  line-height: 1.42;
+  font-weight: 420;
+}
+
+.scopeChoiceList {
+  display: grid;
+  background: #ffffff;
+}
+
+.scopeChoiceList button {
+  width: 100%;
+  min-height: 54px;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 22px;
+  align-items: center;
+  gap: 10px;
+  padding: 10px 13px 10px 14px;
+  border: 0;
+  border-bottom: 1px solid #edf2f7;
+  background: #ffffff;
+  text-align: left;
+  cursor: pointer;
+}
+
+.scopeChoiceList button:last-child {
+  border-bottom: 0;
+}
+
+.scopeChoiceList button:hover {
+  background: #f8fbff;
+}
+
+.scopeChoiceList span {
+  min-width: 0;
+  display: grid;
+  gap: 3px;
+}
+
+.scopeChoiceList strong {
+  color: #172033;
+  font-size: 13px;
+  line-height: 1.22;
+  font-weight: 600;
+}
+
+.scopeChoiceList small {
+  color: #7a8799;
+  font-size: 11.3px;
+  line-height: 1.35;
+  font-weight: 410;
+}
+
+.scopeChoiceList i {
+  width: 22px;
+  height: 22px;
+  display: grid;
+  place-items: center;
+  border-radius: 999px;
+  color: #64748b;
+  background: #f1f5f9;
+  font-size: 18px;
+  line-height: 1;
+  font-style: normal;
+}
+
+.scopeChoiceList button:hover i {
+  color: #0f766e;
+  background: #ecfdf5;
+}
+
+/* ===== PATCH: AI phân tích hiện bản nhanh trước, AI chi tiết cập nhật sau ===== */
+.analysisLoadingNote,
+.analysisErrorNote {
+  margin: 0 14px 14px;
+  padding: 9px 10px;
+  border-radius: 13px;
+  font-size: 11.5px;
+  line-height: 1.45;
+  font-weight: 430;
+}
+
+.analysisLoadingNote {
+  color: #0f766e;
+  background: #ecfdf5;
+  border: 1px solid rgba(20, 184, 166, .2);
+}
+
+.analysisErrorNote {
+  color: #92400e;
+  background: #fffbeb;
+  border: 1px solid #fde68a;
+}

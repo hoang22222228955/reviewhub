@@ -1,0 +1,11 @@
+.shell {
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at top left, rgba(47, 99, 255, 0.14), transparent 22%),
+    radial-gradient(circle at top right, rgba(112, 66, 255, 0.10), transparent 20%),
+    var(--bg-page);
+}
+
+.main {
+  padding-bottom: 48px;
+}

@@ -1,0 +1,238 @@
+.page {
+  max-width: 1100px;
+  margin: 0 auto;
+  padding: 40px 24px 80px;
+}
+
+.loading {
+  padding: 32px;
+  color: var(--text-soft, #64748b);
+}
+
+/* ── Section header ── */
+.sectionHeader {
+  margin-bottom: 36px;
+}
+
+.eyebrowLine {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-bottom: 14px;
+}
+
+.eyebrowDash {
+  display: block;
+  width: 28px;
+  height: 3px;
+  border-radius: 2px;
+  background: var(--primary, #2563eb);
+}
+
+.eyebrowText {
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.14em;
+  color: var(--text-soft, #64748b);
+  text-transform: uppercase;
+}
+
+.sectionTitle {
+  font-size: clamp(22px, 3vw, 32px);
+  font-weight: 800;
+  color: var(--text-strong, #0f172a);
+  margin: 0 0 8px;
+  line-height: 1.15;
+}
+
+.sectionSub {
+  font-size: 14px;
+  color: var(--text-soft, #64748b);
+  margin: 0;
+}
+
+/* ── Content layout ── */
+.content {
+  display: grid;
+  grid-template-columns: 1fr 340px;
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 860px) {
+  .content { grid-template-columns: 1fr; }
+}
+
+/* ── Form card ── */
+.card {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+}
+
+.fieldGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 13px;
+  font-weight: 600;
+  color: #374151;
+}
+
+.input,
+.select {
+  height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 10px;
+  font-size: 14px;
+  font-family: inherit;
+  color: #111827;
+  background: #f9fafb;
+  outline: none;
+  transition: border-color 0.2s;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+.input:focus,
+.select:focus {
+  border-color: var(--primary, #2563eb);
+  background: #fff;
+}
+
+.hint {
+  font-size: 12px;
+  color: #6b7280;
+  margin: 0;
+}
+
+.hint a {
+  color: var(--primary, #2563eb);
+}
+
+.alert {
+  padding: 12px 16px;
+  border-radius: 10px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.alertSuccess {
+  background: #f0fdf4;
+  border: 1px solid #bbf7d0;
+  color: #15803d;
+}
+
+.alertError {
+  background: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #dc2626;
+}
+
+.btnSave {
+  height: 46px;
+  background: var(--primary, #2563eb);
+  color: #fff;
+  border: none;
+  border-radius: 12px;
+  font-size: 15px;
+  font-weight: 700;
+  cursor: pointer;
+  font-family: inherit;
+  transition: background 0.2s;
+}
+
+.btnSave:hover:not(:disabled) {
+  background: #1d4ed8;
+}
+
+.btnSave:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* ── QR Preview card ── */
+.previewCard {
+  background: #fff;
+  border: 1px solid #e2e8f0;
+  border-radius: 16px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 16px;
+}
+
+.previewTitle {
+  font-size: 13px;
+  font-weight: 700;
+  color: #6b7280;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin: 0;
+}
+
+.qrWrap {
+  background: #f8fafc;
+  border: 1px solid #e2e8f0;
+  border-radius: 12px;
+  padding: 12px;
+}
+
+.qrImg {
+  width: 200px;
+  height: 200px;
+  display: block;
+  border-radius: 8px;
+}
+
+.qrPlaceholder {
+  width: 200px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #f1f5f9;
+  border-radius: 12px;
+  color: #94a3b8;
+  font-size: 13px;
+  text-align: center;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+.bankInfoList {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.bankInfoRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 9px 12px;
+  border-radius: 8px;
+  background: #f8fafc;
+  border: 1px solid #f1f5f9;
+  font-size: 13px;
+}
+
+.bankInfoRow span {
+  color: #6b7280;
+}
+
+.bankInfoRow strong {
+  color: #111827;
+  text-align: right;
+  word-break: break-all;
+}

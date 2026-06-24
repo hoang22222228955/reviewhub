@@ -1,0 +1,40 @@
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  border: 1px solid transparent;
+  border-radius: 18px;
+  padding: 14px 20px;
+  font-weight: 800;
+  cursor: pointer;
+  transition: transform .18s ease, box-shadow .18s ease, background .18s ease, border-color .18s ease;
+}
+
+.button:hover {
+  transform: translateY(-1px);
+}
+
+.primary {
+  color: white;
+  background: linear-gradient(135deg, var(--primary), var(--primary-strong));
+  box-shadow: 0 18px 34px rgba(59, 99, 255, .24);
+}
+
+.secondary {
+  background: linear-gradient(180deg, #ffffff, #f8fbff);
+  color: var(--text-strong);
+  border-color: var(--border);
+  box-shadow: var(--shadow-xs);
+}
+
+.ghost {
+  background: rgba(255,255,255,0.75);
+  color: var(--primary);
+  border-color: rgba(59, 99, 255, .18);
+}
+
+.danger {
+  color: white;
+  background: linear-gradient(135deg, #f05b5b, #d64646);
+}

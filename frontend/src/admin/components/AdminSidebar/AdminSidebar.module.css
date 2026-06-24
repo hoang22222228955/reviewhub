@@ -1,0 +1,662 @@
+/* src/admin/components/AdminSidebar/AdminSidebar.module.css */
+/* Premium Admin Sidebar - có nút đóng/mở thanh bên + tooltip đẹp */
+
+.sidebar {
+  position: sticky;
+  top: 22px;
+  width: 286px;
+  min-width: 286px;
+  height: calc(100vh - 44px);
+  padding: 18px 15px;
+  border-radius: 30px;
+  color: #fff;
+  overflow: visible;
+  isolation: isolate;
+
+  background:
+    radial-gradient(circle at 14% 5%, rgba(99, 102, 241, .30), transparent 30%),
+    radial-gradient(circle at 92% 18%, rgba(14, 165, 233, .16), transparent 32%),
+    radial-gradient(circle at 76% 92%, rgba(236, 72, 153, .13), transparent 34%),
+    linear-gradient(180deg, #111a31 0%, #0f172a 48%, #111827 100%);
+
+  border: 1px solid rgba(255, 255, 255, .09);
+
+  box-shadow:
+    0 24px 70px rgba(15, 23, 42, .22),
+    inset 0 1px 0 rgba(255, 255, 255, .08);
+
+  transition:
+    width 240ms ease,
+    min-width 240ms ease,
+    padding 240ms ease,
+    border-radius 240ms ease,
+    box-shadow 240ms ease;
+}
+
+.sidebar::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  border-radius: inherit;
+  background:
+    linear-gradient(135deg, rgba(255,255,255,.085), transparent 28%),
+    linear-gradient(180deg, rgba(255,255,255,.045), transparent 45%);
+  pointer-events: none;
+}
+
+.sidebar::after {
+  content: '';
+  position: absolute;
+  left: 18px;
+  right: 18px;
+  bottom: 17px;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.18), transparent);
+  pointer-events: none;
+}
+
+.sidebarTop {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+  min-height: 70px;
+  padding: 3px 2px 17px 3px;
+  border-bottom: 1px solid rgba(255,255,255,.105);
+}
+
+.brand {
+  min-width: 0;
+  display: flex;
+  align-items: flex-start;
+  gap: 13px;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 170ms ease,
+    transform 220ms ease,
+    max-width 220ms ease;
+}
+
+.logo,
+.miniLogo {
+  position: relative;
+  overflow: hidden;
+  width: 44px;
+  height: 44px;
+  flex: 0 0 44px;
+  display: grid;
+  place-items: center;
+  border-radius: 16px;
+
+  background: linear-gradient(135deg, #6366f1 0%, #7c3aed 52%, #ec4899 100%);
+
+  color: #fff;
+  font-size: 14px;
+  font-weight: 760;
+  letter-spacing: -.04em;
+
+  box-shadow:
+    0 14px 30px rgba(99, 102, 241, .34),
+    inset 0 1px 0 rgba(255,255,255,.28);
+}
+
+.logo::before,
+.miniLogo::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background:
+    linear-gradient(120deg, transparent 0%, rgba(255,255,255,.34) 42%, transparent 72%);
+  transform: translateX(-120%);
+  transition: transform .65s ease;
+}
+
+.brand:hover .logo::before,
+.miniLogo:hover::before {
+  transform: translateX(120%);
+}
+
+.logo::after,
+.miniLogo::after {
+  content: '';
+  position: absolute;
+  inset: 1px;
+  border-radius: 15px;
+  border: 1px solid rgba(255,255,255,.18);
+  pointer-events: none;
+}
+
+.miniLogo {
+  display: none;
+}
+
+.brandContent {
+  min-width: 0;
+}
+
+.title {
+  margin-top: 1px;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1.2;
+  font-weight: 710;
+  letter-spacing: -.035em;
+  white-space: nowrap;
+}
+
+.text {
+  margin: 7px 0 0;
+  max-width: 205px;
+  color: rgba(255,255,255,.66);
+  font-size: 12.4px;
+  line-height: 1.65;
+  font-weight: 430;
+}
+
+.toggleBtn {
+  position: relative;
+  z-index: 5;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 38px;
+  display: grid;
+  place-items: center;
+  padding: 0;
+  border: 1px solid rgba(15, 23, 42, .08);
+  border-radius: 999px;
+  cursor: pointer;
+
+  color: #0f172a;
+  background:
+    linear-gradient(180deg, rgba(255,255,255,.96), rgba(241,245,249,.88));
+
+  box-shadow:
+    0 12px 24px rgba(2, 6, 23, .18),
+    inset 0 1px 0 rgba(255,255,255,.95);
+
+  transition:
+    transform 170ms ease,
+    background 170ms ease,
+    box-shadow 170ms ease,
+    border-color 170ms ease;
+}
+
+.toggleBtn:hover {
+  transform: translateY(-1px) scale(1.02);
+  background: #fff;
+  border-color: rgba(99, 102, 241, .22);
+  box-shadow:
+    0 16px 32px rgba(2, 6, 23, .22),
+    0 0 0 5px rgba(255,255,255,.08),
+    inset 0 1px 0 rgba(255,255,255,1);
+}
+
+.toggleBtn:active {
+  transform: translateY(0) scale(.98);
+}
+
+.toggleBtn svg {
+  width: 20px;
+  height: 20px;
+  stroke: currentColor;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.toggleBtn svg path,
+.toggleBtn svg rect {
+  stroke: currentColor;
+}
+
+.toggleTooltip,
+.linkTooltip {
+  position: absolute;
+  left: calc(100% + 10px);
+  top: 50%;
+  z-index: 50;
+  transform: translateY(-50%) translateX(-5px);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  white-space: nowrap;
+
+  color: #fff;
+  background: rgba(2, 6, 23, .96);
+  border: 1px solid rgba(255,255,255,.08);
+  border-radius: 9px;
+  padding: 7px 10px;
+  font-size: 11.5px;
+  line-height: 1;
+  font-weight: 650;
+  letter-spacing: -.01em;
+
+  box-shadow:
+    0 12px 28px rgba(2, 6, 23, .30),
+    inset 0 1px 0 rgba(255,255,255,.10);
+
+  transition:
+    opacity 150ms ease,
+    visibility 150ms ease,
+    transform 150ms ease;
+}
+
+.toggleTooltip::before,
+.linkTooltip::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: -5px;
+  width: 9px;
+  height: 9px;
+  transform: translateY(-50%) rotate(45deg);
+  background: rgba(2, 6, 23, .96);
+  border-left: 1px solid rgba(255,255,255,.08);
+  border-bottom: 1px solid rgba(255,255,255,.08);
+}
+
+.toggleBtn:hover .toggleTooltip,
+.toggleBtn:focus-visible .toggleTooltip,
+.collapsed .link:hover .linkTooltip,
+.collapsed .link:focus-visible .linkTooltip {
+  opacity: 1;
+  visibility: visible;
+  transform: translateY(-50%) translateX(0);
+}
+
+.nav {
+  margin-top: 18px;
+  display: grid;
+  gap: 8px;
+}
+
+.link {
+  position: relative;
+  min-height: 48px;
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 0 12px;
+  border-radius: 17px;
+
+  color: rgba(255,255,255,.74);
+  font-size: 13.5px;
+  line-height: 1;
+  font-weight: 610;
+  letter-spacing: -.012em;
+  text-decoration: none;
+
+  transition:
+    transform 180ms ease,
+    background 180ms ease,
+    color 180ms ease,
+    box-shadow 180ms ease,
+    padding 220ms ease,
+    gap 220ms ease;
+}
+
+.link::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  border-radius: inherit;
+  border: 1px solid transparent;
+  pointer-events: none;
+}
+
+.iconWrap {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 12px;
+
+  color: rgba(255,255,255,.74);
+  background: rgba(255,255,255,.065);
+  border: 1px solid rgba(255,255,255,.075);
+  box-shadow: inset 0 1px 0 rgba(255,255,255,.06);
+
+  transition:
+    transform 180ms ease,
+    color 180ms ease,
+    background 180ms ease,
+    box-shadow 180ms ease,
+    border-color 180ms ease;
+}
+
+.iconWrap svg {
+  width: 16.5px;
+  height: 16.5px;
+  stroke: currentColor;
+  stroke-width: 1.85;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.iconWrap svg path,
+.iconWrap svg rect,
+.iconWrap svg circle {
+  stroke: currentColor;
+}
+
+.label {
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  opacity: 1;
+  transform: translateX(0);
+  transition:
+    opacity 160ms ease,
+    transform 190ms ease,
+    width 220ms ease;
+}
+
+.linkTooltip {
+  display: none;
+}
+
+.link:hover {
+  transform: translateX(3px);
+  color: #fff;
+  background: rgba(255,255,255,.075);
+}
+
+.link:hover .iconWrap {
+  color: #fff;
+  background: rgba(255,255,255,.11);
+  border-color: rgba(255,255,255,.13);
+  transform: scale(1.03);
+}
+
+.active {
+  color: #fff;
+  background:
+    linear-gradient(135deg, rgba(79, 70, 229, .97), rgba(14, 165, 233, .90));
+
+  box-shadow:
+    0 13px 30px rgba(14, 116, 215, .24),
+    inset 0 1px 0 rgba(255,255,255,.20);
+}
+
+.active::after {
+  border-color: rgba(255,255,255,.14);
+}
+
+.active .iconWrap {
+  color: #2563eb;
+  background: rgba(255,255,255,.95);
+  border-color: rgba(255,255,255,.30);
+  box-shadow:
+    0 8px 18px rgba(15,23,42,.14),
+    inset 0 1px 0 rgba(255,255,255,.78);
+  transform: scale(1.02);
+}
+
+.collapsed {
+  width: 78px;
+  min-width: 78px;
+  padding: 16px 11px;
+  border-radius: 24px;
+
+  box-shadow:
+    0 20px 55px rgba(15, 23, 42, .20),
+    inset 0 1px 0 rgba(255, 255, 255, .08);
+}
+
+.collapsed .sidebarTop {
+  min-height: 94px;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  gap: 11px;
+  padding: 2px 0 15px;
+}
+
+.collapsed .brand {
+  max-width: 0;
+  opacity: 0;
+  transform: translateX(-10px);
+  pointer-events: none;
+  position: absolute;
+}
+
+.collapsed .miniLogo {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  flex-basis: 42px;
+  border-radius: 15px;
+  font-size: 13px;
+}
+
+.collapsed .toggleBtn {
+  width: 36px;
+  height: 36px;
+  flex-basis: 36px;
+  border-radius: 12px;
+}
+
+.collapsed .toggleBtn svg {
+  width: 18px;
+  height: 18px;
+}
+
+.collapsed .nav {
+  gap: 9px;
+}
+
+.collapsed .link {
+  min-height: 46px;
+  justify-content: center;
+  gap: 0;
+  padding: 0;
+  border-radius: 16px;
+}
+
+.collapsed .link:hover {
+  transform: translateX(0) scale(1.03);
+}
+
+.collapsed .label {
+  width: 0;
+  opacity: 0;
+  transform: translateX(-8px);
+  pointer-events: none;
+}
+
+.collapsed .linkTooltip {
+  display: block;
+}
+
+.collapsed .active {
+  box-shadow:
+    0 12px 25px rgba(14, 116, 215, .22),
+    inset 0 1px 0 rgba(255,255,255,.20);
+}
+
+@media (max-width: 1080px) {
+  .sidebar,
+  .collapsed {
+    position: relative;
+    top: 0;
+    width: 100%;
+    min-width: 0;
+    height: auto;
+    padding: 18px 14px;
+    border-radius: 24px;
+  }
+
+  .sidebarTop,
+  .collapsed .sidebarTop {
+    min-height: auto;
+    flex-direction: row;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px;
+    padding: 3px 2px 17px 3px;
+  }
+
+  .collapsed .brand {
+    position: static;
+    max-width: none;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .collapsed .miniLogo {
+    display: none;
+  }
+
+  .collapsed .label {
+    width: auto;
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .nav,
+  .collapsed .nav {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .link,
+  .collapsed .link {
+    justify-content: flex-start;
+    gap: 12px;
+    padding: 0 12px;
+  }
+
+  .collapsed .linkTooltip {
+    display: none;
+  }
+}
+
+@media (max-width: 640px) {
+  .sidebar,
+  .collapsed {
+    padding: 17px 13px;
+    border-radius: 22px;
+  }
+
+  .logo {
+    width: 42px;
+    height: 42px;
+    flex-basis: 42px;
+  }
+
+  .title {
+    font-size: 17px;
+  }
+
+  .text {
+    font-size: 12px;
+  }
+
+  .nav,
+  .collapsed .nav {
+    grid-template-columns: 1fr;
+  }
+
+  .link,
+  .collapsed .link {
+    min-height: 45px;
+  }
+
+  .toggleBtn {
+    width: 36px;
+    height: 36px;
+    flex-basis: 36px;
+  }
+}
+
+/* ===== PATCH FIX COLLAPSED LABEL OVERLAP =====
+   Khi sidebar Admin thu gọn, text menu bị loại khỏi layout hoàn toàn.
+   Icon được giữ ở khung 46x46 nên chữ không còn bị ép xuống dưới/đè icon.
+   Logic đóng/mở + tự căn layout cũ vẫn giữ nguyên. */
+@media (min-width: 1081px) {
+  .sidebar {
+    z-index: 40;
+    flex: 0 0 286px;
+  }
+
+  .collapsed {
+    flex: 0 0 78px;
+  }
+
+  .nav {
+    grid-template-columns: 1fr;
+  }
+
+  .link {
+    width: 100%;
+    overflow: visible;
+  }
+
+  .iconWrap {
+    position: relative;
+    z-index: 2;
+  }
+
+  .label {
+    flex: 1 1 auto;
+    max-width: 184px;
+  }
+
+  .collapsed .nav {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 100%;
+    gap: 9px;
+  }
+
+  .collapsed .link {
+    width: 46px;
+    min-width: 46px;
+    height: 46px;
+    min-height: 46px;
+    flex: 0 0 46px;
+    display: grid;
+    place-items: center;
+    justify-content: center;
+    padding: 0;
+    gap: 0;
+    overflow: visible;
+  }
+
+  .collapsed .iconWrap {
+    margin: 0;
+  }
+
+  .collapsed .label {
+    position: absolute !important;
+    width: 1px !important;
+    height: 1px !important;
+    min-width: 0 !important;
+    max-width: 0 !important;
+    flex: 0 0 0 !important;
+    overflow: hidden !important;
+    clip-path: inset(50%) !important;
+    opacity: 0 !important;
+    transform: none !important;
+    pointer-events: none !important;
+  }
+
+  .collapsed .link:hover,
+  .collapsed .link:focus-visible {
+    z-index: 100;
+    transform: translateX(0) scale(1.03);
+  }
+
+  .collapsed .linkTooltip {
+    display: block;
+    z-index: 999;
+    left: calc(100% + 11px);
+  }
+}

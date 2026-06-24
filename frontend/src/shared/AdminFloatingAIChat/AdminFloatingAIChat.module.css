@@ -1,0 +1,344 @@
+/* src/shared/AdminFloatingAIChat/AdminFloatingAIChat.module.css */
+
+.floatingButton {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 62px;
+  height: 62px;
+  border: none;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+  color: white;
+  font-size: 18px;
+  font-weight: 700;
+  cursor: pointer;
+  z-index: 9999;
+  box-shadow: 0 10px 30px rgba(37, 99, 235, 0.3);
+  transition: 0.2s;
+}
+
+.floatingButton:hover {
+  transform: scale(1.05);
+}
+
+.chatPanel {
+  position: fixed;
+  right: 22px;
+  bottom: 22px;
+  width: 420px;
+
+  /* THU NGẮN CHIỀU CAO */
+  height: 680px;
+
+  background: white;
+  border-radius: 26px;
+  overflow: hidden;
+  z-index: 9999;
+
+  display: flex;
+  flex-direction: column;
+
+  box-shadow:
+    0 20px 60px rgba(0,0,0,0.18),
+    0 2px 10px rgba(0,0,0,0.06);
+}
+
+.chatHeader {
+  padding: 18px 18px 16px;
+  color: white;
+  background: linear-gradient(135deg, #2563eb, #7c3aed);
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.chatHeader h3 {
+  margin: 0;
+  font-size: 17px;
+  font-weight: 700;
+}
+
+.chatHeader p {
+  margin: 4px 0 0;
+  opacity: 0.92;
+  font-size: 12px;
+}
+
+.closeBtn {
+  border: none;
+  background: transparent;
+  color: white;
+  cursor: pointer;
+  font-size: 28px;
+  line-height: 1;
+}
+
+.chatBody {
+  flex: 1;
+  overflow-y: auto;
+
+  /* GIẢM PADDING */
+  padding: 12px;
+
+  display: flex;
+  flex-direction: column;
+
+  /* GIẢM KHOẢNG CÁCH */
+  gap: 8px;
+
+  background: #f5f7fb;
+}
+
+.messageRow {
+  display: flex;
+  width: 100%;
+  margin-bottom: 2px;
+}
+
+.userRow {
+  justify-content: flex-end;
+}
+
+.aiRow {
+  justify-content: flex-start;
+}
+
+.bubble {
+  border-radius: 18px;
+
+  /* GIẢM PADDING */
+  padding: 12px 14px;
+
+  max-width: 88%;
+  font-size: 14px;
+
+  /* GIẢM LINE HEIGHT */
+  line-height: 1.42;
+
+  word-break: break-word;
+}
+
+.aiBubble {
+  background: white;
+  color: #111827;
+  box-shadow: 0 2px 10px rgba(0,0,0,0.04);
+}
+
+.userBubble {
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+}
+
+.quickReplies {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+
+  padding: 14px 14px 10px;
+
+  border-top: 1px solid #edf0f5;
+  background: white;
+}
+
+.quickReplies button {
+  border: none;
+  background: #eef2ff;
+  color: #4338ca;
+
+  padding: 9px 14px;
+
+  border-radius: 999px;
+  cursor: pointer;
+
+  font-size: 13px;
+  font-weight: 600;
+
+  transition: 0.2s;
+}
+
+.quickReplies button:hover {
+  background: #dbeafe;
+}
+
+.inputArea {
+  display: flex;
+  gap: 10px;
+
+  padding: 14px;
+
+  border-top: 1px solid #edf0f5;
+  background: white;
+}
+
+.inputArea textarea {
+  flex: 1;
+  resize: none;
+
+  border: 1px solid #dbe2ea;
+  border-radius: 16px;
+
+  padding: 12px 14px;
+
+  font-size: 14px;
+  outline: none;
+
+  min-height: 48px;
+  max-height: 120px;
+
+  font-family: inherit;
+}
+
+.inputArea textarea:focus {
+  border-color: #3b82f6;
+}
+
+.inputArea button {
+  border: none;
+  border-radius: 14px;
+
+  padding: 0 18px;
+
+  background: linear-gradient(135deg, #2563eb, #3b82f6);
+  color: white;
+
+  font-weight: 700;
+  cursor: pointer;
+
+  transition: 0.2s;
+}
+
+.inputArea button:hover {
+  transform: translateY(-1px);
+}
+
+.inputArea button:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+}
+
+/* =========================
+   MARKDOWN
+========================= */
+
+.aiBubble h1,
+.aiBubble h2,
+.aiBubble h3 {
+  margin: 4px 0 8px;
+  line-height: 1.2;
+}
+
+.aiBubble p {
+  margin: 4px 0;
+}
+
+.aiBubble ul {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+
+.aiBubble li {
+  margin: 2px 0;
+}
+
+/* BẢNG ĐẸP */
+
+.aiBubble table {
+  width: 100%;
+  border-collapse: collapse;
+
+  margin-top: 8px;
+
+  font-size: 12px;
+
+  border-radius: 12px;
+  overflow: hidden;
+}
+
+.aiBubble th {
+  background: #eef2ff;
+  color: #312e81;
+
+  padding: 8px;
+
+  text-align: left;
+
+  border: 1px solid #dbeafe;
+}
+
+.aiBubble td {
+  padding: 8px;
+  border: 1px solid #e5e7eb;
+  background: white;
+}
+
+.aiBubble tr:nth-child(even) td {
+  background: #f9fafb;
+}
+
+.aiBubble code {
+  background: #eef2ff;
+  color: #4338ca;
+
+  padding: 2px 6px;
+  border-radius: 6px;
+
+  font-size: 12px;
+}
+
+/* SCROLLBAR */
+
+.chatBody::-webkit-scrollbar {
+  width: 6px;
+}
+
+.chatBody::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+/* RESPONSIVE */
+
+@media (max-width: 768px) {
+
+  .chatPanel {
+    right: 10px;
+    left: 10px;
+    bottom: 10px;
+
+    width: auto;
+
+    height: 78vh;
+  }
+}
+.aiBubble h1 {
+  font-size: 20px;
+  margin: 0 0 8px;
+  line-height: 1.2;
+}
+
+.aiBubble h2 {
+  font-size: 14px;
+  margin: 8px 0 4px;
+  line-height: 1.2;
+}
+
+.aiBubble h3 {
+  font-size: 13px;
+  margin: 6px 0 4px;
+  line-height: 1.2;
+}
+
+.aiBubble p {
+  margin: 3px 0;
+}
+
+.aiBubble ul {
+  margin: 4px 0;
+  padding-left: 18px;
+}
+
+.aiBubble li {
+  margin: 1px 0;
+}

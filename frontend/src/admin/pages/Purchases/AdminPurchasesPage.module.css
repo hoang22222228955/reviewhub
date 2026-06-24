@@ -1,0 +1,1229 @@
+.page {
+  --surface: #ffffff;
+  --surface-soft: #f8fbff;
+  --text: #475569;
+  --text-strong: #0f172a;
+  --text-muted: #64748b;
+  --text-faint: #94a3b8;
+  --border: #e5edf7;
+  --border-strong: #d6e2f0;
+  --primary: #4f46e5;
+  --primary-soft: #eef2ff;
+  --blue: #3b82f6;
+  --green: #22c55e;
+  --yellow: #f59e0b;
+  --rose: #fb7185;
+  --shadow-soft: 0 10px 28px rgba(15, 23, 42, 0.055);
+  --shadow-card: 0 16px 42px rgba(15, 23, 42, 0.075);
+  --shadow-hover: 0 20px 48px rgba(79, 70, 229, 0.13);
+  display: grid;
+  gap: 18px;
+  color: var(--text);
+  font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-size: 13px;
+  font-weight: 400;
+  line-height: 1.45;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+.page * {
+  box-sizing: border-box;
+}
+
+.page button,
+.page input,
+.page select {
+  font: inherit;
+}
+
+.heroCard {
+  position: relative;
+  overflow: hidden;
+  min-height: 130px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding: 24px 26px;
+  border-radius: 24px;
+  border: 1px solid var(--border);
+  background:
+    radial-gradient(circle at 91% 14%, rgba(59, 130, 246, 0.16), transparent 29%),
+    radial-gradient(circle at 11% 8%, rgba(99, 102, 241, 0.12), transparent 28%),
+    linear-gradient(110deg, #ffffff 0%, #fbfdff 55%, #eef8ff 100%);
+  box-shadow: var(--shadow-card);
+}
+
+.heroCard::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  background:
+    linear-gradient(90deg, rgba(79, 70, 229, 0.06), transparent 26%, transparent 72%, rgba(14, 165, 233, 0.08)),
+    repeating-linear-gradient(135deg, rgba(79, 70, 229, 0.026) 0 1px, transparent 1px 18px);
+  opacity: 0.8;
+}
+
+.heroCard::after {
+  content: '';
+  position: absolute;
+  right: 36px;
+  bottom: -72px;
+  width: 150px;
+  height: 150px;
+  border-radius: 999px;
+  background: rgba(148, 163, 184, 0.16);
+}
+
+.heroContent {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  gap: 9px;
+}
+
+.eyebrow {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 7px 12px;
+  border-radius: 999px;
+  border: 1px solid rgba(79, 70, 229, 0.18);
+  background: rgba(238, 242, 255, 0.82);
+  color: #4f46e5;
+  font-size: 11.5px;
+  font-weight: 600;
+  letter-spacing: 0.045em;
+  text-transform: uppercase;
+}
+
+.heroCard h1 {
+  margin: 0;
+  color: var(--text-strong);
+  font-size: clamp(25px, 2.35vw, 34px);
+  line-height: 1.08;
+  font-weight: 700;
+  letter-spacing: -0.045em;
+}
+
+.heroCard p {
+  max-width: 680px;
+  margin: 0;
+  color: var(--text-muted);
+  font-size: 13.5px;
+  font-weight: 400;
+}
+
+.refreshBtn {
+  position: relative;
+  z-index: 1;
+  min-width: 112px;
+  height: 38px;
+  padding: 0 17px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  background: rgba(255, 255, 255, 0.86);
+  color: var(--text-strong);
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 10px 22px rgba(15, 23, 42, 0.06);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease, background 0.2s ease;
+}
+
+.refreshBtn:hover {
+  transform: translateY(-1px);
+  border-color: #c7d2fe;
+  background: #ffffff;
+  box-shadow: 0 14px 32px rgba(79, 70, 229, 0.14);
+}
+
+.kpiGrid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.kpiCard {
+  position: relative;
+  overflow: hidden;
+  min-height: 108px;
+  padding: 17px 18px;
+  border-radius: 20px;
+  border: 1px solid var(--border);
+  background: linear-gradient(180deg, #ffffff, #fbfdff);
+  box-shadow: var(--shadow-soft);
+  transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+}
+
+.kpiCard:hover {
+  transform: translateY(-2px);
+  border-color: #c7d2fe;
+  box-shadow: var(--shadow-hover);
+}
+
+.kpiCard::after {
+  content: '';
+  position: absolute;
+  right: 16px;
+  bottom: 16px;
+  width: 44px;
+  height: 44px;
+  border-radius: 15px;
+  opacity: 0.75;
+}
+
+.kpiGreen::after { background: linear-gradient(135deg, #22c55e, #86efac); }
+.kpiBlue::after { background: linear-gradient(135deg, #60a5fa, #818cf8); }
+.kpiYellow::after { background: linear-gradient(135deg, #fbbf24, #fde68a); }
+.kpiRose::after { background: linear-gradient(135deg, #fb7185, #fecdd3); }
+
+.kpiGreen { background: linear-gradient(135deg, #ffffff, #f0fdf4); }
+.kpiBlue { background: linear-gradient(135deg, #ffffff, #eff6ff); }
+.kpiYellow { background: linear-gradient(135deg, #ffffff, #fffbeb); }
+.kpiRose { background: linear-gradient(135deg, #ffffff, #fff1f2); }
+
+.kpiCard span {
+  position: relative;
+  z-index: 1;
+  display: block;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.kpiCard strong {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-top: 9px;
+  color: var(--text-strong);
+  font-size: 25px;
+  line-height: 1.08;
+  font-weight: 650;
+  letter-spacing: -0.035em;
+}
+
+.kpiCard small {
+  position: relative;
+  z-index: 1;
+  display: block;
+  margin-top: 7px;
+  color: var(--text-muted);
+  font-size: 12px;
+  font-weight: 400;
+}
+
+.toolbar {
+  display: grid;
+  grid-template-columns: minmax(260px, 1fr) 190px;
+  gap: 12px;
+  align-items: center;
+  margin-top: 16px;
+  margin-bottom: 14px;
+}
+
+.searchBox {
+  position: relative;
+  display: flex;
+  align-items: center;
+  min-height: 40px;
+  border-radius: 14px;
+  border: 1px solid var(--border);
+  background: rgba(255, 255, 255, 0.94);
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+  transition: transform 0.2s ease, border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.searchBox:focus-within {
+  transform: translateY(-1px);
+  border-color: #c7d2fe;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+}
+
+.searchIcon {
+  flex: 0 0 auto;
+  width: 38px;
+  text-align: center;
+  color: #64748b;
+  font-size: 15px;
+  font-weight: 400;
+  line-height: 1;
+}
+
+.searchBox input {
+  width: 100%;
+  height: 40px;
+  padding: 0 14px 0 0;
+  border: 0;
+  outline: 0;
+  background: transparent;
+  color: var(--text-strong);
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.searchBox input::placeholder {
+  color: #94a3b8;
+  font-weight: 400;
+}
+
+.filterSelect {
+  height: 40px;
+  padding: 0 13px;
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  outline: 0;
+  background: #ffffff;
+  color: var(--text);
+  font-size: 12.8px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 8px 20px rgba(15, 23, 42, 0.04);
+}
+
+.filterSelect:focus {
+  border-color: #c7d2fe;
+  box-shadow: 0 0 0 4px rgba(79, 70, 229, 0.08);
+}
+
+.tableShell {
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  background: #ffffff;
+}
+
+.purchaseTable {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  background: #ffffff;
+}
+
+.purchaseTable th {
+  padding: 14px 15px;
+  border-bottom: 1px solid var(--border);
+  background: linear-gradient(180deg, #f8fbff, #f4f7fb);
+  color: #64748b;
+  font-size: 12px;
+  line-height: 1.2;
+  font-weight: 600;
+  text-align: left;
+  letter-spacing: 0.01em;
+}
+
+.purchaseTable td {
+  padding: 14px 15px;
+  border-bottom: 1px solid #edf2f7;
+  color: #334155;
+  font-size: 13px;
+  font-weight: 400;
+  vertical-align: middle;
+}
+
+.purchaseTable tbody tr {
+  transition: background 0.18s ease, transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.purchaseTable tbody tr:hover {
+  background: #fbfdff;
+}
+
+.purchaseTable tbody tr:last-child td {
+  border-bottom: 0;
+}
+
+.firstRow td:first-child {
+  box-shadow: inset 3px 0 0 #6366f1;
+}
+
+.timeCell {
+  width: 150px;
+  color: #475569 !important;
+  font-size: 12.5px !important;
+  white-space: nowrap;
+}
+
+.partnerCell {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  min-width: 0;
+}
+
+.avatar {
+  display: inline-grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 34px;
+  height: 34px;
+  border-radius: 13px;
+  border: 1px solid #c7d2fe;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 13px;
+  font-weight: 600;
+}
+
+.partnerCell strong {
+  display: block;
+  max-width: 210px;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.partnerCell small {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  margin-top: 3px;
+  padding: 2px 7px;
+  border-radius: 999px;
+  background: #f1f5f9;
+  color: #64748b;
+  font-size: 11px;
+  font-weight: 500;
+  letter-spacing: 0.01em;
+}
+
+.orgCell {
+  color: #334155 !important;
+  font-weight: 400 !important;
+}
+
+.amountCell {
+  color: #0f172a !important;
+  font-size: 13px !important;
+  font-weight: 600 !important;
+  white-space: nowrap;
+}
+
+.actionGroup {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.approveBtn,
+.rejectBtn {
+  height: 30px;
+  padding: 0 12px;
+  border: 0;
+  border-radius: 10px;
+  color: #ffffff;
+  font-size: 12px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.18s ease, opacity 0.18s ease, box-shadow 0.18s ease;
+}
+
+.approveBtn {
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 8px 18px rgba(34, 197, 94, 0.18);
+}
+
+.rejectBtn {
+  background: linear-gradient(135deg, #dc2626, #fb7185);
+  box-shadow: 0 8px 18px rgba(244, 63, 94, 0.18);
+}
+
+.approveBtn:hover,
+.rejectBtn:hover {
+  transform: translateY(-1px);
+}
+
+.approveBtn:disabled,
+.rejectBtn:disabled {
+  cursor: not-allowed;
+  opacity: 0.58;
+  transform: none;
+}
+
+.noAction {
+  color: #94a3b8;
+  font-size: 13px;
+  font-weight: 400;
+}
+
+.emptyCell {
+  height: 130px;
+  text-align: center;
+  color: #94a3b8 !important;
+  font-size: 13px !important;
+  font-weight: 400 !important;
+}
+
+.paginationBar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 14px;
+  margin-top: 16px;
+  color: #64748b;
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.pagination {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.pagination button {
+  min-width: 33px;
+  height: 33px;
+  padding: 0 9px;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  background: #ffffff;
+  color: #64748b;
+  font-size: 12.5px;
+  font-weight: 500;
+  cursor: pointer;
+  transition: transform 0.18s ease, border-color 0.18s ease, background 0.18s ease, color 0.18s ease, box-shadow 0.18s ease;
+}
+
+.pagination button:hover:not(:disabled) {
+  transform: translateY(-1px);
+  border-color: #c7d2fe;
+  background: #f8faff;
+  color: #4f46e5;
+}
+
+.pagination button:disabled {
+  cursor: not-allowed;
+  opacity: 0.42;
+}
+
+.activePage {
+  border-color: transparent !important;
+  background: linear-gradient(135deg, #4f46e5, #8b5cf6) !important;
+  color: #ffffff !important;
+  box-shadow: 0 10px 22px rgba(79, 70, 229, 0.24);
+}
+
+.skeletonHero,
+.skeletonKpis,
+.skeletonTable {
+  position: relative;
+  overflow: hidden;
+  border: 1px solid var(--border);
+  border-radius: 22px;
+  background: #ffffff;
+  box-shadow: var(--shadow-soft);
+}
+
+.skeletonHero {
+  height: 142px;
+}
+
+.skeletonKpis {
+  height: 110px;
+}
+
+.skeletonTable {
+  height: 420px;
+}
+
+.skeletonHero::after,
+.skeletonKpis::after,
+.skeletonTable::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  transform: translateX(-100%);
+  background: linear-gradient(90deg, transparent, rgba(99, 102, 241, 0.08), transparent);
+  animation: shimmer 1.3s infinite;
+}
+
+@keyframes shimmer {
+  100% {
+    transform: translateX(100%);
+  }
+}
+
+@media (max-width: 1200px) {
+  .kpiGrid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .purchaseTable {
+    min-width: 980px;
+  }
+
+  .tableShell {
+    overflow-x: auto;
+  }
+}
+
+@media (max-width: 760px) {
+  .page {
+    gap: 14px;
+  }
+
+  .heroCard {
+    flex-direction: column;
+    padding: 20px;
+    border-radius: 20px;
+  }
+
+  .heroCard h1 {
+    font-size: 25px;
+  }
+
+  .refreshBtn {
+    width: 100%;
+  }
+
+  .kpiGrid {
+    grid-template-columns: 1fr;
+  }
+
+  .toolbar {
+    grid-template-columns: 1fr;
+  }
+
+  .paginationBar {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .pagination {
+    flex-wrap: wrap;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .heroCard,
+  .kpiCard,
+  .refreshBtn,
+  .purchaseTable tbody tr,
+  .pagination button,
+  .approveBtn,
+  .rejectBtn {
+    transition: none;
+  }
+
+  .skeletonHero::after,
+  .skeletonKpis::after,
+  .skeletonTable::after {
+    animation: none;
+  }
+}
+
+
+/* ===== FIX TABLE PARTNER TEXT OVERLAP ===== */
+/* Chia lại chiều rộng cột để cột Partner không đè sang cột Đơn vị */
+.purchaseTable {
+  table-layout: fixed;
+}
+
+/* Thời gian */
+.purchaseTable th:nth-child(1),
+.purchaseTable td:nth-child(1) {
+  width: 150px;
+}
+
+/* Partner: tăng rộng hơn để đủ avatar + tên + mã */
+.purchaseTable th:nth-child(2),
+.purchaseTable td:nth-child(2) {
+  width: 260px;
+}
+
+/* Đơn vị */
+.purchaseTable th:nth-child(3),
+.purchaseTable td:nth-child(3) {
+  width: 240px;
+}
+
+/* Gói đã mua */
+.purchaseTable th:nth-child(4),
+.purchaseTable td:nth-child(4) {
+  width: 160px;
+}
+
+/* Số tiền */
+.purchaseTable th:nth-child(5),
+.purchaseTable td:nth-child(5) {
+  width: 150px;
+}
+
+/* Trạng thái */
+.purchaseTable th:nth-child(6),
+.purchaseTable td:nth-child(6) {
+  width: 170px;
+}
+
+/* Hành động */
+.purchaseTable th:nth-child(7),
+.purchaseTable td:nth-child(7) {
+  width: 150px;
+}
+
+/* Giữ nội dung trong đúng phạm vi ô */
+.purchaseTable th,
+.purchaseTable td {
+  overflow: hidden;
+}
+
+.partnerCell {
+  width: 100%;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.partnerCell > div {
+  min-width: 0;
+  max-width: calc(100% - 46px);
+  overflow: hidden;
+}
+
+.partnerCell strong {
+  display: block;
+  width: 100%;
+  max-width: 100%;
+  overflow: hidden;
+  color: #0f172a;
+  font-size: 13px;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.partnerCell small {
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Cột đơn vị cho phép xuống dòng đẹp, không bị chồng chữ */
+.orgCell {
+  overflow: hidden;
+  color: #334155 !important;
+  font-weight: 400 !important;
+  line-height: 1.45;
+  word-break: break-word;
+}
+
+/* Khi màn hình hẹp, cho table có scroll ngang thay vì ép cột gây đè */
+.tableShell {
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.purchaseTable {
+  min-width: 1280px;
+}
+
+/* Làm thanh scroll nhẹ hơn */
+.tableShell::-webkit-scrollbar {
+  height: 8px;
+}
+
+.tableShell::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 999px;
+}
+
+.tableShell::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 999px;
+}
+
+.tableShell::-webkit-scrollbar-thumb:hover {
+  background: #94a3b8;
+}
+
+@media (max-width: 1200px) {
+  .purchaseTable {
+    min-width: 1280px;
+  }
+}
+
+
+/* ===== ADMIN PURCHASES UI SOFTEN + SERVICE NAME COLUMN ===== */
+.page {
+  --text-strong: #182136;
+  --text: #4b5565;
+  --text-muted: #667085;
+  font-weight: 400;
+}
+
+.heroCard h1 {
+  font-weight: 640;
+  letter-spacing: -0.038em;
+}
+
+.eyebrow,
+.refreshBtn,
+.filterSelect,
+.purchaseTable th,
+.pagination button {
+  font-weight: 500;
+}
+
+.kpiCard strong {
+  font-weight: 560;
+}
+
+.partnerCell strong,
+.unitCell strong,
+.serviceCell strong {
+  font-weight: 520;
+}
+
+.purchaseTable th {
+  color: #667085;
+  font-size: 11.8px;
+  font-weight: 500;
+  letter-spacing: 0.008em;
+}
+
+.purchaseTable td {
+  color: #364152;
+  font-size: 12.8px;
+  font-weight: 400;
+}
+
+.amountCell {
+  color: #101828 !important;
+  font-weight: 550 !important;
+}
+
+.partnerCell small,
+.unitCell small,
+.serviceCell small {
+  font-weight: 400;
+}
+
+.unitCell,
+.serviceCell {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.unitCell strong {
+  display: block;
+  max-width: 100%;
+  color: #182136;
+  font-size: 13px;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.unitCell small {
+  display: block;
+  max-width: 100%;
+  color: #667085;
+  font-size: 11.5px;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.serviceCell strong {
+  display: inline-flex;
+  width: fit-content;
+  max-width: 100%;
+  padding: 4px 8px;
+  border: 1px solid #dbe7ff;
+  border-radius: 999px;
+  background: #f4f7ff;
+  color: #3447a6;
+  font-size: 11.5px;
+  line-height: 1.2;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.serviceCell small {
+  display: block;
+  max-width: 100%;
+  color: #667085;
+  font-size: 11.5px;
+  line-height: 1.35;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.actionGroup {
+  gap: 8px;
+  flex-wrap: wrap;
+}
+
+.approveBtn,
+.rejectBtn {
+  height: 32px;
+  min-width: 76px;
+  padding: 0 13px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 12.2px;
+  font-weight: 500;
+  box-shadow: none;
+}
+
+.approveBtn {
+  color: #047857;
+  border-color: #bbf7d0;
+  background: linear-gradient(180deg, #f0fdf4, #dcfce7);
+}
+
+.rejectBtn {
+  color: #be123c;
+  border-color: #fecdd3;
+  background: linear-gradient(180deg, #fff1f2, #ffe4e6);
+}
+
+.approveBtn:hover:not(:disabled) {
+  color: #ffffff;
+  background: linear-gradient(135deg, #16a34a, #22c55e);
+  box-shadow: 0 10px 22px rgba(22, 163, 74, 0.18);
+}
+
+.rejectBtn:hover:not(:disabled) {
+  color: #ffffff;
+  background: linear-gradient(135deg, #e11d48, #fb7185);
+  box-shadow: 0 10px 22px rgba(225, 29, 72, 0.18);
+}
+
+.approveBtn:disabled,
+.rejectBtn:disabled {
+  opacity: 0.55;
+}
+
+/* Bảng hiện có 8 cột: cập nhật lại độ rộng để không đè chữ */
+.purchaseTable {
+  min-width: 1420px;
+}
+
+.purchaseTable th:nth-child(1),
+.purchaseTable td:nth-child(1) {
+  width: 148px;
+}
+
+.purchaseTable th:nth-child(2),
+.purchaseTable td:nth-child(2) {
+  width: 235px;
+}
+
+.purchaseTable th:nth-child(3),
+.purchaseTable td:nth-child(3) {
+  width: 270px;
+}
+
+.purchaseTable th:nth-child(4),
+.purchaseTable td:nth-child(4) {
+  width: 155px;
+}
+
+.purchaseTable th:nth-child(5),
+.purchaseTable td:nth-child(5) {
+  width: 180px;
+}
+
+.purchaseTable th:nth-child(6),
+.purchaseTable td:nth-child(6) {
+  width: 140px;
+}
+
+.purchaseTable th:nth-child(7),
+.purchaseTable td:nth-child(7) {
+  width: 150px;
+}
+
+.purchaseTable th:nth-child(8),
+.purchaseTable td:nth-child(8) {
+  width: 170px;
+}
+
+@media (max-width: 1200px) {
+  .purchaseTable {
+    min-width: 1420px;
+  }
+}
+
+
+/* ===== FINAL CLEAN UI - nhẹ chữ, bỏ gạch thừa, cân lại bảng 8 cột ===== */
+.page {
+  --text-strong: #1f2937;
+  --text: #475569;
+  --text-muted: #667085;
+  --border: #e6edf7;
+  --shadow-soft: 0 10px 24px rgba(15, 23, 42, 0.045);
+  --shadow-card: 0 18px 40px rgba(15, 23, 42, 0.06);
+  font-weight: 400;
+}
+
+.heroCard h1 {
+  font-weight: 620;
+  letter-spacing: -0.034em;
+}
+
+.heroCard p,
+.kpiCard span,
+.kpiCard small,
+.purchaseTable td,
+.paginationBar {
+  font-weight: 400;
+}
+
+.kpiCard strong {
+  font-weight: 540;
+}
+
+.tableShell {
+  border-radius: 20px;
+  border-color: #e4edf8;
+  box-shadow: 0 12px 26px rgba(15, 23, 42, 0.035);
+  overflow-x: auto;
+  overflow-y: hidden;
+}
+
+.purchaseTable {
+  min-width: 1360px;
+  table-layout: fixed;
+}
+
+.purchaseTable th {
+  height: 44px;
+  padding: 12px 14px;
+  color: #64748b;
+  background: linear-gradient(180deg, #fbfdff, #f5f8fc);
+  font-size: 11.8px;
+  font-weight: 500;
+  letter-spacing: 0.006em;
+}
+
+.purchaseTable td {
+  height: 66px;
+  padding: 12px 14px;
+  color: #344054;
+  font-size: 12.8px;
+  font-weight: 400;
+}
+
+.purchaseTable tbody tr:hover {
+  background: #f8fbff;
+}
+
+.firstRow td:first-child {
+  box-shadow: inset 3px 0 0 #6d5df6;
+}
+
+.purchaseTable th:nth-child(1),
+.purchaseTable td:nth-child(1) { width: 146px; }
+.purchaseTable th:nth-child(2),
+.purchaseTable td:nth-child(2) { width: 235px; }
+.purchaseTable th:nth-child(3),
+.purchaseTable td:nth-child(3) { width: 255px; }
+.purchaseTable th:nth-child(4),
+.purchaseTable td:nth-child(4) { width: 145px; }
+.purchaseTable th:nth-child(5),
+.purchaseTable td:nth-child(5) { width: 150px; }
+.purchaseTable th:nth-child(6),
+.purchaseTable td:nth-child(6) { width: 145px; }
+.purchaseTable th:nth-child(7),
+.purchaseTable td:nth-child(7) { width: 145px; }
+.purchaseTable th:nth-child(8),
+.purchaseTable td:nth-child(8) { width: 150px; }
+
+.partnerCell strong,
+.unitCell strong {
+  color: #101828;
+  font-size: 12.9px;
+  font-weight: 520;
+  line-height: 1.35;
+}
+
+.partnerCell small,
+.unitCell small {
+  color: #667085;
+  font-size: 11.2px;
+  font-weight: 400;
+}
+
+.partnerCell small {
+  padding: 2px 7px;
+  background: #f2f4f7;
+  border: 1px solid #edf2f7;
+}
+
+.unitCell,
+.serviceCell {
+  min-width: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.unitCell strong,
+.unitCell small {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.planPill,
+.statusPill,
+.serviceCodePill,
+.softEmpty {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  max-width: 100%;
+  min-height: 28px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  font-size: 11.8px;
+  line-height: 1;
+  font-weight: 500;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.planStarter,
+.planNeutral {
+  color: #344054;
+  background: #f8fafc;
+  border-color: #e5e7eb;
+}
+
+.planGrowth {
+  color: #0f766e;
+  background: #ecfdf5;
+  border-color: #bbf7d0;
+}
+
+.planEnterprise {
+  color: #b45309;
+  background: #fff7ed;
+  border-color: #fed7aa;
+}
+
+.planCustom {
+  color: #5b21b6;
+  background: #f5f3ff;
+  border-color: #ddd6fe;
+}
+
+.serviceCodePill {
+  color: #3447a6;
+  background: #f5f7ff;
+  border-color: #dbe7ff;
+  font-weight: 480;
+}
+
+.softEmpty {
+  color: #98a2b3;
+  background: #f8fafc;
+  border-color: #edf2f7;
+  font-weight: 400;
+}
+
+.statusPill {
+  font-weight: 500;
+}
+
+.statusPaid {
+  color: #047857;
+  background: #ecfdf3;
+  border-color: #d8f3e4;
+}
+
+.statusPending {
+  color: #b45309;
+  background: #fff8e6;
+  border-color: #fdecc8;
+}
+
+.statusRejected {
+  color: #be123c;
+  background: #fff1f2;
+  border-color: #ffe0e5;
+}
+
+.statusNeutral {
+  color: #475569;
+  background: #f8fafc;
+  border-color: #e2e8f0;
+}
+
+.amountCell {
+  color: #111827 !important;
+  font-size: 12.8px !important;
+  font-weight: 540 !important;
+}
+
+.actionGroup {
+  gap: 8px;
+}
+
+.approveBtn,
+.rejectBtn {
+  height: 31px;
+  min-width: 74px;
+  padding: 0 12px;
+  border-radius: 999px;
+  border: 1px solid transparent;
+  box-shadow: none;
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.approveBtn {
+  color: #047857;
+  background: #ecfdf3;
+  border-color: #ccefdc;
+}
+
+.rejectBtn {
+  color: #be123c;
+  background: #fff1f2;
+  border-color: #ffd6dd;
+}
+
+.approveBtn:hover:not(:disabled) {
+  color: #ffffff;
+  background: #10b981;
+  box-shadow: 0 9px 18px rgba(16, 185, 129, 0.18);
+}
+
+.rejectBtn:hover:not(:disabled) {
+  color: #ffffff;
+  background: #f43f5e;
+  box-shadow: 0 9px 18px rgba(244, 63, 94, 0.18);
+}
+
+.noAction {
+  color: #98a2b3;
+  font-size: 12.5px;
+  font-weight: 400;
+}
+
+.tableShell::-webkit-scrollbar { height: 8px; }
+.tableShell::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 999px; }
+.tableShell::-webkit-scrollbar-thumb { background: #cbd5e1; border-radius: 999px; }
+.tableShell::-webkit-scrollbar-thumb:hover { background: #94a3b8; }
+
+@media (max-width: 1200px) {
+  .purchaseTable { min-width: 1360px; }
+}
