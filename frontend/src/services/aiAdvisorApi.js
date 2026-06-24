@@ -1,5 +1,8 @@
+const API_BASE_URL =
+  import.meta.env.VITE_API_BASE_URL || "http://localhost:8080";
+
 export async function askAIAdvisor(message) {
-  const res = await fetch("http://localhost:8080/api/ai/advisor", {
+  const res = await fetch(`${API_BASE_URL}/api/ai/advisor`, {
     method: "POST",
     headers: {
       "Content-Type": "application/json",
