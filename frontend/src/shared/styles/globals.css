@@ -1,95 +1,174 @@
 .pageContainer {
-  width: min(var(--container), calc(100% - 32px));
-  margin: 0 auto;
+width: min(var(--container), calc(100% - 32px));
+margin: 0 auto;
 }
 
 .pageTitle {
-  margin: 14px 0 0;
-  font-size: clamp(34px, 4.8vw, 56px);
-  line-height: 1.03;
-  letter-spacing: -0.05em;
+margin: 14px 0 0;
+font-size: clamp(34px, 4.8vw, 56px);
+line-height: 1.03;
+letter-spacing: -0.05em;
 }
 
 .pageDescription {
-  margin: 14px 0 0;
-  color: var(--text-soft);
-  font-size: 18px;
-  line-height: 1.85;
-  max-width: 780px;
+margin: 14px 0 0;
+color: var(--text-soft);
+font-size: 18px;
+line-height: 1.85;
+max-width: 780px;
 }
 
 .eyebrow {
-  display: inline-flex;
-  align-items: center;
-  gap: 8px;
-  width: fit-content;
-  padding: 10px 16px;
-  border-radius: 999px;
-  background: linear-gradient(180deg, rgba(59, 99, 255, 0.10), rgba(139, 92, 255, 0.08));
-  color: var(--primary);
-  font-size: 12px;
-  font-weight: 900;
-  text-transform: uppercase;
-  letter-spacing: 0.06em;
-  border: 1px solid rgba(59, 99, 255, 0.10);
+display: inline-flex;
+align-items: center;
+gap: 8px;
+width: fit-content;
+max-width: 100%;
+padding: 10px 16px;
+border-radius: 999px;
+background: linear-gradient(180deg, rgba(59, 99, 255, 0.10), rgba(139, 92, 255, 0.08));
+color: var(--primary);
+font-size: 12px;
+font-weight: 900;
+text-transform: uppercase;
+letter-spacing: 0.06em;
+border: 1px solid rgba(59, 99, 255, 0.10);
+white-space: normal;
 }
 
 .muted {
-  color: var(--text-soft);
+color: var(--text-soft);
 }
 
 .tableShell {
-  overflow: auto;
-  border-radius: 24px;
-  border: 1px solid var(--border);
-  background: var(--surface-solid);
-  box-shadow: var(--shadow-xs);
+overflow-x: auto;
+overflow-y: hidden;
+border-radius: 24px;
+border: 1px solid var(--border);
+background: var(--surface-solid);
+box-shadow: var(--shadow-xs);
+-webkit-overflow-scrolling: touch;
 }
 
 .tableBase {
-  width: 100%;
-  min-width: 720px;
-  border-collapse: collapse;
+width: 100%;
+min-width: 720px;
+border-collapse: collapse;
 }
 
 .tableBase th,
 .tableBase td {
-  padding: 16px 18px;
-  border-bottom: 1px solid var(--border);
-  text-align: left;
-  vertical-align: top;
+padding: 16px 18px;
+border-bottom: 1px solid var(--border);
+text-align: left;
+vertical-align: top;
 }
 
 .tableBase th {
-  font-size: 12px;
-  text-transform: uppercase;
-  letter-spacing: .05em;
-  color: var(--text-soft);
-  background: linear-gradient(180deg, #fafcff, #f4f8ff);
+font-size: 12px;
+text-transform: uppercase;
+letter-spacing: .05em;
+color: var(--text-soft);
+background: linear-gradient(180deg, #fafcff, #f4f8ff);
 }
 
 .tableBase tbody tr:hover td {
-  background: rgba(59, 99, 255, 0.025);
+background: rgba(59, 99, 255, 0.025);
 }
 
 .tableBase tr:last-child td {
-  border-bottom: none;
+border-bottom: none;
 }
 
 .kpiGrid {
-  display: grid;
-  grid-template-columns: repeat(4, 1fr);
-  gap: 18px;
+display: grid;
+grid-template-columns: repeat(4, 1fr);
+gap: 18px;
 }
 
 @media (max-width: 1100px) {
-  .kpiGrid {
-    grid-template-columns: repeat(2, 1fr);
-  }
+.kpiGrid {
+grid-template-columns: repeat(2, 1fr);
+}
 }
 
-@media (max-width: 720px) {
-  .kpiGrid {
-    grid-template-columns: 1fr;
-  }
+@media (max-width: 768px) {
+.pageContainer {
+width: 100%;
+padding-left: 14px;
+padding-right: 14px;
+}
+
+.pageTitle {
+margin-top: 10px;
+font-size: clamp(26px, 8vw, 36px);
+line-height: 1.14;
+letter-spacing: -0.035em;
+}
+
+.pageDescription {
+margin-top: 10px;
+font-size: 14px;
+line-height: 1.65;
+max-width: 100%;
+}
+
+.eyebrow {
+padding: 8px 12px;
+gap: 6px;
+font-size: 11px;
+font-weight: 800;
+line-height: 1.35;
+letter-spacing: 0.04em;
+}
+
+.tableShell {
+border-radius: 18px;
+}
+
+.tableBase {
+min-width: 640px;
+}
+
+.tableBase th,
+.tableBase td {
+padding: 12px 14px;
+font-size: 13px;
+}
+
+.kpiGrid {
+grid-template-columns: 1fr;
+gap: 12px;
+}
+}
+
+@media (max-width: 480px) {
+.pageContainer {
+padding-left: 12px;
+padding-right: 12px;
+}
+
+.pageTitle {
+font-size: 25px;
+line-height: 1.16;
+}
+
+.pageDescription {
+font-size: 13.5px;
+line-height: 1.6;
+}
+
+.eyebrow {
+font-size: 10px;
+padding: 7px 10px;
+}
+
+.tableBase {
+min-width: 580px;
+}
+
+.tableBase th,
+.tableBase td {
+padding: 10px 12px;
+}
 }
