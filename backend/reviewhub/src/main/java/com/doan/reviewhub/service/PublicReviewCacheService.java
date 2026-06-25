@@ -3,13 +3,11 @@ package com.doan.reviewhub.service;
 import com.doan.reviewhub.entity.Review;
 import com.doan.reviewhub.repository.ReviewRepository;
 import com.fasterxml.jackson.annotation.JsonIgnore;
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.reflect.Method;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -53,26 +51,19 @@ public class PublicReviewCacheService {
             return emptyPayload(safeSlug, safeCode);
         }
 
-        Path path = resolveExistingCachePath(safeSlug, safeCode);
+        Path path = cachePath(safeSlug, safeCode);
 
-        if (path != null && Files.exists(path)) {
-            try {
-                return objectMapper.readValue(path.toFile(), ReviewCachePayload.class);
-            } catch (Exception ex) {
-                ex.printStackTrace();
-                return emptyPayload(safeSlug, safeCode);
-            }
+        if (!Files.exists(path)) {
+            return emptyPayload(safeSlug, safeCode);
         }
 
-        ReviewCachePayload classpathPayload = readClasspathCache(safeSlug, safeCode);
-
-        if (classpathPayload != null) {
-            return classpathPayload;
+        try {
+            return objectMapper.readValue(path.toFile(), ReviewCachePayload.class);
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return emptyPayload(safeSlug, safeCode);
         }
-
-        return emptyPayload(safeSlug, safeCode);
     }
-
 
     public boolean cacheExists(String serviceSlug, String targetCode) {
         String safeSlug = normalizeServiceSlug(serviceSlug, targetCode);
@@ -80,9 +71,8 @@ public class PublicReviewCacheService {
 
         if (safeCode.isBlank()) return false;
 
-        return resolveExistingCachePath(safeSlug, safeCode) != null || classpathCacheExists(safeSlug, safeCode);
+        return Files.exists(cachePath(safeSlug, safeCode));
     }
-
 
     /*
      * Dùng khi admin duyệt review.
@@ -469,117 +459,6 @@ public class PublicReviewCacheService {
         return cacheRoot.resolve(safeSlug).resolve(safeCode + ".json");
     }
 
-    private Path resolveExistingCachePath(String serviceSlug, String targetCode) {
-        String safeSlug = safeFileName(normalizeServiceSlug(serviceSlug, targetCode));
-        String safeCode = safeFileName(firstNonBlank(targetCode, "").toUpperCase(Locale.ROOT));
-
-        if (safeCode.isBlank() || "unknown".equals(safeCode)) {
-            return null;
-        }
-
-        String fileName = safeCode + ".json";
-        String userDir = System.getProperty("user.dir", "");
-
-        List<Path> candidates = new ArrayList<>();
-
-        /*
-         * Cho phép cấu hình trực tiếp trên Render:
-         * REVIEWHUB_PUBLIC_CACHE_DIR=backend/reviewhub/data/public-review-cache
-         * hoặc REVIEWHUB_PUBLIC_CACHE_DIR=data/public-review-cache
-         */
-        String envCacheDir = firstNonBlank(
-                System.getenv("REVIEWHUB_PUBLIC_CACHE_DIR"),
-                System.getProperty("REVIEWHUB_PUBLIC_CACHE_DIR")
-        );
-
-        if (!envCacheDir.isBlank()) {
-            Path envPath = Path.of(envCacheDir);
-            candidates.add(envPath.resolve(safeSlug).resolve(fileName));
-
-            if (!envPath.isAbsolute()) {
-                candidates.add(Path.of(userDir).resolve(envPath).resolve(safeSlug).resolve(fileName));
-            }
-        }
-
-        /*
-         * Root chạy là backend/reviewhub:
-         * data/public-review-cache/nha-xe/PT-034.json
-         */
-        candidates.add(cacheRoot.resolve(safeSlug).resolve(fileName));
-        candidates.add(Path.of(userDir, "data", "public-review-cache", safeSlug, fileName));
-
-        /*
-         * Root chạy là thư mục repo:
-         * backend/reviewhub/data/public-review-cache/nha-xe/PT-034.json
-         */
-        candidates.add(Path.of("backend", "reviewhub", "data", "public-review-cache", safeSlug, fileName));
-        candidates.add(Path.of(userDir, "backend", "reviewhub", "data", "public-review-cache", safeSlug, fileName));
-
-        /*
-         * Nếu đã copy vào resources để đóng gói cùng jar thì local vẫn đọc được bằng file path.
-         * Khi chạy jar, readClasspathCache() bên dưới sẽ đọc bằng classpath.
-         */
-        candidates.add(Path.of("src", "main", "resources", "public-review-cache", safeSlug, fileName));
-        candidates.add(Path.of(userDir, "src", "main", "resources", "public-review-cache", safeSlug, fileName));
-        candidates.add(Path.of("backend", "reviewhub", "src", "main", "resources", "public-review-cache", safeSlug, fileName));
-        candidates.add(Path.of(userDir, "backend", "reviewhub", "src", "main", "resources", "public-review-cache", safeSlug, fileName));
-
-        for (Path candidate : candidates) {
-            if (candidate != null && Files.exists(candidate)) {
-                return candidate;
-            }
-        }
-
-        System.err.println("PUBLIC REVIEW CACHE MISS: " + safeSlug + "/" + fileName + " | user.dir=" + userDir);
-
-        return null;
-    }
-
-    private boolean classpathCacheExists(String serviceSlug, String targetCode) {
-        String resourcePath = classpathResourcePath(serviceSlug, targetCode);
-
-        if (resourcePath.isBlank()) {
-            return false;
-        }
-
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
-            return inputStream != null;
-        } catch (Exception ignored) {
-            return false;
-        }
-    }
-
-    private ReviewCachePayload readClasspathCache(String serviceSlug, String targetCode) {
-        String resourcePath = classpathResourcePath(serviceSlug, targetCode);
-
-        if (resourcePath.isBlank()) {
-            return null;
-        }
-
-        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
-            if (inputStream == null) {
-                return null;
-            }
-
-            return objectMapper.readValue(inputStream, ReviewCachePayload.class);
-        } catch (Exception ex) {
-            ex.printStackTrace();
-            return null;
-        }
-    }
-
-    private String classpathResourcePath(String serviceSlug, String targetCode) {
-        String safeSlug = safeFileName(normalizeServiceSlug(serviceSlug, targetCode));
-        String safeCode = safeFileName(firstNonBlank(targetCode, "").toUpperCase(Locale.ROOT));
-
-        if (safeCode.isBlank() || "unknown".equals(safeCode)) {
-            return "";
-        }
-
-        return "public-review-cache/" + safeSlug + "/" + safeCode + ".json";
-    }
-
-
 
     private String pickMainServiceCode(Review review) {
         return getAllPossibleCodes(review)
@@ -748,7 +627,6 @@ public class PublicReviewCacheService {
         return "";
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ReviewCachePayload {
         private String serviceSlug;
         private String targetCode;
@@ -797,7 +675,6 @@ public class PublicReviewCacheService {
         }
     }
 
-    @JsonIgnoreProperties(ignoreUnknown = true)
     public static class ReviewCacheItem {
         private String id;
         private String serviceSlug;
