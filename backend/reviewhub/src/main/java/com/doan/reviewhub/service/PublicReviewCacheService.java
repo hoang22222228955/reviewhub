@@ -212,98 +212,37 @@ public class PublicReviewCacheService {
     }
 
     /*
-     * Dùng 1 lần ban đầu nếu muốn tạo cache từ DB cũ.
-     * Sau này admin duyệt review thì cache tự cập nhật bằng upsertApprovedReview().
+     * Dùng khi controller gọi ?force=true.
+     * Bản production không rebuild từ DB để tránh OutOfMemory trên Render.
      */
     public synchronized ReviewCachePayload rebuild(String serviceSlug, String targetCode) {
-        String safeCode = firstNonBlank(targetCode, "").toUpperCase(Locale.ROOT);
-        String safeSlug = normalizeServiceSlug(serviceSlug, safeCode);
-
-        if (safeCode.isBlank()) {
-            return emptyPayload(safeSlug, safeCode);
-        }
-
-        List<Review> allReviews = reviewRepository.findAll();
-
-        List<ReviewCacheItem> items = allReviews.stream()
-                .filter(review -> reviewBelongsToCode(review, safeCode))
-                .filter(this::isApprovedVisibleReview)
-                .map(review -> toCacheItem(review, safeSlug, safeCode))
-                .sorted(Comparator.comparing(ReviewCacheItem::getCreatedAtSafe).reversed())
-                .toList();
-
-        ReviewCachePayload payload = new ReviewCachePayload();
-        payload.setServiceSlug(safeSlug);
-        payload.setTargetCode(safeCode);
-        payload.setTotal(items.size());
-        payload.setUpdatedAt(Instant.now().toString());
-        payload.setReviews(items);
-
-        writeCache(payload);
-
-        return payload;
+        /*
+         * Production: KHÔNG rebuild từ DB bằng reviewRepository.findAll().
+         * Lý do: Render RAM thấp, findAll() kéo toàn bộ bảng reviews lên heap
+         * dễ gây java.lang.OutOfMemoryError: Java heap space.
+         *
+         * Cache public hiện đã được đóng gói trong:
+         * src/main/resources/public-review-cache/...
+         *
+         * Vì vậy khi controller gọi ?force=true, ta chỉ đọc lại cache từ file/resources
+         * giống readCache(), không query toàn bộ DB nữa.
+         */
+        return readCache(serviceSlug, targetCode);
     }
 
     /*
      * Nếu muốn build toàn bộ cache từ DB một lần.
      */
     public synchronized Map<String, Object> rebuildAll() {
-        List<Review> allReviews = reviewRepository.findAll();
-        Map<String, List<Review>> grouped = new LinkedHashMap<>();
-
-        for (Review review : allReviews) {
-            if (!isApprovedVisibleReview(review)) continue;
-
-            String targetCode = pickMainServiceCode(review);
-
-            if (targetCode.isBlank()) continue;
-
-            String serviceSlug = normalizeServiceSlug(
-                    firstNonBlank(
-                            getStringValue(review, "getServiceSlug"),
-                            getStringValue(review, "getServiceType"),
-                            getStringValue(review, "getTargetType"),
-                            getStringValue(review, "getReviewTargetType")
-                    ),
-                    targetCode
-            );
-
-            String key = serviceSlug + "__" + targetCode;
-            grouped.computeIfAbsent(key, k -> new ArrayList<>()).add(review);
-        }
-
-        int fileCount = 0;
-        int reviewCount = 0;
-
-        for (Map.Entry<String, List<Review>> entry : grouped.entrySet()) {
-            String[] parts = entry.getKey().split("__", 2);
-            String serviceSlug = parts[0];
-            String targetCode = parts[1];
-
-            List<ReviewCacheItem> items = entry.getValue()
-                    .stream()
-                    .map(review -> toCacheItem(review, serviceSlug, targetCode))
-                    .sorted(Comparator.comparing(ReviewCacheItem::getCreatedAtSafe).reversed())
-                    .toList();
-
-            ReviewCachePayload payload = new ReviewCachePayload();
-            payload.setServiceSlug(serviceSlug);
-            payload.setTargetCode(targetCode);
-            payload.setTotal(items.size());
-            payload.setUpdatedAt(Instant.now().toString());
-            payload.setReviews(items);
-
-            writeCache(payload);
-
-            fileCount++;
-            reviewCount += items.size();
-        }
-
+        /*
+         * Tắt rebuildAll từ DB ở môi trường production để tránh OutOfMemory.
+         * Dữ liệu cache public nên được sinh sẵn bằng script và đóng gói vào
+         * src/main/resources/public-review-cache.
+         */
         return Map.of(
-                "success", true,
-                "fileCount", fileCount,
-                "reviewCount", reviewCount,
-                "message", "Đã rebuild public review cache."
+                "success", false,
+                "disabled", true,
+                "message", "Đã tắt rebuildAll từ DB để tránh OutOfMemory trên Render. Hãy dùng cache đã đóng gói trong resources/public-review-cache."
         );
     }
 
