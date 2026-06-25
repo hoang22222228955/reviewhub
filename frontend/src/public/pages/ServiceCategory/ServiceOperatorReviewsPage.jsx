@@ -697,7 +697,7 @@ function imageNumberFromCode(code, fallbackIndex = 0, offset = 0) {
 function localOperatorImage(index, slug = 'nha-xe', code = '', offset = 0) {
   const serviceMeta = getServiceMeta(slug);
   const imageNumber = imageNumberFromCode(code, index, offset);
-  return `${serviceMeta.imageFolder}/${imageNumber}.jpg`;
+  return `${serviceMeta.imageFolder}/${imageNumber}.webp`;
 }
 
 function localOperatorImageAlt(index, slug = 'nha-xe', code = '', offset = 0) {
@@ -705,7 +705,7 @@ function localOperatorImageAlt(index, slug = 'nha-xe', code = '', offset = 0) {
   if (!serviceMeta.imageFolderAlt) return '';
 
   const imageNumber = imageNumberFromCode(code, index, offset);
-  return `${serviceMeta.imageFolderAlt}/${imageNumber}.jpg`;
+  return `${serviceMeta.imageFolderAlt}/${imageNumber}.webp`;
 }
 
 
@@ -713,7 +713,7 @@ function localOperatorBackgroundImage(index, slug = 'nha-xe', code = '', offset 
   const serviceMeta = getServiceMeta(slug);
   const imageNumber = imageNumberFromCode(code, index, offset);
   const backgroundFolder = serviceMeta.backgroundImageFolder || serviceMeta.imageFolder;
-  return `${backgroundFolder}/${imageNumber}.jpg`;
+  return `${backgroundFolder}/${imageNumber}.webp`;
 }
 
 function localOperatorBackgroundImageAlt(index, slug = 'nha-xe', code = '', offset = 0) {
@@ -721,7 +721,7 @@ function localOperatorBackgroundImageAlt(index, slug = 'nha-xe', code = '', offs
   if (!serviceMeta.backgroundImageFolderAlt) return '';
 
   const imageNumber = imageNumberFromCode(code, index, offset);
-  return `${serviceMeta.backgroundImageFolderAlt}/${imageNumber}.jpg`;
+  return `${serviceMeta.backgroundImageFolderAlt}/${imageNumber}.webp`;
 }
 
 function normalizeOperator(item, index, serviceMeta = getServiceMeta()) {
