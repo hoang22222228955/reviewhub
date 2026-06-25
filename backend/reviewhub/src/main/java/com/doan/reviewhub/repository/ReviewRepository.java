@@ -117,6 +117,22 @@ public interface ReviewRepository extends JpaRepository<Review, String> {
             Pageable pageable
     );
 
+    /**
+     * Dùng cho PublicReviewAIController.
+     * Chỉ lấy review theo đúng mã dịch vụ để tránh quét toàn bộ bảng reviews.
+     */
+    @Query("""
+        SELECT r FROM Review r
+        WHERE UPPER(COALESCE(r.targetCode, '')) = UPPER(:code)
+           OR UPPER(COALESCE(r.operatorCode, '')) = UPPER(:code)
+           OR UPPER(COALESCE(r.ownerPartnerCode, '')) = UPPER(:code)
+        ORDER BY r.createdAt DESC
+    """)
+    Page<Review> findPublicAiReviewsByCode(
+            @Param("code") String code,
+            Pageable pageable
+    );
+
     List<Review> findTop5ByOperatorCodeOrderByCreatedAtDesc(String operatorCode);
 
     List<Review> findByModerationStatus(String moderationStatus);

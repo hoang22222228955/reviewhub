@@ -22,11 +22,15 @@ public class PublicReviewAIController {
 
     /*
      * Giới hạn số review AI public đọc từ DB để tránh OutOfMemory trên Render.
-     * DB review có thể rất lớn sau khi Admin import/upload dữ liệu, nên tuyệt đối
-     * không dùng reviewRepository.findAll() trong các API public AI.
+     * Không dùng reviewRepository.findAll() trực tiếp trong API public AI.
      */
     private static final int MAX_AI_REVIEW_SCAN = 1000;
 
+    /*
+     * Giới hạn review theo từng dịch vụ.
+     * Ví dụ MB-009 có 82 review thì vẫn lấy đủ, nhưng không quét toàn DB.
+     */
+    private static final int MAX_AI_REVIEW_PER_SERVICE = 500;
 
     @GetMapping("/top-services")
     public ResponseEntity<?> topServices(
@@ -94,7 +98,7 @@ public class PublicReviewAIController {
 
     @GetMapping("/review-summary")
     public ResponseEntity<?> reviewSummary(@RequestParam(defaultValue = "") String targetCode) {
-        String code = safe(targetCode).toUpperCase(Locale.ROOT);
+        String code = extractServiceCode(targetCode);
 
         if (code.isBlank()) {
             return ResponseEntity.badRequest().body(Map.of(
@@ -102,14 +106,24 @@ public class PublicReviewAIController {
             ));
         }
 
-        List<Review> allPublicReviews = loadPublicApprovedReviews();
+        /*
+         * Ưu tiên lấy review đúng theo mã dịch vụ.
+         * Tránh quét toàn DB nhưng vẫn lấy đủ review của từng mã như MB-009, MB-019...
+         */
+        List<Review> allPublicReviews = loadPublicApprovedReviewsByCode(code);
+
+        /*
+         * Fallback nhẹ cho trường hợp dữ liệu cũ chỉ lưu mã trong rawPayload hoặc tên dịch vụ.
+         * Không dùng findAll() toàn DB để tránh OOM.
+         */
+        if (allPublicReviews.isEmpty()) {
+            allPublicReviews = loadPublicApprovedReviews();
+        }
 
         /*
          * Không chỉ so sánh firstNonBlank(targetCode, operatorCode).
          * Lý do: dữ liệu crawl/import có thể lưu mã ở operatorCode, targetCode,
          * ownerPartnerCode hoặc rawPayload; một số dòng chỉ có tên nhà xe.
-         * Nếu lọc cứng như bản cũ thì PT-011 có thể chỉ bắt được 1-2 dòng,
-         * trong khi trang xếp hạng đang đọc được 302 review công khai.
          */
         Set<String> nameHints = allPublicReviews.stream()
                 .filter(review -> reviewHasCode(review, code))
@@ -136,6 +150,44 @@ public class PublicReviewAIController {
                 "publicAnswerOnly", true,
                 "rawDataReturned", false
         ));
+    }
+
+    private List<Review> loadPublicApprovedReviews() {
+        return reviewRepository
+                .findAll(PageRequest.of(0, MAX_AI_REVIEW_SCAN))
+                .getContent()
+                .stream()
+                .filter(this::isPublicApproved)
+                .toList();
+    }
+
+    private List<Review> loadPublicApprovedReviewsByCode(String targetCode) {
+        String code = extractServiceCode(targetCode);
+
+        if (code.isBlank()) {
+            return List.of();
+        }
+
+        return reviewRepository
+                .findPublicAiReviewsByCode(code, PageRequest.of(0, MAX_AI_REVIEW_PER_SERVICE))
+                .getContent()
+                .stream()
+                .filter(this::isPublicApproved)
+                .toList();
+    }
+
+    private String extractServiceCode(String value) {
+        String text = safe(value).toUpperCase(Locale.ROOT);
+
+        var matcher = Pattern
+                .compile("\\b(PT|KS|MB|TH|TO|DV|BUS|HOTEL|AIR|TRAIN)-\\d+\\b")
+                .matcher(text);
+
+        if (matcher.find()) {
+            return matcher.group();
+        }
+
+        return text.trim();
     }
 
     private Map<String, Object> buildSummary(String targetCode, List<Review> reviews) {
@@ -186,20 +238,10 @@ public class PublicReviewAIController {
         return result;
     }
 
-    private List<Review> loadPublicApprovedReviews() {
-        return reviewRepository
-                .findAll(PageRequest.of(0, MAX_AI_REVIEW_SCAN))
-                .getContent()
-                .stream()
-                .filter(this::isPublicApproved)
-                .toList();
-    }
-
     private List<ServiceStat> buildServiceStats() {
         Map<String, ServiceStat> grouped = new LinkedHashMap<>();
 
         for (Review review : loadPublicApprovedReviews()) {
-
             String code = firstReviewCode(review);
             if (code.isBlank()) continue;
 
@@ -270,12 +312,6 @@ public class PublicReviewAIController {
         String visibility = normalize(review.getVisibility());
         String source = normalize(review.getSourceSystem());
 
-        /*
-         * Đồng bộ với ServiceCategoryPage:
-         * - Review public thì được đọc.
-         * - Không bắt buộc moderationStatus phải đúng duy nhất "approved",
-         *   vì nhiều nguồn import/crawl có thể để blank, published, active, success...
-         */
         boolean statusOk =
                 status.isBlank() ||
                         status.equals("approved") ||
@@ -308,7 +344,7 @@ public class PublicReviewAIController {
     private boolean reviewBelongsToTarget(Review review, String targetCode, Set<String> normalizedNameHints) {
         if (review == null) return false;
 
-        String safeTargetCode = safe(targetCode).toUpperCase(Locale.ROOT);
+        String safeTargetCode = extractServiceCode(targetCode);
 
         if (reviewHasCode(review, safeTargetCode)) {
             return true;
@@ -338,13 +374,13 @@ public class PublicReviewAIController {
     }
 
     private boolean reviewHasCode(Review review, String targetCode) {
-        String safeTargetCode = safe(targetCode).toUpperCase(Locale.ROOT);
+        String safeTargetCode = extractServiceCode(targetCode);
         if (safeTargetCode.isBlank()) return false;
 
         return reviewCodeCandidates(review)
                 .stream()
                 .anyMatch(candidate -> {
-                    String code = safe(candidate).toUpperCase(Locale.ROOT);
+                    String code = extractServiceCode(candidate);
                     return code.equals(safeTargetCode) ||
                             code.startsWith(safeTargetCode + "-") ||
                             code.startsWith(safeTargetCode + "_");
@@ -354,7 +390,7 @@ public class PublicReviewAIController {
     private String firstReviewCode(Review review) {
         return reviewCodeCandidates(review)
                 .stream()
-                .map(value -> safe(value).toUpperCase(Locale.ROOT))
+                .map(this::extractServiceCode)
                 .filter(value -> !value.isBlank())
                 .findFirst()
                 .orElse("");
@@ -482,7 +518,7 @@ public class PublicReviewAIController {
     private boolean matchCategory(String category, String code, String selected) {
         String value = normalize(selected);
         String cate = normalize(category);
-        String safeCode = safe(code).toUpperCase(Locale.ROOT);
+        String safeCode = extractServiceCode(code);
 
         if (value.isBlank() || value.equals("all")) return true;
 
@@ -739,7 +775,7 @@ public class PublicReviewAIController {
     }
 
     private String typeFromCode(String code) {
-        String value = safe(code).toUpperCase(Locale.ROOT);
+        String value = extractServiceCode(code);
 
         if (value.startsWith("PT-") || value.startsWith("BUS-")) return "Nhà xe";
         if (value.startsWith("KS-") || value.startsWith("HOTEL-")) return "Khách sạn";
