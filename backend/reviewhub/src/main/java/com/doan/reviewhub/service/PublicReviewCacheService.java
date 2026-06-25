@@ -8,7 +8,9 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 import java.io.IOException;
+import java.io.InputStream;
 import java.lang.reflect.Method;
+import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.StandardCopyOption;
@@ -51,14 +53,36 @@ public class PublicReviewCacheService {
             return emptyPayload(safeSlug, safeCode);
         }
 
-        Path path = cachePath(safeSlug, safeCode);
-
-        if (!Files.exists(path)) {
-            return emptyPayload(safeSlug, safeCode);
-        }
-
         try {
-            return objectMapper.readValue(path.toFile(), ReviewCachePayload.class);
+            /*
+             * Ưu tiên đọc cache runtime nếu có dữ liệu.
+             * Nếu trước đó từng force=true và ghi ra file rỗng total=0,
+             * không để file rỗng này che mất cache đã đóng gói trong resources.
+             */
+            Path path = findReadableCachePath(safeSlug, safeCode);
+            ReviewCachePayload filePayload = null;
+
+            if (path != null && Files.exists(path)) {
+                filePayload = objectMapper.readValue(path.toFile(), ReviewCachePayload.class);
+
+                if (hasReviews(filePayload)) {
+                    System.out.println("PUBLIC REVIEW CACHE READ FROM FILE: " + path.toAbsolutePath());
+                    return normalizePayload(filePayload, safeSlug, safeCode);
+                }
+            }
+
+            ReviewCachePayload classpathPayload = readCacheFromClasspath(safeSlug, safeCode);
+
+            if (hasReviews(classpathPayload)) {
+                return normalizePayload(classpathPayload, safeSlug, safeCode);
+            }
+
+            if (filePayload != null) {
+                return normalizePayload(filePayload, safeSlug, safeCode);
+            }
+
+            System.out.println("PUBLIC REVIEW CACHE MISS: " + safeSlug + "/" + safeCode + ".json | user.dir=" + System.getProperty("user.dir"));
+            return emptyPayload(safeSlug, safeCode);
         } catch (Exception ex) {
             ex.printStackTrace();
             return emptyPayload(safeSlug, safeCode);
@@ -71,7 +95,11 @@ public class PublicReviewCacheService {
 
         if (safeCode.isBlank()) return false;
 
-        return Files.exists(cachePath(safeSlug, safeCode));
+        Path path = findReadableCachePath(safeSlug, safeCode);
+        if (path != null && Files.exists(path)) return true;
+
+        String resourcePath = "public-review-cache/" + safeSlug + "/" + safeCode + ".json";
+        return getClass().getClassLoader().getResource(resourcePath) != null;
     }
 
     /*
@@ -457,6 +485,86 @@ public class PublicReviewCacheService {
         String safeCode = safeFileName(firstNonBlank(targetCode, "").toUpperCase(Locale.ROOT));
 
         return cacheRoot.resolve(safeSlug).resolve(safeCode + ".json");
+    }
+
+    private Path findReadableCachePath(String serviceSlug, String targetCode) {
+        String safeSlug = safeFileName(normalizeServiceSlug(serviceSlug, targetCode));
+        String safeCode = safeFileName(firstNonBlank(targetCode, "").toUpperCase(Locale.ROOT));
+        String fileName = safeCode + ".json";
+        String userDir = System.getProperty("user.dir", "");
+
+        List<Path> candidates = List.of(
+                /* Khi app chạy tại /app hoặc backend/reviewhub */
+                cacheRoot.resolve(safeSlug).resolve(fileName),
+                Path.of(userDir, "data", "public-review-cache", safeSlug, fileName),
+
+                /* Khi Render chạy từ root repo */
+                Path.of(userDir, "backend", "reviewhub", "data", "public-review-cache", safeSlug, fileName),
+                Path.of("backend", "reviewhub", "data", "public-review-cache", safeSlug, fileName),
+
+                /* Khi chạy local trong source tree */
+                Path.of(userDir, "src", "main", "resources", "public-review-cache", safeSlug, fileName),
+                Path.of("src", "main", "resources", "public-review-cache", safeSlug, fileName)
+        );
+
+        for (Path candidate : candidates) {
+            if (Files.exists(candidate)) {
+                return candidate;
+            }
+        }
+
+        return null;
+    }
+
+    private ReviewCachePayload readCacheFromClasspath(String serviceSlug, String targetCode) {
+        String safeSlug = safeFileName(normalizeServiceSlug(serviceSlug, targetCode));
+        String safeCode = safeFileName(firstNonBlank(targetCode, "").toUpperCase(Locale.ROOT));
+        String resourcePath = "public-review-cache/" + safeSlug + "/" + safeCode + ".json";
+
+        try (InputStream inputStream = getClass().getClassLoader().getResourceAsStream(resourcePath)) {
+            if (inputStream == null) {
+                return null;
+            }
+
+            String json = new String(inputStream.readAllBytes(), StandardCharsets.UTF_8);
+            ReviewCachePayload payload = objectMapper.readValue(json, ReviewCachePayload.class);
+
+            System.out.println("PUBLIC REVIEW CACHE READ FROM CLASSPATH: " + resourcePath);
+            return payload;
+        } catch (Exception ex) {
+            ex.printStackTrace();
+            return null;
+        }
+    }
+
+    private boolean hasReviews(ReviewCachePayload payload) {
+        return payload != null && payload.getReviews() != null && !payload.getReviews().isEmpty();
+    }
+
+    private ReviewCachePayload normalizePayload(ReviewCachePayload payload, String serviceSlug, String targetCode) {
+        if (payload == null) {
+            return emptyPayload(serviceSlug, targetCode);
+        }
+
+        if (payload.getServiceSlug() == null || payload.getServiceSlug().isBlank()) {
+            payload.setServiceSlug(normalizeServiceSlug(serviceSlug, targetCode));
+        }
+
+        if (payload.getTargetCode() == null || payload.getTargetCode().isBlank()) {
+            payload.setTargetCode(firstNonBlank(targetCode, "").toUpperCase(Locale.ROOT));
+        }
+
+        if (payload.getReviews() == null) {
+            payload.setReviews(new ArrayList<>());
+        }
+
+        payload.setTotal(payload.getReviews().size());
+
+        if (payload.getUpdatedAt() == null || payload.getUpdatedAt().isBlank()) {
+            payload.setUpdatedAt(Instant.now().toString());
+        }
+
+        return payload;
     }
 
 
