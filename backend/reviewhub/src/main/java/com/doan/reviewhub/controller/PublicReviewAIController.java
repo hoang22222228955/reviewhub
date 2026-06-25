@@ -3,6 +3,7 @@ package com.doan.reviewhub.controller;
 import com.doan.reviewhub.entity.Review;
 import com.doan.reviewhub.repository.ReviewRepository;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -18,6 +19,14 @@ import java.util.stream.Collectors;
 public class PublicReviewAIController {
 
     private final ReviewRepository reviewRepository;
+
+    /*
+     * Giới hạn số review AI public đọc từ DB để tránh OutOfMemory trên Render.
+     * DB review có thể rất lớn sau khi Admin import/upload dữ liệu, nên tuyệt đối
+     * không dùng reviewRepository.findAll() trong các API public AI.
+     */
+    private static final int MAX_AI_REVIEW_SCAN = 1000;
+
 
     @GetMapping("/top-services")
     public ResponseEntity<?> topServices(
@@ -93,10 +102,7 @@ public class PublicReviewAIController {
             ));
         }
 
-        List<Review> allPublicReviews = reviewRepository.findAll()
-                .stream()
-                .filter(this::isPublicApproved)
-                .toList();
+        List<Review> allPublicReviews = loadPublicApprovedReviews();
 
         /*
          * Không chỉ so sánh firstNonBlank(targetCode, operatorCode).
@@ -180,11 +186,19 @@ public class PublicReviewAIController {
         return result;
     }
 
+    private List<Review> loadPublicApprovedReviews() {
+        return reviewRepository
+                .findAll(PageRequest.of(0, MAX_AI_REVIEW_SCAN))
+                .getContent()
+                .stream()
+                .filter(this::isPublicApproved)
+                .toList();
+    }
+
     private List<ServiceStat> buildServiceStats() {
         Map<String, ServiceStat> grouped = new LinkedHashMap<>();
 
-        for (Review review : reviewRepository.findAll()) {
-            if (!isPublicApproved(review)) continue;
+        for (Review review : loadPublicApprovedReviews()) {
 
             String code = firstReviewCode(review);
             if (code.isBlank()) continue;
