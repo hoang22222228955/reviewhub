@@ -9,6 +9,7 @@ import com.doan.reviewhub.repository.ReviewRepository;
 import com.doan.reviewhub.repository.TransportOperatorRepository;
 import com.doan.reviewhub.repository.UserRepository;
 import com.doan.reviewhub.service.ReviewSyncService;
+import com.doan.reviewhub.service.PublicReviewCacheService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;
@@ -18,8 +19,10 @@ import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Collections;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 @RestController
 @RequestMapping("/api/admin")
@@ -31,6 +34,7 @@ public class AdminController {
     private final BankConfigRepository bankConfigRepository;
     private final ReviewRepository reviewRepository;
     private final ReviewSyncService reviewSyncService;
+    private final PublicReviewCacheService publicReviewCacheService;
 
     /** Chỉ admin mới được gọi. Kiểm tra role tại đây. */
     private ResponseEntity<?> forbidNonAdmin(Authentication auth) {
@@ -255,11 +259,34 @@ public class AdminController {
         }
 
         review.setModerationStatus("approved");
-        reviewRepository.save(review);
+        Review saved = reviewRepository.save(review);
+
+        Set<String> cacheTargets = new LinkedHashSet<>();
+        String cacheError = "";
+
+        /*
+         * Cực kỳ quan trọng:
+         * Không để service tự đoán mã nữa. AdminController sẽ ép ghi cache theo đúng
+         * các mã có trong review: targetCode, ownerPartnerCode và id dạng KS-018-xxxx.
+         * Nhờ vậy review đã duyệt sẽ nhảy thẳng vào:
+         * data/public-review-cache/khach-san/KS-018.json
+         */
+        try {
+            cacheTargets = upsertPublicCacheForReview(saved);
+        } catch (Exception e) {
+            cacheError = e.getClass().getName() + ": " + (e.getMessage() == null ? "" : e.getMessage());
+            System.err.println("UPSERT PUBLIC CACHE AFTER APPROVE FAILED: " + saved.getId());
+            e.printStackTrace();
+        }
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
-                "message", "Review đã được duyệt."
+                "message", "Review đã được duyệt.",
+                "reviewId", String.valueOf(saved.getId()),
+                "targetCode", saved.getTargetCode() == null ? "" : saved.getTargetCode(),
+                "ownerPartnerCode", saved.getOwnerPartnerCode() == null ? "" : saved.getOwnerPartnerCode(),
+                "cacheTargets", cacheTargets,
+                "cacheError", cacheError
         ));
     }
 
@@ -282,12 +309,144 @@ public class AdminController {
         }
 
         review.setModerationStatus("rejected");
-        reviewRepository.save(review);
+        Review saved = reviewRepository.save(review);
+
+        // Nếu review này từng nằm trong cache public thì xóa nó khỏi cache.
+        try {
+            removeReviewFromPublicCache(saved);
+        } catch (Exception e) {
+            System.err.println("REMOVE PUBLIC CACHE AFTER REJECT FAILED: " + saved.getId());
+            e.printStackTrace();
+        }
 
         return ResponseEntity.ok(Map.of(
                 "success", true,
                 "message", "Review đã bị từ chối."
         ));
+    }
+
+
+
+
+    private Set<String> upsertPublicCacheForReview(Review review) {
+        Set<String> codes = getMainCodesForReview(review);
+
+        addMainCode(codes, String.valueOf(review.getId()));
+
+        if (codes.isEmpty()) {
+            publicReviewCacheService.upsertApprovedReview(review);
+            return Set.of("auto");
+        }
+
+        Set<String> targets = new LinkedHashSet<>();
+
+        for (String code : codes) {
+            PublicReviewCacheService.ReviewCachePayload payload =
+                    publicReviewCacheService.upsertApprovedReviewForTargetCode(review, code);
+
+            String target = payload.getServiceSlug() + "/" + payload.getTargetCode();
+            targets.add(target);
+
+            System.out.println("====================================");
+            System.out.println("ADMIN APPROVE UPSERT CACHE DONE");
+            System.out.println("reviewId = " + review.getId());
+            System.out.println("target   = " + target);
+            System.out.println("total    = " + payload.getTotal());
+            System.out.println("====================================");
+        }
+
+        return targets;
+    }
+
+    private void removeReviewFromPublicCache(Review review) {
+        Set<String> codes = getMainCodesForReview(review);
+
+        if (codes.isEmpty()) {
+            String fallbackCode = firstNonBlank(review.getTargetCode(), review.getOwnerPartnerCode());
+            if (!fallbackCode.isBlank()) {
+                codes.add(fallbackCode.trim().toUpperCase());
+            }
+        }
+
+        for (String code : codes) {
+            String serviceSlug = getServiceSlugFromCode(code);
+            publicReviewCacheService.removeReviewFromCache(serviceSlug, code, String.valueOf(review.getId()));
+
+            System.out.println("====================================");
+            System.out.println("REMOVE PUBLIC CACHE AFTER REJECT");
+            System.out.println("reviewId    = " + review.getId());
+            System.out.println("serviceSlug = " + serviceSlug);
+            System.out.println("targetCode  = " + code);
+            System.out.println("====================================");
+        }
+    }
+
+    private Set<String> getMainCodesForReview(Review review) {
+        Set<String> codes = new LinkedHashSet<>();
+
+        addMainCode(codes, review.getTargetCode());
+        addMainCode(codes, review.getOwnerPartnerCode());
+
+        return codes;
+    }
+
+    private void addMainCode(Set<String> codes, String code) {
+        if (code == null) return;
+
+        String value = code.trim().toUpperCase();
+        if (value.isEmpty()) return;
+
+        java.util.regex.Matcher matcher = java.util.regex.Pattern
+                .compile("\\b(PT|KS|MB|TH|TO|DV)-?(\\d{1,4})\\b")
+                .matcher(value);
+
+        if (!matcher.find()) return;
+
+        try {
+            int number = Integer.parseInt(matcher.group(2));
+            if (number <= 0) return;
+
+            codes.add(matcher.group(1) + "-" + String.format(java.util.Locale.ROOT, "%03d", number));
+        } catch (Exception ignored) {
+            // ignore invalid code
+        }
+    }
+
+    private boolean isMainServiceCode(String code) {
+        if (code == null) return false;
+
+        String value = code.trim().toUpperCase();
+
+        return value.startsWith("PT-")
+                || value.startsWith("KS-")
+                || value.startsWith("MB-")
+                || value.startsWith("TH-")
+                || value.startsWith("TO-")
+                || value.startsWith("DV-");
+    }
+
+    private String firstNonBlank(String... values) {
+        if (values == null) return "";
+
+        for (String value : values) {
+            if (value != null && !value.trim().isEmpty()) {
+                return value.trim();
+            }
+        }
+
+        return "";
+    }
+
+    private String getServiceSlugFromCode(String code) {
+        String value = code == null ? "" : code.trim().toUpperCase();
+
+        if (value.startsWith("KS-")) return "khach-san";
+        if (value.startsWith("MB-")) return "may-bay";
+        if (value.startsWith("TH-")) return "tau-hoa";
+        if (value.startsWith("TO-")) return "tour";
+        if (value.startsWith("DV-")) return "dich-vu-khac";
+
+        return "nha-xe";
     }
 
     /**

@@ -1,6 +1,7 @@
 package com.doan.reviewhub.controller;
 
 import com.doan.reviewhub.dto.AIReviewApplyRequest;
+import com.doan.reviewhub.dto.AIReviewPreviewRequest;
 import com.doan.reviewhub.dto.AIReviewPreviewResponse;
 import com.doan.reviewhub.dto.ReviewBulkRequest;
 import com.doan.reviewhub.entity.Review;
@@ -40,7 +41,6 @@ public class AdminReviewAIController {
     }
 
     /*
-     * THÊM MỚI:
      * Lấy toàn bộ review trong database
      */
     @GetMapping("/all")
@@ -190,8 +190,15 @@ public class AdminReviewAIController {
         }
     }
 
+    /*
+     * AI preview mới:
+     * - Nhận ids như cũ.
+     * - Nhận thêm moderationPrompt/checklist từ frontend.
+     * - Service sẽ phân tích theo checklist 3 trạng thái:
+     *   APPROVE / REJECT / NEED_REVIEW.
+     */
     @PostMapping("/ai-preview")
-    public ResponseEntity<?> aiPreview(@RequestBody ReviewBulkRequest request) {
+    public ResponseEntity<?> aiPreview(@RequestBody AIReviewPreviewRequest request) {
         try {
             List<String> ids = cleanIds(request.getIds());
 
@@ -200,8 +207,12 @@ public class AdminReviewAIController {
                     .filter(this::isPendingReview)
                     .toList();
 
-            AIReviewPreviewResponse response =
-                    adminAIToolService.analyzeReviewBatch(reviews);
+            AIReviewPreviewResponse response = adminAIToolService.analyzeReviewBatch(
+                    reviews,
+                    request.getModerationPrompt(),
+                    request.getChecklist(),
+                    request.getDecisionGuide()
+            );
 
             return ResponseEntity.ok(response);
         } catch (Exception e) {

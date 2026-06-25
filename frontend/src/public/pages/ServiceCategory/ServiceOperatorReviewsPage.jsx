@@ -697,7 +697,7 @@ function imageNumberFromCode(code, fallbackIndex = 0, offset = 0) {
 function localOperatorImage(index, slug = 'nha-xe', code = '', offset = 0) {
   const serviceMeta = getServiceMeta(slug);
   const imageNumber = imageNumberFromCode(code, index, offset);
-  return `${serviceMeta.imageFolder}/${imageNumber}.webp`;
+  return `${serviceMeta.imageFolder}/${imageNumber}.jpg`;
 }
 
 function localOperatorImageAlt(index, slug = 'nha-xe', code = '', offset = 0) {
@@ -705,7 +705,7 @@ function localOperatorImageAlt(index, slug = 'nha-xe', code = '', offset = 0) {
   if (!serviceMeta.imageFolderAlt) return '';
 
   const imageNumber = imageNumberFromCode(code, index, offset);
-  return `${serviceMeta.imageFolderAlt}/${imageNumber}.webp`;
+  return `${serviceMeta.imageFolderAlt}/${imageNumber}.jpg`;
 }
 
 
@@ -713,7 +713,7 @@ function localOperatorBackgroundImage(index, slug = 'nha-xe', code = '', offset 
   const serviceMeta = getServiceMeta(slug);
   const imageNumber = imageNumberFromCode(code, index, offset);
   const backgroundFolder = serviceMeta.backgroundImageFolder || serviceMeta.imageFolder;
-  return `${backgroundFolder}/${imageNumber}.webp`;
+  return `${backgroundFolder}/${imageNumber}.jpg`;
 }
 
 function localOperatorBackgroundImageAlt(index, slug = 'nha-xe', code = '', offset = 0) {
@@ -721,7 +721,7 @@ function localOperatorBackgroundImageAlt(index, slug = 'nha-xe', code = '', offs
   if (!serviceMeta.backgroundImageFolderAlt) return '';
 
   const imageNumber = imageNumberFromCode(code, index, offset);
-  return `${serviceMeta.backgroundImageFolderAlt}/${imageNumber}.webp`;
+  return `${serviceMeta.backgroundImageFolderAlt}/${imageNumber}.jpg`;
 }
 
 function normalizeOperator(item, index, serviceMeta = getServiceMeta()) {
@@ -992,6 +992,28 @@ function reviewMatchesOperator(review, operator) {
   return codeMatches || nameMatches;
 }
 
+function reviewMatchesOperatorCodeOnly(review, operator) {
+  const operatorCode = normalizeSearchText(operator?.code);
+  if (!operatorCode) return true;
+
+  const primaryCodes = [
+    review.targetCode,
+    review.target_code,
+    review.operatorCode,
+    review.operator_code,
+    review.assignedOperatorCode,
+    review.assigned_operator_code,
+    review.ownerPartnerCode,
+    review.owner_partner_code,
+    review.partnerCode,
+    review.partner_code,
+  ]
+    .map(normalizeSearchText)
+    .filter(Boolean);
+
+  return primaryCodes.some(code => code === operatorCode);
+}
+
 async function postReview(payload) {
   let lastError = null;
 
@@ -1005,6 +1027,64 @@ async function postReview(payload) {
   }
 
   throw lastError;
+}
+
+
+const ALLOW_DB_REVIEW_FALLBACK = false;
+const REVIEW_CACHE_POLL_MS = 5000;
+
+function getCacheOperatorCode(value = '') {
+  return normalizeOperatorCode(value).replace(/[^A-Z0-9-]/g, '');
+}
+
+async function fetchJsonFile(url) {
+  if (typeof window === 'undefined') return null;
+
+  const response = await fetch(url, {
+    method: 'GET',
+    cache: 'no-store',
+    headers: { Accept: 'application/json' },
+  });
+
+  if (!response.ok) return null;
+  return response.json();
+}
+
+function extractCacheReviews(payload) {
+  if (!payload) return [];
+  if (Array.isArray(payload)) return payload;
+  if (Array.isArray(payload.reviews)) return payload.reviews;
+  if (Array.isArray(payload.content)) return payload.content;
+  if (Array.isArray(payload.data)) return payload.data;
+  if (Array.isArray(payload.items)) return payload.items;
+  return [];
+}
+
+async function readPublicReviewCache({ serviceSlug, operatorCode }) {
+  const safeSlug = String(serviceSlug || 'nha-xe').trim();
+  const safeCode = getCacheOperatorCode(operatorCode);
+
+  if (!safeCode) {
+    return { source: '', list: [], meta: null };
+  }
+
+  const endpoint =
+    `/api/public/review-cache/${encodeURIComponent(safeSlug)}/${encodeURIComponent(safeCode)}?v=${Date.now()}`;
+
+  try {
+    const response = await api.get(endpoint);
+    const payload = response.data;
+    const list = extractCacheReviews(payload);
+
+    return {
+      source: endpoint,
+      list,
+      meta: payload,
+    };
+  } catch (error) {
+    console.warn('Không đọc được public review cache:', error);
+    return { source: '', list: [], meta: null };
+  }
 }
 
 function makeStars(value) {
@@ -1233,6 +1313,9 @@ export default function ServiceOperatorReviewsPage() {
   const [reviews, setReviews] = useState([]);
   const [allOperators, setAllOperators] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [reviewsLoading, setReviewsLoading] = useState(true);
+  const [cacheSource, setCacheSource] = useState('');
+  const [cacheMessage, setCacheMessage] = useState('');
   const [keyword, setKeyword] = useState('');
   const [ratingFilter, setRatingFilter] = useState('all');
   const [sortMode, setSortMode] = useState('newest');
@@ -1248,23 +1331,93 @@ export default function ServiceOperatorReviewsPage() {
   const decodedCode = decodeURIComponent(operatorCode || '');
   const serviceMeta = useMemo(() => getServiceMeta(slug), [slug]);
 
-  const loadData = useCallback(async () => {
-    setLoading(true);
+  const refreshReviewsFromCache = useCallback(async (targetOperator, options = {}) => {
+    const safeOperator = targetOperator;
+    if (!safeOperator?.code && !decodedCode) return;
+
+    const silent = Boolean(options.silent);
+    if (!silent) setReviewsLoading(true);
 
     try {
-      const [operatorResult, reviewResult] = await Promise.all([
-        readFirstList(OPERATOR_ENDPOINTS),
-        readFirstList(REVIEW_ENDPOINTS),
-      ]);
+      const cacheResult = await readPublicReviewCache({
+        serviceSlug: serviceMeta.slug,
+        operatorCode: safeOperator?.code || decodedCode,
+      });
+
+      let remoteReviews = cacheResult.list.map((item, index) => normalizeReview(item, index, serviceMeta));
+
+      // Production giữ false để KHÔNG quay lại lỗi cũ: public page gọi DB size=10000.
+      // Chỉ bật tạm khi dev cache chưa có dữ liệu.
+      if (!remoteReviews.length && ALLOW_DB_REVIEW_FALLBACK) {
+        const reviewResult = await readFirstList(REVIEW_ENDPOINTS);
+        remoteReviews = reviewResult.list.map((item, index) => normalizeReview(item, index, serviceMeta));
+      }
+
+      const localReviews = readLocalReviews(serviceMeta.slug).map((item, index) => normalizeReview(item, index, serviceMeta));
+
+      /*
+       * QUAN TRỌNG:
+       * Review đọc từ cache endpoint /api/public/review-cache/{slug}/{code}
+       * đã được backend lấy đúng theo mã dịch vụ rồi. Không được lọc bắt buộc theo TÊN operator nữa,
+       * vì dữ liệu cũ có nhiều bản ghi PT-013 nhưng targetName/operatorName lệch nhau
+       * như Sao Việt / Tên dịch vụ / BUS-013-001. Nếu bắt khớp cả code + name sẽ bị mất gần hết review,
+       * có trường hợp từ hơn 200 review chỉ còn 1 review.
+       */
+      const safeRemoteReviews = remoteReviews
+        .filter(review => reviewMatchesService(review, serviceMeta))
+        .filter(review => reviewMatchesOperatorCodeOnly(review, safeOperator))
+        .filter(isApprovedVisibleReview);
+
+      const safeLocalReviews = localReviews
+        .filter(review => reviewMatchesService(review, serviceMeta) && reviewMatchesOperator(review, safeOperator))
+        .filter(isApprovedVisibleReview);
+
+      // Ưu tiên cache backend trước localStorage để bản approved không bị pending local đè mất.
+      const allReviews = [...safeRemoteReviews, ...safeLocalReviews]
+        .filter((item, index, list) => list.findIndex(other => String(other.id) === String(item.id)) === index)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+      setCacheSource(cacheResult.source || '');
+      setReviews(allReviews);
+
+      // Không show dòng debug ngoài giao diện. Cache tự cập nhật khi admin duyệt.
+      if (!allReviews.length && !cacheResult.source) {
+        setCacheMessage('');
+      }
+    } finally {
+      if (!silent) setReviewsLoading(false);
+    }
+  }, [decodedCode, serviceMeta]);
+
+  const loadData = useCallback(async () => {
+    setLoading(true);
+    setReviewsLoading(true);
+    setCacheSource('');
+    setCacheMessage('');
+    setReviews([]);
+    setReviewPage(1);
+
+    try {
+      // Chỉ lấy operator để hiện tên + ảnh trước. Không gọi review DB ở bước này.
+      const operatorResult = await readFirstList(OPERATOR_ENDPOINTS);
 
       const prefix = getCodePrefixBySlug(slug);
       const normalizedOperators = operatorResult.list.map((item, index) => normalizeOperator(item, index, serviceMeta));
       const scopedOperators = normalizedOperators.filter(item => String(item.code || '').startsWith(prefix));
       const operatorPool = scopedOperators.length ? scopedOperators : normalizedOperators;
+      const foundByCode = operatorPool.find(item => normalizeSearchText(item.code) === normalizeSearchText(decodedCode));
+      const foundByName = operatorPool.find(item => normalizeSearchText(item.name) === normalizeSearchText(decodedCode));
+      const stateOperatorMatchesUrl =
+        stateOperator &&
+        (
+          normalizeSearchText(stateOperator.code) === normalizeSearchText(decodedCode) ||
+          normalizeSearchText(stateOperator.name) === normalizeSearchText(decodedCode)
+        );
+
       const foundOperator =
-        stateOperator ||
-        operatorPool.find(item => normalizeSearchText(item.code) === normalizeSearchText(decodedCode)) ||
-        operatorPool.find(item => normalizeSearchText(item.name) === normalizeSearchText(decodedCode));
+        foundByCode ||
+        foundByName ||
+        (stateOperatorMatchesUrl ? stateOperator : null);
 
       const safeOperator = foundOperator || {
         code: decodedCode,
@@ -1278,25 +1431,32 @@ export default function ServiceOperatorReviewsPage() {
         serviceSlug: serviceMeta.slug,
       };
 
-      const remoteReviews = reviewResult.list.map((item, index) => normalizeReview(item, index, serviceMeta));
-      const localReviews = readLocalReviews(serviceMeta.slug).map((item, index) => normalizeReview(item, index, serviceMeta));
-      const allReviews = [...localReviews, ...remoteReviews]
-        .filter((item, index, list) => list.findIndex(other => String(other.id) === String(item.id)) === index)
-        .filter(review => reviewMatchesService(review, serviceMeta) && reviewMatchesOperator(review, safeOperator))
-        .filter(isApprovedVisibleReview)
-        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
-
       setOperator(safeOperator);
       setAllOperators(operatorPool);
-      setReviews(allReviews);
+      setLoading(false);
+
+      // Đọc cache sau khi giao diện chính đã hiện. Endpoint cache chỉ đọc file/cache, không query toàn bộ DB.
+      await refreshReviewsFromCache(safeOperator, { silent: false });
     } finally {
       setLoading(false);
+      setReviewsLoading(false);
     }
-  }, [decodedCode, stateOperator, slug, serviceMeta]);
+  }, [decodedCode, refreshReviewsFromCache, stateOperator, slug, serviceMeta]);
 
   useEffect(() => {
     loadData();
   }, [loadData]);
+
+
+  useEffect(() => {
+    if (!operator?.code) return undefined;
+
+    const timer = window.setInterval(() => {
+      refreshReviewsFromCache(operator, { silent: true });
+    }, REVIEW_CACHE_POLL_MS);
+
+    return () => window.clearInterval(timer);
+  }, [operator, refreshReviewsFromCache]);
 
   useEffect(() => () => {
     if (reviewImagePreview) URL.revokeObjectURL(reviewImagePreview);
@@ -1978,9 +2138,7 @@ export default function ServiceOperatorReviewsPage() {
                   <button type="button" className={styles.advancedButton}><PremiumIcon name="funnel" /> Bộ lọc nâng cao</button>
                 </div>
 
-                {loading ? (
-                  <div className={styles.loadingState}>Đang tải đánh giá...</div>
-                ) : paginatedReviews.length ? (
+                {reviewsLoading && !paginatedReviews.length ? null : paginatedReviews.length ? (
                   <div className={styles.reviewStream}>
                     {paginatedReviews.map((review, index) => {
                       const status = statusInfo(review);

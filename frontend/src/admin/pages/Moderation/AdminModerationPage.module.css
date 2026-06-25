@@ -989,6 +989,33 @@ textarea {
     grid-template-columns: 1fr;
   }
 }
+.criteriaButton {
+  height: 46px;
+  padding: 0 16px;
+  border-radius: 16px;
+  border: 1px solid #dbe4f0;
+  background: linear-gradient(180deg, #ffffff, #f8fafc);
+  color: #334155;
+  font-size: 13px;
+  font-weight: 560;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: 0.2s;
+}
+
+.criteriaButton:hover:not(:disabled) {
+  transform: translateY(-2px);
+  border-color: #c7d2fe;
+  color: #4f46e5;
+  box-shadow: 0 12px 24px rgba(79, 70, 229, 0.08);
+}
+
+.criteriaButton:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
 .aiButton {
   height: 46px;
   padding: 0 16px;
@@ -1159,6 +1186,7 @@ textarea {
     grid-template-columns: 1fr;
   }
 
+  .criteriaButton,
   .aiButton,
   .aiApplyButton {
     width: 100%;
@@ -1275,6 +1303,7 @@ textarea {
   }
 
   .select,
+  .criteriaButton,
   .aiButton,
   .bulkApprove,
   .bulkReject,
@@ -2027,3 +2056,250 @@ textarea {
   margin-left: 0 !important;
 }
 
+
+
+/* ===== CRITERIA MODAL BUTTON/PANEL ===== */
+.criteriaOverlay {
+  position: fixed;
+  inset: 0;
+  z-index: 120;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 22px;
+  background: rgba(15, 23, 42, 0.46);
+  backdrop-filter: blur(8px);
+}
+
+.criteriaModal {
+  width: min(1080px, 96vw);
+  max-height: min(82vh, 760px);
+  overflow-y: auto;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+  border: 1px solid rgba(219, 234, 254, 0.96);
+  border-radius: 26px;
+  padding: 20px;
+  box-shadow: 0 28px 80px rgba(15, 23, 42, 0.24);
+}
+
+.criteriaModalTop {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 18px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #e2e8f0;
+}
+
+.criteriaModalTop span {
+  display: inline-flex;
+  margin-bottom: 6px;
+  color: #4f46e5;
+  font-size: 11px;
+  font-weight: 620;
+  letter-spacing: 0.02em;
+  text-transform: uppercase;
+}
+
+.criteriaModalTop h2 {
+  margin: 0;
+  color: #0f172a;
+  font-size: 21px;
+  line-height: 1.25;
+  font-weight: 650;
+  letter-spacing: -0.35px;
+}
+
+.criteriaModalTop p {
+  margin: 8px 0 0;
+  color: #64748b;
+  font-size: 12.5px;
+  line-height: 1.6;
+  font-weight: 430;
+}
+
+.criteriaModal .checklistGrid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.criteriaModal .decisionGuide {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+/* ===== AI MODERATION CHECKLIST PATCH ===== */
+.checklistPanel {
+  width: 100%;
+  box-sizing: border-box;
+  background: linear-gradient(135deg, #ffffff, #f8fbff);
+  border: 1px solid #dbeafe;
+  border-radius: 24px;
+  padding: 18px;
+  box-shadow:
+    0 10px 28px rgba(15, 23, 42, 0.04),
+    0 1px 2px rgba(15, 23, 42, 0.04);
+}
+
+.checklistGrid {
+  margin-top: 15px;
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.checklistItem {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 9px;
+  align-items: flex-start;
+  padding: 11px;
+  border-radius: 16px;
+  background: rgba(255, 255, 255, 0.86);
+  border: 1px solid rgba(226, 232, 240, 0.96);
+}
+
+.checklistCode {
+  width: 28px;
+  height: 28px;
+  border-radius: 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: #eef2ff;
+  color: #4f46e5;
+  font-size: 10.5px;
+  font-weight: 620;
+  flex: 0 0 auto;
+}
+
+.checklistItem strong {
+  display: block;
+  color: #172033;
+  font-size: 11.5px;
+  line-height: 1.35;
+  font-weight: 560;
+  letter-spacing: -0.01em;
+}
+
+.checklistItem p {
+  margin: 4px 0 0;
+  color: #64748b;
+  font-size: 10.8px;
+  line-height: 1.45;
+  font-weight: 430;
+}
+
+.decisionGuide {
+  margin-top: 12px;
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.decisionGuide article {
+  padding: 12px 13px;
+  border-radius: 16px;
+  border: 1px solid #e2e8f0;
+  background: #ffffff;
+}
+
+.decisionGuide strong {
+  display: block;
+  color: #0f172a;
+  font-size: 12px;
+  font-weight: 560;
+  margin-bottom: 4px;
+}
+
+.decisionGuide p {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 430;
+}
+
+.aiViolationBox {
+  border-radius: 14px;
+  border: 1px solid #e2e8f0;
+  background: #f8fafc;
+  padding: 10px 12px;
+}
+
+.aiViolationBox span {
+  display: block;
+  color: #475569;
+  font-size: 10.8px;
+  font-weight: 560;
+  margin-bottom: 6px;
+}
+
+.aiViolationBox ul,
+.modalViolationList {
+  margin: 0;
+  padding-left: 16px;
+  color: #334155;
+  font-size: 11px;
+  line-height: 1.55;
+}
+
+.aiViolationBox li,
+.modalViolationList li {
+  margin: 2px 0;
+}
+
+.aiViolationBox p {
+  margin: 0;
+  color: #64748b;
+  font-size: 11px;
+  line-height: 1.5;
+  font-weight: 430;
+}
+
+@media (max-width: 1500px) {
+  .checklistGrid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 980px) {
+  .checklistGrid,
+  .decisionGuide {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .checklistGrid,
+  .decisionGuide {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+@media (max-width: 760px) {
+  .criteriaOverlay {
+    padding: 12px;
+    align-items: flex-start;
+  }
+
+  .criteriaModal {
+    width: 100%;
+    max-height: calc(100vh - 24px);
+    padding: 16px;
+    border-radius: 22px;
+  }
+
+  .criteriaModalTop {
+    gap: 12px;
+  }
+
+  .criteriaModalTop h2 {
+    font-size: 18px;
+  }
+
+  .criteriaModal .checklistGrid,
+  .criteriaModal .decisionGuide {
+    grid-template-columns: 1fr;
+  }
+}

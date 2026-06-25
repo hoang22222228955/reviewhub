@@ -8,6 +8,92 @@ function nowTime() {
 
 const PAGE_SIZE = 12;
 
+const AI_MODERATION_CHECKLIST = [
+  {
+    code: 'C1',
+    title: 'Từ ngữ thô tục / toxic / xúc phạm',
+    description: 'Không duyệt review chửi tục, miệt thị, công kích cá nhân, nhân viên, tài xế, khách hoặc đối tác.',
+  },
+  {
+    code: 'C2',
+    title: 'Chính trị / tuyên truyền',
+    description: 'Không duyệt nội dung lôi kéo, tuyên truyền, công kích phe phái, tổ chức hoặc nhân vật chính trị.',
+  },
+  {
+    code: 'C3',
+    title: 'Phân biệt đối xử',
+    description: 'Không duyệt nội dung phân biệt vùng miền, dân tộc, giới tính, tôn giáo, quốc tịch hoặc nhóm người.',
+  },
+  {
+    code: 'C4',
+    title: 'Spam / quảng cáo / link / số điện thoại',
+    description: 'Không duyệt review quảng cáo, kéo khách sang nền tảng khác, gắn link hoặc số điện thoại không phù hợp.',
+  },
+  {
+    code: 'C5',
+    title: 'Thông tin cá nhân nhạy cảm',
+    description: 'Không duyệt review tiết lộ CCCD, số điện thoại riêng, địa chỉ, email, biển số hoặc thông tin riêng tư của người khác.',
+  },
+  {
+    code: 'C6',
+    title: 'Cáo buộc nghiêm trọng thiếu bằng chứng',
+    description: 'Review cáo buộc lừa đảo, trộm cắp, hành hung, quấy rối hoặc vi phạm pháp luật nhưng thiếu ngữ cảnh thì cần admin xem lại.',
+  },
+  {
+    code: 'C7',
+    title: 'Review lịch sự vẫn được duyệt',
+    description: 'Review chê dịch vụ hoặc review ngắn như “Tốt”, “Ổn”, “Ok”, “Không hài lòng”, “Phục vụ chậm” vẫn duyệt nếu có ý nghĩa và không vi phạm.',
+  },
+];
+
+const AI_DECISION_GUIDE = [
+  {
+    decision: 'APPROVE',
+    label: 'Nên duyệt',
+    description: 'Review hợp lệ, kể cả chê dịch vụ hoặc nội dung ngắn nhưng có ý nghĩa.',
+  },
+  {
+    decision: 'REJECT',
+    label: 'Từ chối',
+    description: 'Review vi phạm rõ checklist: chửi tục, chính trị, phân biệt, spam hoặc lộ thông tin riêng tư.',
+  },
+  {
+    decision: 'NEED_REVIEW',
+    label: 'Cần xem lại',
+    description: 'Review nhạy cảm, cáo buộc nghiêm trọng thiếu bằng chứng hoặc nội dung quá mơ hồ.',
+  },
+];
+
+const AI_MODERATION_PROMPT = `Bạn là AI kiểm duyệt review cho nền tảng ReviewHub.
+Nhiệm vụ của bạn là đọc review bằng tiếng Việt và quyết định review đó có được duyệt hay không.
+
+Hãy phân tích theo checklist sau:
+1. Review có dùng từ ngữ thô tục, toxic hoặc xúc phạm cá nhân không?
+2. Review có nội dung chính trị, tuyên truyền hoặc công kích chính trị không?
+3. Review có phân biệt vùng miền, dân tộc, giới tính, tôn giáo, quốc tịch hoặc nhóm người nào không?
+4. Review có spam, quảng cáo, gắn link hoặc số điện thoại không phù hợp không?
+5. Review có tiết lộ thông tin cá nhân nhạy cảm của người khác không?
+6. Review có cáo buộc nghiêm trọng như lừa đảo, trộm cắp, hành hung, quấy rối nhưng thiếu bằng chứng không?
+7. Review chê dịch vụ nhưng lịch sự, có trải nghiệm thật và không vi phạm thì vẫn được duyệt. Review ngắn như "Tốt", "Ổn", "Ok", "Không hài lòng", "Phục vụ chậm" vẫn được duyệt nếu có ý nghĩa. Chỉ NEED_REVIEW nếu nội dung quá mơ hồ/vô nghĩa như "...", "abc", "test", "123" hoặc lặp ký tự không có nội dung.
+
+Kết quả trả về bắt buộc theo JSON:
+{
+  "decision": "APPROVE | REJECT | NEED_REVIEW",
+  "reason": "Lý do ngắn gọn bằng tiếng Việt, phải nêu đúng checklist đã dùng",
+  "violations": ["Danh sách lỗi nếu có"],
+  "confidence": 0-100
+}
+
+Quy tắc:
+- APPROVE: review hợp lệ và có thể hiển thị công khai.
+- REJECT: review vi phạm rõ ràng.
+- NEED_REVIEW: review nhạy cảm, chưa đủ chắc chắn, cần admin kiểm tra.
+- Không được từ chối review chỉ vì review chê dịch vụ hoặc vì review ngắn nhưng có ý nghĩa.
+- Các từ phản ánh dịch vụ như "hỏng", "chậm", "bất tiện", "không hài lòng", "phục vụ kém" không phải toxic nếu viết lịch sự.
+- Luôn ưu tiên phân tích theo ngữ cảnh tiếng Việt.
+- Với từ lóng, nói giảm nói tránh, viết sai chính tả hoặc cố tình né kiểm duyệt, vẫn phải hiểu đúng ý nghĩa.`;
+
+
 function normalizeSource(value) {
   const source = String(value || '').trim().toLowerCase();
   if (source === 'google' || source === 'google_maps' || source === 'google-maps') return 'google-maps';
@@ -383,8 +469,21 @@ function getInitial(value) {
   return String(value || 'R').trim().slice(0, 1).toUpperCase();
 }
 
-function normalizeAIAction(action) {
-  const raw = String(action || '').trim().toLowerCase();
+function getReviewId(item) {
+  return item?.id || item?.reviewId || item?.review_id || item?.reviewID || null;
+}
+
+function getTextWithoutVietnameseMarks(value) {
+  return String(value || '')
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/đ/g, 'd')
+    .replace(/Đ/g, 'D')
+    .toLowerCase();
+}
+
+function normalizeAIDecision(value) {
+  const raw = getTextWithoutVietnameseMarks(value).replace(/[\s-]+/g, '_');
 
   if (
     [
@@ -396,13 +495,15 @@ function normalizeAIAction(action) {
       'accept',
       'accepted',
       'duyet',
-      'duyệt',
       'nen_duyet',
-      'nên duyệt',
       'approve_review',
+      'hop_le',
+      'valid',
+      'allow',
+      'allowed',
     ].includes(raw)
   ) {
-    return 'approve';
+    return 'APPROVE';
   }
 
   if (
@@ -415,34 +516,274 @@ function normalizeAIAction(action) {
       'denied',
       'refuse',
       'tu_choi',
-      'từ chối',
       'nen_tu_choi',
-      'nên từ chối',
       'reject_review',
+      'khong_duyet',
+      'vi_pham',
+      'invalid',
     ].includes(raw)
   ) {
-    return 'reject';
+    return 'REJECT';
   }
 
+  if (
+    [
+      'need_review',
+      'needs_review',
+      'manual',
+      'manual_review',
+      'can_xem_lai',
+      'can_admin_xem',
+      'xem_tay',
+      'pending',
+      'uncertain',
+      'unsure',
+    ].includes(raw)
+  ) {
+    return 'NEED_REVIEW';
+  }
+
+  return 'NEED_REVIEW';
+}
+
+function normalizeAIAction(action) {
+  const decision = normalizeAIDecision(action);
+  if (decision === 'APPROVE') return 'approve';
+  if (decision === 'REJECT') return 'reject';
   return 'manual';
 }
 
-function getReviewId(item) {
-  return item?.id || item?.reviewId || item?.review_id || item?.reviewID || null;
-}
-
 function getAIActionLabel(action) {
-  const normalized = normalizeAIAction(action);
-  if (normalized === 'approve') return 'Nên duyệt';
-  if (normalized === 'reject') return 'Nên từ chối';
-  return 'Cần admin xem';
+  const decision = normalizeAIDecision(action);
+  if (decision === 'APPROVE') return 'Nên duyệt';
+  if (decision === 'REJECT') return 'Từ chối';
+  return 'Cần xem lại';
 }
 
 function getAIActionClass(action) {
-  const normalized = normalizeAIAction(action);
-  if (normalized === 'approve') return styles.aiApprove;
-  if (normalized === 'reject') return styles.aiReject;
+  const decision = normalizeAIDecision(action);
+  if (decision === 'APPROVE') return styles.aiApprove;
+  if (decision === 'REJECT') return styles.aiReject;
   return styles.aiManual;
+}
+
+function getConfidencePercent(value) {
+  const number = Number(value);
+  if (!Number.isFinite(number)) return 0;
+  const percent = number <= 1 ? number * 100 : number;
+  return Math.max(0, Math.min(100, Math.round(percent)));
+}
+
+function parseViolationList(value) {
+  if (Array.isArray(value)) {
+    return value
+      .map(item => String(item || '').trim())
+      .filter(Boolean);
+  }
+
+  if (typeof value === 'string') {
+    const text = value.trim();
+    if (!text) return [];
+
+    try {
+      const parsed = JSON.parse(text);
+      if (Array.isArray(parsed)) return parseViolationList(parsed);
+    } catch {
+      // Fallback split bên dưới.
+    }
+
+    return text
+      .split(/\n|;|\|/)
+      .map(item => item.replace(/^[-•\d.\s]+/, '').trim())
+      .filter(Boolean);
+  }
+
+  return [];
+}
+
+function getAIViolations(item) {
+  const values = [
+    item?.violations,
+    item?.violationList,
+    item?.violation_list,
+    item?.aiViolations,
+    item?.ai_violations,
+    item?.checklistViolations,
+    item?.checklist_violations,
+  ];
+
+  for (const value of values) {
+    const parsed = parseViolationList(value);
+    if (parsed.length) return parsed;
+  }
+
+  return [];
+}
+
+function includesAnyPattern(text, patterns) {
+  return patterns.some(pattern => pattern.test(text));
+}
+
+function detectChecklistViolations(review) {
+  const original = String(review?.comment || review?.content || review?.review || '').trim();
+  const text = getTextWithoutVietnameseMarks(original);
+  const violations = [];
+
+  if (!original) {
+    return {
+      decision: 'NEED_REVIEW',
+      violations: ['Review không có nội dung để AI đánh giá chắc chắn'],
+      reason: 'Review chưa có nội dung rõ ràng nên cần admin xem lại.',
+    };
+  }
+
+  const toxicOriginalPatterns = [
+    /\b(địt|đụ|đm|đmm|đcm|đéo|lồn|cặc|cút|mẹ\s*mày|óc\s*chó|súc\s*vật|mất\s*dạy|khốn\s*nạn|rác\s*rưởi)\b/iu,
+  ];
+
+  const toxicPatterns = [
+    // Không dùng lon/cac/deo/cut trên text đã bỏ dấu vì dễ bắt nhầm: "các", "lớn", "đèo", ...
+    /\b(dm|dmm|dcm|vcl|vl|cc|cl|dit|me\s*m|du\s*ma|oc\s*cho|suc\s*vat|mat\s*day|khon\s*nan|bien\s*di)\b/i,
+    /\b(thang\s*ngu|con\s*ngu|ngu\s*nhu|rac\s*ruoi)\b/i,
+  ];
+
+  const politicalPatterns = [
+    /\b(chinh\s*tri|dang\s*phai|tuyen\s*truyen|cach\s*mang|che\s*do|phan\s*dong|cong\s*kich\s*chinh\s*tri)\b/i,
+  ];
+
+  const discriminationPatterns = [
+    /\b(bac\s*ky|nam\s*ky|trung\s*ky|dan\s+.*\s+deu|nguoi\s+.*\s+deu|phan\s*biet\s*vung\s*mien|ton\s*giao|dan\s*toc|quoc\s*tich|gioi\s*tinh)\b/i,
+  ];
+
+  const spamPatterns = [
+    /(https?:\/\/|www\.|\.com\b|\.vn\b|zalo|telegram|facebook|fb\.com)/i,
+    /\b(0|\+84)(\d[\s.-]?){8,10}\b/,
+    /\b(lien\s*he|inbox|ib|dat\s*ve\s*qua|khuyen\s*mai|giam\s*gia|mua\s*ngay)\b/i,
+  ];
+
+  const personalInfoPatterns = [
+    /\b(cccd|cmnd|can\s*cuoc|so\s*dien\s*thoai\s*rie?ng|dia\s*chi\s*nha|email\s*ca\s*nhan|bien\s*so\s*xe)\b/i,
+    /[\w.+-]+@[\w.-]+\.[a-z]{2,}/i,
+  ];
+
+  const seriousAccusationPatterns = [
+    /\b(lua\s*dao|an\s*cap|trom\s*cap|hanh\s*hung|danh\s*khach|quay\s*roi|sam\s*so|de\s*doa|bao\s*hanh|vi\s*pham\s*phap\s*luat)\b/i,
+  ];
+
+  if (includesAnyPattern(original, toxicOriginalPatterns) || includesAnyPattern(text, toxicPatterns)) violations.push('C1 - Có từ ngữ thô tục, toxic hoặc xúc phạm cá nhân');
+  if (includesAnyPattern(text, politicalPatterns)) violations.push('C2 - Có nội dung chính trị, tuyên truyền hoặc công kích chính trị');
+  if (includesAnyPattern(text, discriminationPatterns)) violations.push('C3 - Có dấu hiệu phân biệt vùng miền, dân tộc, giới tính, tôn giáo, quốc tịch hoặc nhóm người');
+  if (includesAnyPattern(original, spamPatterns) || includesAnyPattern(text, spamPatterns)) violations.push('C4 - Có dấu hiệu spam, quảng cáo, link hoặc số điện thoại không phù hợp');
+  if (includesAnyPattern(original, personalInfoPatterns) || includesAnyPattern(text, personalInfoPatterns)) violations.push('C5 - Có dấu hiệu tiết lộ thông tin cá nhân nhạy cảm');
+
+  const hasSeriousAccusation = includesAnyPattern(text, seriousAccusationPatterns);
+  if (hasSeriousAccusation) violations.push('C6 - Có cáo buộc nghiêm trọng cần kiểm tra bằng chứng/ngữ cảnh');
+
+  const rejectViolations = violations.filter(item => !item.startsWith('C6'));
+  if (rejectViolations.length) {
+    return {
+      decision: 'REJECT',
+      violations,
+      reason: `Review vi phạm checklist ${rejectViolations.map(item => item.slice(0, 2)).join(', ')} nên AI đề xuất từ chối.`,
+    };
+  }
+
+  if (hasSeriousAccusation) {
+    return {
+      decision: 'NEED_REVIEW',
+      violations,
+      reason: 'Review có cáo buộc nghiêm trọng nhưng chưa đủ ngữ cảnh/bằng chứng, cần admin xem lại.',
+    };
+  }
+
+  return {
+    decision: 'APPROVE',
+    violations: [],
+    reason: 'Review không vi phạm checklist; nếu có chê dịch vụ thì vẫn lịch sự và có thể duyệt.',
+  };
+}
+
+function getAIDecisionReason(item, fallback = null) {
+  return String(
+    item?.reason ||
+    item?.aiReason ||
+    item?.ai_reason ||
+    item?.moderationReason ||
+    item?.moderation_reason ||
+    item?.rejectReason ||
+    item?.reject_reason ||
+    fallback?.reason ||
+    'AI chưa trả lý do chi tiết.'
+  ).trim();
+}
+
+function buildReviewPayloadForAI(item) {
+  return {
+    id: getReviewId(item),
+    targetCode: item?.targetCode || item?.target_code || '',
+    targetName: item?.targetName || item?.target_name || '',
+    reviewerName: item?.reviewerName || item?.reviewer_name || '',
+    rating: item?.rating || 0,
+    comment: item?.comment || '',
+    sourceSystem: normalizeSource(item?.sourceSystem || item?.source),
+  };
+}
+
+function normalizeAIPreviewPayload(payload, sourceReviews = []) {
+  const raw = payload && typeof payload === 'object' ? payload : {};
+  const reviewLookup = new Map(
+    sourceReviews
+      .map(review => [String(getReviewId(review) || ''), review])
+      .filter(([id]) => id)
+  );
+
+  const rawItems = Array.isArray(raw.items) ? raw.items : [];
+  const items = rawItems.map(item => {
+    const id = String(getReviewId(item) || '').trim();
+    const sourceReview = reviewLookup.get(id);
+    const fallback = detectChecklistViolations(sourceReview || item);
+    const decision = normalizeAIDecision(item?.decision || item?.action || item?.result || item?.aiAction || fallback.decision);
+    const violations = getAIViolations(item);
+
+    return {
+      ...item,
+      id,
+      decision,
+      action: normalizeAIAction(decision),
+      reason: getAIDecisionReason(item, fallback),
+      violations: violations.length ? violations : fallback.violations,
+      confidence: getConfidencePercent(item?.confidence ?? item?.aiConfidence ?? item?.score ?? item?.riskScore ?? raw.confidence ?? 80),
+    };
+  });
+
+  const approveIds = new Set(parseViolationList(raw.approveIds));
+  const rejectIds = new Set(parseViolationList(raw.rejectIds));
+  const manualIds = new Set(parseViolationList(raw.manualIds));
+
+  items.forEach(item => {
+    if (!item.id) return;
+    if (item.decision === 'APPROVE') approveIds.add(item.id);
+    else if (item.decision === 'REJECT') rejectIds.add(item.id);
+    else manualIds.add(item.id);
+  });
+
+  approveIds.forEach(id => {
+    rejectIds.delete(id);
+    manualIds.delete(id);
+  });
+  rejectIds.forEach(id => manualIds.delete(id));
+
+  return {
+    ...raw,
+    items,
+    total: raw.total ?? items.length ?? sourceReviews.length,
+    approveIds: Array.from(approveIds),
+    rejectIds: Array.from(rejectIds),
+    manualIds: Array.from(manualIds),
+    approveCount: approveIds.size || Number(raw.approveCount || 0),
+    rejectCount: rejectIds.size || Number(raw.rejectCount || 0),
+    manualCount: manualIds.size || Number(raw.manualCount || 0),
+  };
 }
 
 
@@ -519,6 +860,7 @@ export default function AdminModerationPage() {
   const [bulkProgress, setBulkProgress] = useState(null);
   const [aiPreview, setAiPreview] = useState(null);
   const [aiLoading, setAiLoading] = useState(false);
+  const [criteriaOpen, setCriteriaOpen] = useState(false);
 
   // --- Crawl section ---
   const [operators, setOperators] = useState([]);
@@ -625,16 +967,17 @@ export default function AdminModerationPage() {
     setActionLoading(`${id}_${action}`);
 
     try {
-      await api.post(`/api/admin/review-ai/${id}/${action}`);
+      const res = await api.post(`/api/admin/reviews/${encodeURIComponent(id)}/${action}`);
+      console.log('ADMIN MODERATION RESPONSE:', res.data);
 
       syncPartnerSlaReviewStatus(
         reviewBeforeAction,
         action === 'approve' ? 'approved' : 'rejected',
       );
 
-      setQueue(prev => prev.filter(item => item.id !== id));
+      setQueue(prev => prev.filter(item => String(getReviewId(item) || item.id) !== String(id)));
 
-      if (selectedReview?.id === id) {
+      if (String(getReviewId(selectedReview) || selectedReview?.id) === String(id)) {
         setSelectedReview(null);
       }
 
@@ -742,7 +1085,7 @@ export default function AdminModerationPage() {
   }, [filteredQueue, selectedCarrierKey]);
 
   const visibleIds = useMemo(
-    () => visibleQueue.map(item => item.id).filter(Boolean),
+    () => visibleQueue.map(item => getReviewId(item)).filter(Boolean),
     [visibleQueue]
   );
 
@@ -764,44 +1107,87 @@ export default function AdminModerationPage() {
       action,
       current: 0,
       total: ids.length,
+      approved: 0,
+      rejected: 0,
+      failed: 0,
+      remaining: ids.length,
       status: 'running',
       label: action === 'approve' ? 'Đang duyệt review' : 'Đang từ chối review',
     });
 
+    const doneIds = [];
+    let approvedDone = 0;
+    let rejectedDone = 0;
+    let failedDone = 0;
+
     try {
-      const endpoint =
-        action === 'approve'
-          ? '/api/admin/review-ai/bulk-approve'
-          : '/api/admin/review-ai/bulk-reject';
+      for (let index = 0; index < ids.length; index += 1) {
+        if (stopBulkRef.current) {
+          setBulkProgress(prev => prev ? {
+            ...prev,
+            status: 'stopped',
+            label: 'Đã dừng xử lý hàng loạt',
+            remaining: ids.length - index,
+          } : prev);
+          break;
+        }
 
-      await api.post(endpoint, { ids });
+        const id = ids[index];
 
-      ids.forEach(id => {
-        const review = queue.find(item => String(getReviewId(item) || item.id) === String(id));
-        syncPartnerSlaReviewStatus(review, action === 'approve' ? 'approved' : 'rejected');
-      });
+        try {
+          /*
+           * Quan trọng:
+           * Không gọi /api/admin/review-ai/bulk-approve nữa,
+           * vì endpoint đó chỉ duyệt DB nhưng không chạy logic cập nhật public cache.
+           * Gọi endpoint AdminController /api/admin/reviews/{id}/approve để cache tự ghi KS-018.json.
+           */
+          const res = await api.post(`/api/admin/reviews/${encodeURIComponent(id)}/${action}`);
+          console.log('ADMIN BULK MODERATION RESPONSE:', res.data);
 
-      setBulkProgress(prev => ({
-        ...(prev || {}),
-        current: ids.length,
-        total: ids.length,
-        status: 'done',
-        label: action === 'approve' ? 'Hoàn tất duyệt toàn bộ' : 'Hoàn tất từ chối toàn bộ',
-      }));
+          const review = queue.find(item => String(getReviewId(item) || item.id) === String(id));
+          syncPartnerSlaReviewStatus(review, action === 'approve' ? 'approved' : 'rejected');
 
-      setQueue(prev => prev.filter(item => !ids.includes(item.id)));
+          doneIds.push(id);
+
+          if (action === 'approve') approvedDone += 1;
+          if (action === 'reject') rejectedDone += 1;
+        } catch (err) {
+          console.error('Bulk moderation failed:', id, action, err);
+          failedDone += 1;
+        }
+
+        const current = approvedDone + rejectedDone + failedDone;
+
+        setBulkProgress(prev => prev ? {
+          ...prev,
+          current,
+          approved: approvedDone,
+          rejected: rejectedDone,
+          failed: failedDone,
+          remaining: Math.max(ids.length - current, 0),
+          label: stopBulkRef.current
+            ? 'Đang dừng xử lý hàng loạt'
+            : (action === 'approve' ? 'Đang duyệt review' : 'Đang từ chối review'),
+        } : prev);
+      }
+
+      const wasStopped = stopBulkRef.current;
+
+      setQueue(prev => prev.filter(item => !doneIds.includes(getReviewId(item) || item.id)));
       setSelectedReview(null);
       setAiPreview(null);
 
-      window.setTimeout(() => setBulkProgress(null), 1200);
-    } catch (err) {
-      console.error(err);
-      alert(
-        action === 'approve'
-          ? 'Lỗi khi duyệt toàn bộ review'
-          : 'Lỗi khi từ chối toàn bộ review'
-      );
+      setBulkProgress(prev => prev ? {
+        ...prev,
+        status: wasStopped ? 'stopped' : 'done',
+        label: wasStopped
+          ? `Đã dừng · Duyệt ${approvedDone}, từ chối ${rejectedDone}, lỗi ${failedDone}`
+          : `Hoàn tất · Duyệt ${approvedDone}, từ chối ${rejectedDone}, lỗi ${failedDone}`,
+      } : prev);
+
       await fetchQueue();
+
+      window.setTimeout(() => setBulkProgress(null), wasStopped ? 2600 : 1600);
     } finally {
       stopBulkRef.current = false;
       setActionLoading('');
@@ -817,9 +1203,20 @@ export default function AdminModerationPage() {
     try {
       const res = await api.post('/api/admin/review-ai/ai-preview', {
         ids: visibleIds,
+        language: 'vi',
+        moderationPrompt: AI_MODERATION_PROMPT,
+        checklist: AI_MODERATION_CHECKLIST,
+        responseFormat: {
+          decision: 'APPROVE | REJECT | NEED_REVIEW',
+          reason: 'Lý do ngắn gọn bằng tiếng Việt, bám theo checklist',
+          violations: ['Danh sách lỗi nếu có'],
+          confidence: '0-100',
+        },
+        decisionGuide: AI_DECISION_GUIDE,
+        reviews: visibleQueue.map(buildReviewPayloadForAI),
       });
 
-      setAiPreview(res.data);
+      setAiPreview(normalizeAIPreviewPayload(res.data, visibleQueue));
     } catch (err) {
       console.error(err);
       alert('Lỗi khi AI đánh giá review');
@@ -841,8 +1238,8 @@ export default function AdminModerationPage() {
         if (!id) return;
 
         const action = normalizeAIAction(
-          item.action ||
           item.decision ||
+          item.action ||
           item.result ||
           item.aiAction
         );
@@ -871,7 +1268,7 @@ export default function AdminModerationPage() {
 
 - Duyệt: ${approveIds.length} review
 - Từ chối: ${rejectIds.length} review
-- Cần xem tay: ${manualSet.size || aiPreview.manualCount || 0} review
+- Cần xem lại: ${manualSet.size || aiPreview.manualCount || 0} review
 
 Bạn có chắc muốn áp dụng đề xuất của AI không?`
     );
@@ -914,7 +1311,12 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
         const job = jobs[index];
 
         try {
-          await api.post(`/api/admin/review-ai/${job.id}/${job.action}`);
+          /*
+           * Không gọi /api/admin/review-ai/{id}/{action} vì endpoint đó không cập nhật public cache.
+           * Gọi AdminController để duyệt/từ chối và ghi cache.
+           */
+          const res = await api.post(`/api/admin/reviews/${encodeURIComponent(job.id)}/${job.action}`);
+          console.log('ADMIN AI APPLY MODERATION RESPONSE:', res.data);
 
           const review = queue.find(item => String(getReviewId(item) || item.id) === String(job.id));
           syncPartnerSlaReviewStatus(review, job.action === 'approve' ? 'approved' : 'rejected');
@@ -945,7 +1347,7 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
 
       const wasStopped = stopBulkRef.current;
 
-      setQueue(prev => prev.filter(item => !doneIds.includes(item.id)));
+      setQueue(prev => prev.filter(item => !doneIds.includes(getReviewId(item) || item.id)));
       setSelectedReview(null);
       setAiPreview(null);
 
@@ -1015,10 +1417,15 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
       const id = getReviewId(item);
       if (!id) return;
 
+      const decision = normalizeAIDecision(item.decision || item.action || item.result || item.aiAction);
+
       map.set(id, {
         ...item,
         id,
-        action: normalizeAIAction(item.action || item.decision || item.result || item.aiAction),
+        decision,
+        action: normalizeAIAction(decision),
+        confidence: getConfidencePercent(item.confidence ?? item.aiConfidence ?? item.score),
+        violations: getAIViolations(item),
       });
     });
 
@@ -1183,6 +1590,15 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
         </select>
 
         <button
+          type="button"
+          className={styles.criteriaButton}
+          disabled={!!actionLoading || aiLoading}
+          onClick={() => setCriteriaOpen(true)}
+        >
+          Tiêu chí duyệt RV
+        </button>
+
+        <button
           className={styles.aiButton}
           disabled={!!actionLoading || aiLoading || visibleQueue.length === 0}
           onClick={handleAIPreview}
@@ -1236,6 +1652,58 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
           <small>Dữ liệu riêng từng tài khoản</small>
         </article>
       </section>
+
+      {criteriaOpen && (
+        <div
+          className={styles.criteriaOverlay}
+          onClick={() => setCriteriaOpen(false)}
+        >
+          <section
+            className={styles.criteriaModal}
+            onClick={event => event.stopPropagation()}
+          >
+            <div className={styles.criteriaModalTop}>
+              <div>
+                <span>Tiêu chí duyệt RV</span>
+                <h2>Checklist AI kiểm duyệt review</h2>
+                <p>
+                  AI dựa trên checklist này để đề xuất: Nên duyệt, Từ chối hoặc Cần xem lại.
+                </p>
+              </div>
+
+              <button
+                type="button"
+                className={styles.close}
+                onClick={() => setCriteriaOpen(false)}
+                aria-label="Đóng tiêu chí duyệt review"
+              >
+                ×
+              </button>
+            </div>
+
+            <div className={styles.checklistGrid}>
+              {AI_MODERATION_CHECKLIST.map(rule => (
+                <article key={rule.code} className={styles.checklistItem}>
+                  <span className={styles.checklistCode}>{rule.code}</span>
+                  <div>
+                    <strong>{rule.title}</strong>
+                    <p>{rule.description}</p>
+                  </div>
+                </article>
+              ))}
+            </div>
+
+            <div className={styles.decisionGuide}>
+              {AI_DECISION_GUIDE.map(item => (
+                <article key={item.decision}>
+                  <strong>{item.label}</strong>
+                  <p>{item.description}</p>
+                </article>
+              ))}
+            </div>
+          </section>
+        </div>
+      )}
 
       <section className={styles.carrierPanel}>
         <div className={styles.sectionHead}>
@@ -1312,13 +1780,13 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
             </div>
 
             <div className={styles.aiStatManual}>
-              <label>Cần xem tay</label>
+              <label>Cần xem lại</label>
               <strong>{aiPreview.manualCount || 0}</strong>
             </div>
           </div>
 
           <p>
-            AI chỉ đưa ra đề xuất. Review chỉ được duyệt hoặc từ chối sau khi admin bấm xác nhận.
+            AI chỉ đưa ra đề xuất theo checklist phía trên. Review chỉ được duyệt hoặc từ chối sau khi admin bấm xác nhận; nhóm “Cần xem lại” sẽ giữ lại để admin tự kiểm tra.
           </p>
         </section>
       )}
@@ -1388,10 +1856,12 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
           <div className={styles.grid}>
             {paginatedQueue.map(item => {
               const score = Number(item.aiConfidence || 0);
-              const aiDecision = aiDecisionMap.get(item.id);
+              const reviewId = getReviewId(item);
+              const aiDecision = aiDecisionMap.get(reviewId);
+              const aiViolations = aiDecision ? getAIViolations(aiDecision) : [];
 
               return (
-                <div key={item.id} className={styles.card}>
+                <div key={reviewId || item.id} className={styles.card}>
                   <div className={styles.cardTop}>
                     <div className={styles.user}>
                       <div className={styles.avatar}>
@@ -1426,9 +1896,24 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
                   )}
 
                   {aiDecision && (
-                    <div className={`${styles.aiDecision} ${getAIActionClass(aiDecision.action)}`}>
-                      <strong>{getAIActionLabel(aiDecision.action)}</strong>
-                      <span>{Math.round(Number(aiDecision.confidence || 0) * 100)}%</span>
+                    <div className={`${styles.aiDecision} ${getAIActionClass(aiDecision.decision || aiDecision.action)}`}>
+                      <strong>{getAIActionLabel(aiDecision.decision || aiDecision.action)}</strong>
+                      <span>{getConfidencePercent(aiDecision.confidence)}%</span>
+                    </div>
+                  )}
+
+                  {aiDecision && (
+                    <div className={styles.aiViolationBox}>
+                      <span>Checklist phát hiện</span>
+                      {aiViolations.length ? (
+                        <ul>
+                          {aiViolations.slice(0, 3).map((violation, index) => (
+                            <li key={`${reviewId || item.id}-violation-${index}`}>{violation}</li>
+                          ))}
+                        </ul>
+                      ) : (
+                        <p>Không phát hiện lỗi trong checklist.</p>
+                      )}
                     </div>
                   )}
 
@@ -1464,7 +1949,7 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
                   )}
 
                   <div className={styles.reason}>
-                    <label>Lý do AI</label>
+                    <label>{aiDecision ? `Lý do AI · ${getAIActionLabel(aiDecision.decision || aiDecision.action)}` : 'Lý do AI'}</label>
                     <p>
                       {aiDecision?.reason || item.aiReason || 'Không có dữ liệu'}
                     </p>
@@ -1474,9 +1959,9 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
                     <button
                       className={styles.approve}
                       disabled={!!actionLoading || aiLoading}
-                      onClick={() => handleModeration(item.id, 'approve')}
+                      onClick={() => handleModeration(reviewId || item.id, 'approve')}
                     >
-                      {actionLoading === `${item.id}_approve`
+                      {actionLoading === `${reviewId || item.id}_approve`
                         ? 'Đang duyệt...'
                         : 'Duyệt'}
                     </button>
@@ -1484,9 +1969,9 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
                     <button
                       className={styles.reject}
                       disabled={!!actionLoading || aiLoading}
-                      onClick={() => handleModeration(item.id, 'reject')}
+                      onClick={() => handleModeration(reviewId || item.id, 'reject')}
                     >
-                      {actionLoading === `${item.id}_reject`
+                      {actionLoading === `${reviewId || item.id}_reject`
                         ? 'Đang xử lý...'
                         : 'Từ chối'}
                     </button>
@@ -1601,10 +2086,32 @@ Bạn có chắc muốn áp dụng đề xuất của AI không?`
                 </div>
               )}
 
-              <div className={styles.fullContent}>
-                <label>Lý do AI</label>
-                <p>{selectedReview.aiReason || 'Không có dữ liệu'}</p>
-              </div>
+              {(() => {
+                const selectedReviewId = getReviewId(selectedReview);
+                const selectedAiDecision = aiDecisionMap.get(selectedReviewId);
+                const selectedViolations = selectedAiDecision ? getAIViolations(selectedAiDecision) : [];
+
+                return selectedAiDecision ? (
+                  <div className={styles.fullContent}>
+                    <label>Quyết định AI theo checklist</label>
+                    <p>
+                      <strong>{getAIActionLabel(selectedAiDecision.decision || selectedAiDecision.action)}</strong> · {selectedAiDecision.reason || 'AI chưa trả lý do chi tiết.'}
+                    </p>
+                    {selectedViolations.length > 0 && (
+                      <ul className={styles.modalViolationList}>
+                        {selectedViolations.map((violation, index) => (
+                          <li key={`selected-violation-${index}`}>{violation}</li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
+                ) : (
+                  <div className={styles.fullContent}>
+                    <label>Lý do AI</label>
+                    <p>{selectedReview.aiReason || 'Không có dữ liệu'}</p>
+                  </div>
+                );
+              })()}
 
               <div className={styles.actions}>
                 <button

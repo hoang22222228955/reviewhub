@@ -11,10 +11,14 @@ import com.doan.reviewhub.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.text.Normalizer;
 import java.time.ZoneId;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+import java.util.regex.Pattern;
 
 @Service
 @RequiredArgsConstructor
@@ -143,17 +147,9 @@ Chưa có giao dịch mua gói nào.
     }
 
     public String analyzeReview(String review) {
-        String lower = review == null ? "" : review.toLowerCase();
+        ModerationDecision decision = moderate(review, 0);
 
-        boolean toxic =
-                lower.contains("ngu") ||
-                lower.contains("óc chó") ||
-                lower.contains("lừa đảo") ||
-                lower.contains("đcm") ||
-                lower.contains("cc") ||
-                lower.contains("dm");
-
-        if (toxic) {
+        if ("REJECT".equals(decision.decision)) {
             return """
 # 🚫 Kết quả phân tích Review
 
@@ -161,12 +157,30 @@ Chưa có giao dịch mua gói nào.
 |---|---|
 | Đề xuất | Không nên duyệt |
 | Mức rủi ro | Cao |
-| Lý do chính | Có dấu hiệu toxic / công kích |
+| Lý do chính | %s |
+
+## Vi phạm checklist
+%s
 
 ## Khuyến nghị
 - Từ chối review.
 - Hoặc yêu cầu người dùng chỉnh sửa nội dung.
-""";
+""".formatted(decision.reason, formatViolationMarkdown(decision.violations));
+        }
+
+        if ("NEED_REVIEW".equals(decision.decision)) {
+            return """
+# ⚠️ Kết quả phân tích Review
+
+| Mục | Kết quả |
+|---|---|
+| Đề xuất | Cần admin xem lại |
+| Mức rủi ro | Trung bình |
+| Lý do chính | %s |
+
+## Vi phạm / điểm cần kiểm tra
+%s
+""".formatted(decision.reason, formatViolationMarkdown(decision.violations));
         }
 
         return """
@@ -176,14 +190,26 @@ Chưa có giao dịch mua gói nào.
 |---|---|
 | Đề xuất | Có thể duyệt |
 | Mức rủi ro | Thấp |
-| Lý do chính | Không phát hiện toxic nghiêm trọng |
+| Lý do chính | %s |
 
 ## Khuyến nghị
 - Có thể duyệt nếu nội dung đúng thực tế.
-""";
+""".formatted(decision.reason);
     }
 
+    // Giữ method cũ để các nơi khác trong project vẫn gọi được.
     public AIReviewPreviewResponse analyzeReviewBatch(List<Review> reviews) {
+        return analyzeReviewBatch(reviews, null, null, null);
+    }
+
+    // Method mới: nhận checklist/prompt từ frontend. Hiện tại dùng rule-based tiếng Việt bám checklist.
+    // Sau này nếu bạn nối OpenAI/Gemini thật, chỉ cần dùng moderationPrompt/checklist ở đây để build prompt.
+    public AIReviewPreviewResponse analyzeReviewBatch(
+            List<Review> reviews,
+            String moderationPrompt,
+            List<Map<String, Object>> checklist,
+            List<Map<String, Object>> decisionGuide
+    ) {
         List<String> approveIds = new ArrayList<>();
         List<String> rejectIds = new ArrayList<>();
         List<String> manualIds = new ArrayList<>();
@@ -191,73 +217,13 @@ Chưa có giao dịch mua gói nào.
 
         for (Review review : reviews) {
             String comment = review.getComment() == null ? "" : review.getComment().trim();
-            String lower = comment.toLowerCase();
-
             double rating = review.getRating() == null ? 0 : review.getRating();
 
-            String action = "manual";
-            double confidence = 0.55;
-            String reason = "Cần admin xem lại để đảm bảo nội dung đúng thực tế.";
+            ModerationDecision result = moderate(comment, rating);
 
-            boolean toxic =
-                    lower.contains("ngu") ||
-                    lower.contains("óc chó") ||
-                    lower.contains("lừa đảo") ||
-                    lower.contains("đcm") ||
-                    lower.contains("địt") ||
-                    lower.contains("cc") ||
-                    lower.contains("dm") ||
-                    lower.contains("cặc") ||
-                    lower.contains("chó") ||
-                    lower.contains("rác");
-
-            boolean spam =
-                    lower.contains("http://") ||
-                    lower.contains("https://") ||
-                    lower.contains("zalo") ||
-                    lower.contains("telegram") ||
-                    lower.contains("casino") ||
-                    lower.contains("cá cược");
-
-            boolean tooShort = comment.length() < 8;
-
-            boolean positive =
-                    rating >= 4 &&
-                    !toxic &&
-                    !spam &&
-                    comment.length() >= 8;
-
-            boolean normalNegative =
-                    rating <= 2 &&
-                    !toxic &&
-                    !spam &&
-                    comment.length() >= 12;
-
-            if (toxic) {
-                action = "reject";
-                confidence = 0.94;
-                reason = "Review có dấu hiệu toxic / công kích / từ ngữ không phù hợp.";
-            } else if (spam) {
-                action = "reject";
-                confidence = 0.92;
-                reason = "Review có dấu hiệu spam hoặc chứa nội dung quảng cáo / liên hệ ngoài.";
-            } else if (tooShort) {
-                action = "manual";
-                confidence = 0.60;
-                reason = "Nội dung quá ngắn, cần admin xem lại.";
-            } else if (positive) {
-                action = "approve";
-                confidence = 0.90;
-                reason = "Review tích cực, không phát hiện nội dung độc hại.";
-            } else if (normalNegative) {
-                action = "approve";
-                confidence = 0.78;
-                reason = "Review tiêu cực nhưng có vẻ là phản hồi trải nghiệm thật, không có từ ngữ toxic.";
-            }
-
-            if ("approve".equals(action)) {
+            if ("APPROVE".equals(result.decision)) {
                 approveIds.add(review.getId());
-            } else if ("reject".equals(action)) {
+            } else if ("REJECT".equals(result.decision)) {
                 rejectIds.add(review.getId());
             } else {
                 manualIds.add(review.getId());
@@ -266,9 +232,11 @@ Chưa có giao dịch mua gói nào.
             items.add(
                     AIReviewPreviewResponse.AIReviewDecisionItem.builder()
                             .id(review.getId())
-                            .action(action)
-                            .confidence(confidence)
-                            .reason(reason)
+                            .action(result.action)
+                            .decision(result.decision)
+                            .confidence(result.confidence)
+                            .reason(result.reason)
+                            .violations(result.violations)
                             .build()
             );
         }
@@ -488,19 +456,20 @@ Ví dụ:
             return """
 # 🤖 AI Moderation Pipeline
 
-Đã hỗ trợ backend AI moderation.
+Đã hỗ trợ backend AI moderation theo checklist.
 
 ## API đã dùng
-- POST /api/admin/reviews/ai-preview
-- POST /api/admin/reviews/ai-apply
-- POST /api/admin/reviews/bulk-approve
-- POST /api/admin/reviews/bulk-reject
+- POST /api/admin/review-ai/ai-preview
+- POST /api/admin/review-ai/ai-apply
+- POST /api/admin/review-ai/bulk-approve
+- POST /api/admin/review-ai/bulk-reject
 
 ## Luồng xử lý
 1. AI đọc review đang pending.
 2. AI phân loại: nên duyệt, nên từ chối, cần admin xem.
-3. Admin xác nhận.
-4. Hệ thống mới duyệt hoặc từ chối hàng loạt.
+3. AI trả reason + violations bám checklist.
+4. Admin xác nhận.
+5. Hệ thống mới duyệt hoặc từ chối hàng loạt.
 """;
         }
 
@@ -528,6 +497,309 @@ Thống kê giao dịch
 
 review: nhà xe phục vụ như cc
 """;
+    }
+
+    private ModerationDecision moderate(String comment, double rating) {
+        String original = comment == null ? "" : comment.trim();
+        String text = normalizeVietnamese(original);
+        List<String> violations = new ArrayList<>();
+
+        if (original.isBlank()) {
+            violations.add("C7 - Review chưa có nội dung rõ ràng để xác định trải nghiệm thật");
+            return new ModerationDecision(
+                    "NEED_REVIEW",
+                    "manual",
+                    60,
+                    "Review chưa có nội dung rõ ràng nên cần admin xem lại theo C7.",
+                    violations
+            );
+        }
+
+        boolean toxic = hasProfanityOrToxicWords(original);
+
+        boolean political = matches(text,
+                "\\b(chinh tri|dang phai|tuyen truyen|cach mang|che do|phan dong|cong kich chinh tri|lanh dao nha nuoc)\\b"
+        );
+
+        boolean discrimination = matches(text,
+                "\\b(bac ky|nam ky|trung ky|phan biet vung mien|dan toc|ton giao|quoc tich|gioi tinh)\\b",
+                "\\b(nguoi mien bac|nguoi mien nam|dan bac|dan nam|dan .* deu)\\b"
+        );
+
+        boolean spam = matches(original.toLowerCase(Locale.ROOT),
+                "https?://",
+                "www\\.",
+                "\\.com\\b",
+                "\\.vn\\b",
+                "zalo",
+                "telegram",
+                "facebook",
+                "fb\\.com",
+                "casino",
+                "ca cuoc",
+                "lien he",
+                "inbox",
+                "ib ngay",
+                "khuyen mai",
+                "giam gia"
+        ) || Pattern.compile("\\b(0|\\+84)(\\d[\\s.-]?){8,10}\\b").matcher(original).find();
+
+        boolean personalInfo = matches(text,
+                "\\b(cccd|cmnd|can cuoc|so dien thoai rieng|dia chi nha|email ca nhan|bien so xe|stk|tai khoan ngan hang)\\b"
+        ) || Pattern.compile("[\\w.+-]+@[\\w.-]+\\.[a-zA-Z]{2,}").matcher(original).find();
+
+        boolean seriousAccusation = matches(text,
+                "\\b(lua dao|an cap|trom cap|hanh hung|danh khach|quay roi|sam so|de doa|bao hanh|vi pham phap luat|cuop|bat coc)\\b"
+        );
+
+        boolean meaningfulShortReview = isMeaningfulShortReview(original);
+        boolean meaninglessReview = isMeaninglessReview(original);
+
+        boolean hasSpecificExperience = matches(text,
+                "\\b(tai xe|nhan vien|le tan|phong|xe|ghe|ve|chuyen|gio|don|tra|khach san|tour|tau|may bay|hanh ly|dat phong|dat ve|cabin|giuong|tv|rong rai|hong|bat tien|khong goi khach|phuc vu|cham|tre|sach|ban|on|dat|re)\\b"
+        ) || original.length() >= 25;
+
+        if (toxic) violations.add("C1 - Có từ ngữ thô tục, toxic hoặc xúc phạm cá nhân");
+        if (political) violations.add("C2 - Có nội dung chính trị, tuyên truyền hoặc công kích chính trị");
+        if (discrimination) violations.add("C3 - Có dấu hiệu phân biệt vùng miền, dân tộc, giới tính, tôn giáo, quốc tịch hoặc nhóm người");
+        if (spam) violations.add("C4 - Có dấu hiệu spam, quảng cáo, link hoặc số điện thoại không phù hợp");
+        if (personalInfo) violations.add("C5 - Có dấu hiệu tiết lộ thông tin cá nhân nhạy cảm");
+        if (seriousAccusation) violations.add("C6 - Có cáo buộc nghiêm trọng cần kiểm tra bằng chứng/ngữ cảnh");
+
+        boolean hasRejectViolation = violations.stream().anyMatch(v ->
+                v.startsWith("C1") ||
+                v.startsWith("C2") ||
+                v.startsWith("C3") ||
+                v.startsWith("C4") ||
+                v.startsWith("C5")
+        );
+
+        if (hasRejectViolation) {
+            String codes = joinViolationCodes(violations, false);
+            return new ModerationDecision(
+                    "REJECT",
+                    "reject",
+                    94,
+                    "Review vi phạm checklist " + codes + " nên AI đề xuất từ chối.",
+                    violations
+            );
+        }
+
+        if (seriousAccusation) {
+            return new ModerationDecision(
+                    "NEED_REVIEW",
+                    "manual",
+                    76,
+                    "Review có cáo buộc nghiêm trọng nhưng chưa đủ bằng chứng/ngữ cảnh, cần admin xem lại theo C6.",
+                    violations
+            );
+        }
+
+        // C7: review ngắn nhưng có nghĩa thật vẫn được duyệt, ví dụ: Tốt, Ổn, Ok, Không hài lòng, Phục vụ chậm...
+        if (meaningfulShortReview) {
+            return new ModerationDecision(
+                    "APPROVE",
+                    "approve",
+                    88,
+                    "Review ngắn nhưng có ý nghĩa rõ ràng, không vi phạm checklist C1-C6 và phù hợp quy tắc C7.",
+                    List.of()
+            );
+        }
+
+        // Nội dung vô nghĩa/rỗng/lặp ký tự thì giữ lại cho admin xem, không reject thẳng.
+        if (meaninglessReview) {
+            return new ModerationDecision(
+                    "NEED_REVIEW",
+                    "manual",
+                    60,
+                    "Review quá mơ hồ hoặc không có ý nghĩa rõ ràng nên cần admin xem lại theo C7.",
+                    List.of("C7 - Review quá mơ hồ hoặc không có ý nghĩa rõ ràng")
+            );
+        }
+
+        if (rating <= 2) {
+            return new ModerationDecision(
+                    "APPROVE",
+                    "approve",
+                    hasSpecificExperience ? 90 : 84,
+                    hasSpecificExperience
+                            ? "Review tiêu cực nhưng lịch sự, có trải nghiệm cụ thể và không vi phạm checklist C1-C6 nên được duyệt theo C7."
+                            : "Review tiêu cực nhưng không vi phạm checklist C1-C6; nội dung vẫn có ý nghĩa nên được duyệt theo C7.",
+                    List.of()
+            );
+        }
+
+        if (rating >= 4) {
+            return new ModerationDecision(
+                    "APPROVE",
+                    "approve",
+                    92,
+                    "Review tích cực, không phát hiện vi phạm checklist nên có thể duyệt.",
+                    List.of()
+            );
+        }
+
+        return new ModerationDecision(
+                "APPROVE",
+                "approve",
+                88,
+                "Review không vi phạm checklist; nếu có góp ý/chê dịch vụ thì vẫn ở mức lịch sự nên có thể duyệt theo C7.",
+                List.of()
+        );
+    }
+
+    private boolean hasProfanityOrToxicWords(String value) {
+        if (value == null) return false;
+
+        String originalLower = value.toLowerCase(Locale.ROOT);
+        String text = normalizeVietnamese(value);
+        if (text.isBlank()) return false;
+
+        /*
+         * C1 chỉ bắt từ chửi tục/xúc phạm thật.
+         * Lưu ý quan trọng: KHÔNG check "cac" hoặc "lon" trên chuỗi đã bỏ dấu.
+         * Vì "các" -> "cac" và "lớn/lộn/lòn..." -> "lon", sẽ làm AI từ chối nhầm review bình thường.
+         * Ví dụ: "các chức năng trong cabin bị hỏng" là phàn nàn dịch vụ hợp lệ, không phải toxic.
+         */
+        boolean explicitVietnameseProfanity = Pattern.compile(
+                "\\b(địt|đụ|đm|đmm|đcm|đéo|lồn|cặc|cút|mẹ mày|óc chó|súc vật|mất dạy|khốn nạn|rác rưởi)\\b",
+                Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE
+        ).matcher(originalLower).find();
+
+        if (explicitVietnameseProfanity) return true;
+
+        // Bản không dấu chỉ giữ các cụm/viết tắt ít gây nhầm với từ tiếng Việt thông thường.
+        return matches(text,
+                "\\b(dm|dmm|dcm|dcmn|vcl|vl|cc|cl|dit|du ma|me may|oc cho|suc vat|mat day|khon nan|bien di|rac ruoi)\\b",
+                "\\b(cho chet|chet di|do rac|thang ngu|con ngu|ngu nhu|loai ngu)\\b"
+        );
+    }
+
+    private boolean isMeaningfulShortReview(String value) {
+        String text = normalizeVietnamese(value);
+        if (text.isBlank()) return false;
+
+        List<String> exactMeaningful = List.of(
+                "ok",
+                "oke",
+                "okay",
+                "on",
+                "tam on",
+                "tot",
+                "rat tot",
+                "duoc",
+                "tam duoc",
+                "hai long",
+                "khong hai long",
+                "dich vu tot",
+                "xe sach",
+                "khach san dep",
+                "nhan vien tot",
+                "nhan vien nhiet tinh",
+                "phuc vu tot",
+                "phuc vu cham",
+                "di on",
+                "te",
+                "qua te",
+                "kem",
+                "cham",
+                "tre",
+                "dat",
+                "re",
+                "ban",
+                "on ao",
+                "bat tien",
+                "khong tot"
+        );
+
+        if (exactMeaningful.contains(text)) return true;
+
+        String[] words = text.split("\\s+");
+        if (words.length <= 7) {
+            return matches(text,
+                    "\\b(ok|oke|okay|tot|on|duoc|hai long|khong hai long|sach|dep|cham|tre|dat|re|te|kem|ban|bat tien|phuc vu|nhiet tinh|than thien|khong tot|khong on)\\b"
+            );
+        }
+
+        return false;
+    }
+
+    private boolean isMeaninglessReview(String value) {
+        String raw = value == null ? "" : value.trim();
+        String text = normalizeVietnamese(raw);
+
+        if (text.isBlank()) return true;
+        if (raw.matches("^[.\\-_,!?:;\\s]+$")) return true;
+        if (text.matches("^\\d+$")) return true;
+
+        List<String> meaningless = List.of(
+                "test",
+                "abc",
+                "abcd",
+                "aaa",
+                "aaaa",
+                "hhhh",
+                "kkkk",
+                "kkk",
+                "asdf",
+                "qwerty"
+        );
+
+        if (meaningless.contains(text)) return true;
+        if (text.matches("^(.)\\1{3,}$")) return true;
+        if (text.matches("^(ok\\s*){4,}$")) return true;
+
+        return false;
+    }
+
+    private boolean matches(String text, String... regexes) {
+        if (text == null || text.isBlank()) return false;
+
+        for (String regex : regexes) {
+            if (Pattern.compile(regex, Pattern.CASE_INSENSITIVE | Pattern.UNICODE_CASE).matcher(text).find()) {
+                return true;
+            }
+        }
+
+        return false;
+    }
+
+    private String normalizeVietnamese(String value) {
+        if (value == null) return "";
+
+        String normalized = Normalizer.normalize(value, Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "")
+                .replace('đ', 'd')
+                .replace('Đ', 'D')
+                .toLowerCase(Locale.ROOT);
+
+        return normalized.replaceAll("[^a-z0-9@:/._+\\-\\s]", " ")
+                .replaceAll("\\s+", " ")
+                .trim();
+    }
+
+    private String joinViolationCodes(List<String> violations, boolean includeC6) {
+        List<String> codes = violations.stream()
+                .map(v -> v == null ? "" : v.trim())
+                .filter(v -> !v.isBlank())
+                .filter(v -> includeC6 || !v.startsWith("C6"))
+                .map(v -> v.length() >= 2 ? v.substring(0, 2) : v)
+                .distinct()
+                .toList();
+
+        return codes.isEmpty() ? "" : String.join(", ", codes);
+    }
+
+    private String formatViolationMarkdown(List<String> violations) {
+        if (violations == null || violations.isEmpty()) {
+            return "- Không phát hiện lỗi trong checklist.";
+        }
+
+        StringBuilder sb = new StringBuilder();
+        for (String violation : violations) {
+            sb.append("- ").append(violation).append("\n");
+        }
+        return sb.toString().trim();
     }
 
     private String safe(String value) {
@@ -569,5 +841,21 @@ review: nhà xe phục vụ như cc
         }
 
         return status;
+    }
+
+    private static class ModerationDecision {
+        private final String decision;
+        private final String action;
+        private final double confidence;
+        private final String reason;
+        private final List<String> violations;
+
+        private ModerationDecision(String decision, String action, double confidence, String reason, List<String> violations) {
+            this.decision = decision;
+            this.action = action;
+            this.confidence = confidence;
+            this.reason = reason;
+            this.violations = violations == null ? List.of() : violations;
+        }
     }
 }

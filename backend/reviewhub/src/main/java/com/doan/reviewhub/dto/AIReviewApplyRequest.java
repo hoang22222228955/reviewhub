@@ -7,4 +7,5 @@ import java.util.List;
 public class AIReviewApplyRequest {
     private List<String> approveIds;
     private List<String> rejectIds;
+    private List<String> manualIds;
 }

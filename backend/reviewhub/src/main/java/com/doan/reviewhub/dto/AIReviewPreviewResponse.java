@@ -31,8 +31,19 @@ public class AIReviewPreviewResponse {
     @AllArgsConstructor
     public static class AIReviewDecisionItem {
         private String id;
+
+        // action dùng cho frontend cũ: approve | reject | manual
         private String action;
+
+        // decision dùng cho checklist mới: APPROVE | REJECT | NEED_REVIEW
+        private String decision;
+
+        // Có thể trả 0-100; frontend mới tự chuẩn hóa cả 0-1 và 0-100.
         private double confidence;
+
         private String reason;
+
+        // Danh sách lỗi theo checklist, ví dụ: C1, C4...
+        private List<String> violations;
     }
 }
