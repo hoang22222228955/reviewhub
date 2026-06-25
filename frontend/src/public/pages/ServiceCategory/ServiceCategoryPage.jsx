@@ -851,7 +851,9 @@ async function readFirstStatsList(endpoints) {
     if (typeof window === 'undefined') return null;
 
     const isLocalFrontend = ['localhost', '127.0.0.1'].includes(window.location.hostname);
-    const base = isLocalFrontend ? 'http://localhost:8080' : '';
+    const base =
+   import.meta.env.VITE_API_BASE_URL ||
+   (isLocalFrontend ? 'http://localhost:8080' : 'https://reviewhub-backend-ki8w.onrender.com');
     const separator = endpoint.includes('?') ? '&' : '?';
     const url = `${base}${endpoint}${separator}_rh_t=${Date.now()}`;
 
